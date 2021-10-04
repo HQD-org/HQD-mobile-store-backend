@@ -4,7 +4,7 @@ const { DEFAULT_MODEL } = require("../Common/Constants");
 
 const user = {
   name: DEFAULT_MODEL.stringRequire,
-  phone: DEFAULT_MODEL.stringRequire,
+  phone: DEFAULT_MODEL.stringPhone,
   email: DEFAULT_MODEL.stringEmail,
   address: DEFAULT_MODEL.object,
 };

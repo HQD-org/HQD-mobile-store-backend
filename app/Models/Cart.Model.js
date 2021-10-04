@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { createSchema } = require("./Create.Model");
-const { DEFAULT_MODEL } = require("../Common/Constants");
+const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
 
 const cart = {
   products: {
@@ -13,6 +13,7 @@ const cart = {
     default: [],
   },
   user: DEFAULT_MODEL.stringIdMongo,
+  status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },
 };
 
 module.exports = Cart = mongoose.model("Cart", createSchema(cart));

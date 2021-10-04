@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { createSchema } = require("./Create.Model");
-const { DEFAULT_MODEL, RECEIVE_TYPE } = require("../Common/Constants");
+const { DEFAULT_MODEL, RECEIVE_TYPE, STATUS } = require("../Common/Constants");
 
 const order = {
   idCart: DEFAULT_MODEL.stringIdMongo,
@@ -14,10 +14,12 @@ const order = {
       address: DEFAULT_MODEL.stringRequire,
       receiveAt: { ...DEFAULT_MODEL.stringRequire, default: RECEIVE_TYPE.HOME },
       timeReceive: DEFAULT_MODEL.string,
+      status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.UNPAID },
       message: DEFAULT_MODEL.string,
     },
     required: true,
   },
+  status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.WAIT },
 };
 
 module.exports = Order = mongoose.model("Order", createSchema(order));
