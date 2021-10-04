@@ -4,7 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const { PORT, ORIGIN_DEV } = require("./Common/Config");
+const { PORT, ORIGIN_DEV, ORIGIN_PROD } = require("./Common/Config");
 const router = require("./Routes/Index.Route");
 
 app.use(
