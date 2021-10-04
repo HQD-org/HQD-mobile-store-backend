@@ -9,7 +9,7 @@ const {
 
 const account = {
   username: DEFAULT_MODEL.stringUnique,
-  password: DEFAULT_MODEL.stringPassword,
+  password: DEFAULT_MODEL.stringRequire,
   role: { ...DEFAULT_MODEL.stringRequire, default: ROLE.USER },
   idBranch: DEFAULT_MODEL.stringIdMongo,
   isVerified: DEFAULT_MODEL.booleanFalse,

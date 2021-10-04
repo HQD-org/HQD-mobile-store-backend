@@ -1,3 +1,5 @@
+const { REGEX } = require("./Regex");
+
 exports.AUTH_TYPE = {
   FACEBOOK: "facebook",
   GOOGLE: "google",
@@ -8,26 +10,21 @@ exports.DEFAULT_MODEL = {
   date: { type: Date },
   string: { type: String, default: "" },
   stringRequire: { type: String, required: true },
-  stringIdMongo: { type: String, match: /^[a-f\d]{24}$/i },
+  stringIdMongo: { type: String, match: REGEX.ID_MONGO },
   stringPhone: {
     type: String,
     required: true,
     unique: true,
-    match: /^0\d{9}$/,
+    match: REGEX.PHONE_VN,
   },
   stringEmail: {
     type: String,
     required: true,
     unique: true,
-    match: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+    match: REGEX.EMAIL,
   },
   stringUnique: { type: String, required: true, unique: true },
-  stringOtp: { type: String, default: "", match: /^\d{4}$/ },
-  stringPassword: {
-    type: String,
-    required: true,
-    match: /^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9!@#$%^&*]{8,16}$/,
-  },
+  stringOtp: { type: String, default: "", match: REGEX.OTP },
   array: { type: Array, default: [] },
   number: { type: Number, default: 0 },
   boolean: { type: Boolean, default: true },

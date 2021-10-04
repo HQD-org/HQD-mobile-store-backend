@@ -30,6 +30,11 @@ exports.MOBILE_MODEL_PATH = {
   UPDATE: "update",
 };
 
+exports.PREFIX_PATH = {
+  ADMIN: "admin",
+  AUTH: "auth",
+};
+
 exports.PRODUCT_PATH = {
   CREATE: "create",
   FILTER_ALL: "filter-all",
