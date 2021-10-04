@@ -132,7 +132,6 @@ const verifyAccount = async (body) => {
   try {
     const { username, otp } = body;
     const account = await Account.findOne({ username: username });
-    console.log(account);
     if (!account) {
       return {
         success: false,
