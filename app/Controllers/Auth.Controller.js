@@ -1,10 +1,41 @@
-const { sendError, sendSuccess } = require("./Controller");
-const { login, register, verifyAccount } = require("../Services/Auth.Service");
 const { encodedToken } = require("../Services/Token.Service");
+const { sendError, sendSuccess } = require("./Controller");
+const {
+  changePassword,
+  forgotPassword,
+  getRole,
+  login,
+  register,
+  verifyAccount,
+} = require("../Services/Auth.Service");
+
+const handleChangePassword = async (req, res) => {
+  const { token, oldPassword, newPassword } = req.body;
+  const result = await changePassword(token.id, oldPassword, newPassword);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
+const handleForgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const result = await forgotPassword(email);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
+const handleGetRole = async (req, res) => {
+  const token = req.body.token;
+  const result = await getRole(token.id);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
 
 const handleLogin = async (req, res) => {
-  const result = await login(req.body);
-  console.log(result);
+  const { username, password } = req.body;
+  const result = await login(username, password);
   if (result.success) {
     const accessToken = encodedToken(result.data.idUser);
     const role = result.data.role;
@@ -27,13 +58,17 @@ const handleRegister = async (req, res) => {
 };
 
 const handleVerifyAccount = async (req, res) => {
-  const result = await verifyAccount(req.body);
+  const { username, otp } = req.body;
+  const result = await verifyAccount(username, otp);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
 };
 
 module.exports = {
+  handleChangePassword,
+  handleForgotPassword,
+  handleGetRole,
   handleLogin,
   handleRegister,
   handleVerifyAccount,

@@ -16,12 +16,21 @@ module.exports.schema = {
   }),
 
   login: Joi.object().keys({
-    username: Joi.string().required(),
+    username: Joi.string().email().required(),
     password: Joi.string().regex(REGEX.PASSWORD).required(),
   }),
 
   verify: Joi.object().keys({
-    username: Joi.string().required(),
+    username: Joi.string().email().required(),
     otp: Joi.string().regex(REGEX.OTP).required(),
+  }),
+
+  forgotPassword: Joi.object().keys({
+    email: Joi.string().email().required(),
+  }),
+
+  changePassword: Joi.object().keys({
+    newPassword: Joi.string().regex(REGEX.PASSWORD).required(),
+    oldPassword: Joi.string().regex(REGEX.PASSWORD).required(),
   }),
 };

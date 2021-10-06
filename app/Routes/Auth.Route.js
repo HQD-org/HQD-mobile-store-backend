@@ -3,6 +3,7 @@ const controller = require("../Controllers/Auth.Controller");
 const express = require("express");
 const { schema } = require("../Validations/Auth.Validation");
 const { validateBody, validateParam } = require("../Validations/Validation");
+const { verifyToken } = require("../Services/Token.Service");
 const router = express.Router();
 
 router
@@ -16,4 +17,20 @@ router
 router
   .route(`/${AUTH_PATH.VERIFY}`)
   .post(validateBody(schema.verify), controller.handleVerifyAccount);
+
+router
+  .route(`/${AUTH_PATH.FORGOT_PASSWORD}`)
+  .post(validateBody(schema.forgotPassword), controller.handleForgotPassword);
+
+router
+  .route(`/${AUTH_PATH.CHANGE_PASSWORD}`)
+  .post(
+    validateBody(schema.changePassword),
+    verifyToken,
+    controller.handleChangePassword
+  );
+
+router
+  .route(`/${AUTH_PATH.GET_ROLE}`)
+  .get(verifyToken, controller.handleGetRole);
 module.exports = router;

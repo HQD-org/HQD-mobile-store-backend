@@ -19,7 +19,7 @@ const verifyToken = (req, res, next) => {
     const header = req.headers.authorization;
     if (!header) {
       return res.status(HTTP_STATUS_CODE.NOT_FOUND).json({
-        message: "",
+        message: "Unauthorized",
         access: false,
       });
     }
@@ -27,7 +27,7 @@ const verifyToken = (req, res, next) => {
     JWT.verify(header, JWT_SECRET, (error, decodedFromToken) => {
       if (error) {
         return res.status(HTTP_STATUS_CODE.BAD_REQUEST).json({
-          message: "Failed to verify token",
+          message: "Unauthorized",
           access: false,
         });
       } else {

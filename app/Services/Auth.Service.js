@@ -2,11 +2,104 @@ const { Account, User } = require("../Models/Index.Model");
 const bcrypt = require("bcrypt");
 const { HTTP_STATUS_CODE, ROLE, AUTH_TYPE } = require("../Common/Constants");
 const { generateString } = require("../Common/Helper");
-const { sendOtp } = require("./Mail.Service");
+const { sendNewPassword, sendOtp } = require("./Mail.Service");
 
-const login = async (body) => {
+const changePassword = async (idUser, oldPassword, newPassword) => {
   try {
-    const { username, password } = body;
+    const account = await Account.findOne({ idUser: idUser });
+    if (!account)
+      return {
+        message: "Account not found",
+        success: false,
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+
+    const isCorrectPassword = await bcrypt.compare(
+      oldPassword,
+      account.password
+    );
+    if (!isCorrectPassword) {
+      return {
+        message: "Password is incorrect",
+        success: false,
+        status: HTTP_STATUS_CODE.UNAUTHORIZED,
+      };
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    account.password = hashedPassword;
+    await account.save();
+    return {
+      data: "",
+      success: true,
+      message: "Change password successfully",
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+      status: error.status,
+    };
+  }
+}; //DONE
+
+const forgotPassword = async (email) => {
+  try {
+    const account = await Account.findOne({ username: email });
+    if (!account)
+      return {
+        message: "Account not found",
+        success: false,
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+    const randomPassword = await generateString(8, true);
+    await sendNewPassword(email, randomPassword);
+    const hashedPassword = await bcrypt.hash(randomPassword, 10);
+    account.password = hashedPassword;
+    await account.save();
+    return {
+      data: "",
+      success: true,
+      message: "New password has been sent",
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+      status: error.status,
+    };
+  }
+}; //DONE
+
+const getRole = async (idUser) => {
+  try {
+    const account = await Account.findOne({ idUser: idUser });
+    if (!account)
+      return {
+        success: false,
+        message: "Account not found",
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+
+    return {
+      data: { role: account.role },
+      success: true,
+      message: "Get role successfully",
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+      status: error.status,
+    };
+  }
+};
+
+const login = async (username, password) => {
+  try {
     const account = await Account.findOne({
       username: username,
       authType: "local",
@@ -128,9 +221,8 @@ const register = async (body) => {
   }
 }; //DONE
 
-const verifyAccount = async (body) => {
+const verifyAccount = async (username, otp) => {
   try {
-    const { username, otp } = body;
     const account = await Account.findOne({ username: username });
     if (!account) {
       return {
@@ -168,6 +260,9 @@ const verifyAccount = async (body) => {
 }; //DONE
 
 module.exports = {
+  changePassword,
+  forgotPassword,
+  getRole,
   login,
   register,
   verifyAccount,
