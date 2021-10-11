@@ -3,9 +3,10 @@ const { sendError, sendSuccess } = require("./Controller");
 const {
   changePassword,
   forgotPassword,
-  getRole,
+  getAuth,
   login,
   register,
+  sendNewPassword,
   verifyAccount,
 } = require("../Services/Auth.Service");
 
@@ -25,9 +26,9 @@ const handleForgotPassword = async (req, res) => {
   return sendError(res, result.message, result.status);
 };
 
-const handleGetRole = async (req, res) => {
+const handleGetAuth = async (req, res) => {
   const token = req.body.token;
-  const result = await getRole(token.id);
+  const result = await getAuth(token.id);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
@@ -57,6 +58,14 @@ const handleRegister = async (req, res) => {
   return sendError(res, result.message, result.status);
 };
 
+const handleSendNewPassword = async (req, res) => {
+  const { username, otp } = req.body;
+  const result = await sendNewPassword(username, otp);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
 const handleVerifyAccount = async (req, res) => {
   const { username, otp } = req.body;
   const result = await verifyAccount(username, otp);
@@ -68,8 +77,9 @@ const handleVerifyAccount = async (req, res) => {
 module.exports = {
   handleChangePassword,
   handleForgotPassword,
-  handleGetRole,
+  handleGetAuth,
   handleLogin,
   handleRegister,
+  handleSendNewPassword,
   handleVerifyAccount,
 };

@@ -31,6 +31,11 @@ router
   );
 
 router
-  .route(`/${AUTH_PATH.GET_ROLE}`)
-  .get(verifyToken, controller.handleGetRole);
+  .route(`/${AUTH_PATH.FORGOT_PASSWORD}/${AUTH_PATH.VERIFY}`)
+  .post(validateBody(schema.verify), controller.handleSendNewPassword);
+
+router
+  .route(`/${AUTH_PATH.GET_AUTH}`)
+  .get(verifyToken, controller.handleGetAuth);
+
 module.exports = router;

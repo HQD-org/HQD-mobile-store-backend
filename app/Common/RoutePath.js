@@ -1,7 +1,7 @@
 exports.AUTH_PATH = {
   CHANGE_PASSWORD: "change-password",
   FORGOT_PASSWORD: "forgot-password",
-  GET_ROLE: "get-role",
+  GET_AUTH: "get-auth",
   LOGIN: "login",
   REGISTER: "register",
   VERIFY: "verify",
