@@ -32,6 +32,12 @@ exports.DEFAULT_MODEL = {
   object: { type: Object, default: {} },
 };
 
+exports.FOLDER = {
+  MOBILE_BRAND: "MobileBrand",
+  MOBILE_MODEL: "MobileModel",
+  PRODUCT: "Product",
+};
+
 exports.HTTP_STATUS_CODE = {
   CREATE: 201,
   OK: 200,
@@ -40,6 +46,7 @@ exports.HTTP_STATUS_CODE = {
   FORBIDDEN: 403,
   NOT_FOUND: 404,
   REQUEST_TIMEOUT: 408,
+  CONFLICT: 409,
   INTERNAL_SERVER_ERROR: 500,
   UNPROCESSABLE_ENTITY: 422,
 };
@@ -53,6 +60,7 @@ exports.ROLE = {
   ADMIN: "admin",
   MANAGER_BRANCH: "manager branch",
   USER: "user",
+  GUEST: "guest",
 };
 
 exports.STATUS = {

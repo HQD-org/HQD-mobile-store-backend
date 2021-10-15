@@ -1,6 +1,19 @@
-module.exports.validateParam = (schema, id) => {
+module.exports.validateParam = (schema) => {
   return (req, res, next) => {
-    const validatorResult = schema.validate({ param: req.params[id] });
+    const validatorResult = schema.validate({ param: req.params });
+    if (validatorResult.error)
+      return res.status(400).json(validatorResult.error);
+    else {
+      if (!req.value) req.value = {};
+      if (!req.value.params) req.value.params = validatorResult.value;
+      next();
+    }
+  };
+};
+
+module.exports.validateQuery = (schema) => {
+  return (req, res, next) => {
+    const validatorResult = schema.validate(req.query);
     if (validatorResult.error)
       return res.status(400).json(validatorResult.error);
     else {

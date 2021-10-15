@@ -2,14 +2,17 @@ const { Account, User } = require("../Models/Index.Model");
 const bcrypt = require("bcrypt");
 const { HTTP_STATUS_CODE, ROLE, AUTH_TYPE } = require("../Common/Constants");
 const { generateString } = require("../Common/Helper");
-const { sendNewPassword, sendOtp } = require("./Mail.Service");
+const { sendPassword, sendOtp } = require("./Mail.Service");
 
 const changePassword = async (idUser, oldPassword, newPassword) => {
   try {
     const account = await Account.findOne({ idUser: idUser });
     if (!account)
       return {
-        message: "Account not found",
+        message: {
+          ENG: "Account not found",
+          VN: "Tài khoản không tồn tại",
+        },
         success: false,
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
@@ -20,9 +23,12 @@ const changePassword = async (idUser, oldPassword, newPassword) => {
     );
     if (!isCorrectPassword) {
       return {
-        message: "Password is incorrect",
+        message: {
+          ENG: "Password is incorrect",
+          VN: "Mật khẩu không chính xác",
+        },
         success: false,
-        status: HTTP_STATUS_CODE.UNAUTHORIZED,
+        status: HTTP_STATUS_CODE.FORBIDDEN,
       };
     }
 
@@ -30,9 +36,12 @@ const changePassword = async (idUser, oldPassword, newPassword) => {
     account.password = hashedPassword;
     await account.save();
     return {
-      data: "",
+      data: "data",
       success: true,
-      message: "Change password successfully",
+      message: {
+        ENG: "Change password successfully",
+        VN: "Đổi mật khẩu thành công",
+      },
       status: HTTP_STATUS_CODE.OK,
     };
   } catch (error) {
@@ -49,19 +58,25 @@ const forgotPassword = async (email) => {
     const account = await Account.findOne({ username: email });
     if (!account)
       return {
-        message: "Account not found",
+        message: {
+          ENG: "Account not found",
+          VN: "Tài khoản không tồn tại",
+        },
         success: false,
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
-    const randomPassword = await generateString(8, true);
-    await sendNewPassword(email, randomPassword);
-    const hashedPassword = await bcrypt.hash(randomPassword, 10);
-    account.password = hashedPassword;
+
+    const otp = await generateString(4, false);
+    await sendOtp(account.username, otp);
+    account.otp = otp;
     await account.save();
     return {
-      data: "",
+      data: "data",
+      message: {
+        ENG: "A verify code has been sent to your email",
+        VN: "Một mã otp đã được gửi đến email của bạn",
+      },
       success: true,
-      message: "New password has been sent",
       status: HTTP_STATUS_CODE.OK,
     };
   } catch (error) {
@@ -71,22 +86,29 @@ const forgotPassword = async (email) => {
       status: error.status,
     };
   }
-}; //DONE
+};
 
-const getRole = async (idUser) => {
+const getAuth = async (idUser) => {
   try {
     const account = await Account.findOne({ idUser: idUser });
     if (!account)
       return {
         success: false,
-        message: "Account not found",
-        status: HTTP_STATUS_CODE.NOT_FOUND,
+        message: "Unauthenticated",
+        status: HTTP_STATUS_CODE.FORBIDDEN,
+      };
+    const user = await User.findById(idUser);
+    if (!user)
+      return {
+        success: false,
+        message: "Unauthenticated",
+        status: HTTP_STATUS_CODE.FORBIDDEN,
       };
 
     return {
-      data: { role: account.role },
+      data: { role: account.role, user: user },
       success: true,
-      message: "Get role successfully",
+      message: "Get auth successfully",
       status: HTTP_STATUS_CODE.OK,
     };
   } catch (error) {
@@ -106,7 +128,10 @@ const login = async (username, password) => {
     });
     if (!account) {
       return {
-        message: "User not found",
+        message: {
+          ENG: "Account not found",
+          VN: "Tài khoản không tồn tại",
+        },
         success: false,
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
@@ -115,33 +140,36 @@ const login = async (username, password) => {
     const isCorrectPassword = await bcrypt.compare(password, account.password);
     if (!isCorrectPassword) {
       return {
-        message: "Password is incorrect",
+        message: {
+          ENG: "Password is incorrect",
+          VN: "Mật khẩu không chính xác",
+        },
         success: false,
-        status: HTTP_STATUS_CODE.UNAUTHORIZED,
+        status: HTTP_STATUS_CODE.FORBIDDEN,
       };
     }
 
     if (account.isVerified === false) {
-      const user = await User.findById(account.idUser);
-      if (!user)
-        return {
-          message: "User not found",
-          success: false,
-          status: HTTP_STATUS_CODE.NOT_FOUND,
-        };
       const otp = await generateString(4, false);
-      await sendOtp(user.email, otp);
+      await sendOtp(account.username, otp);
       account.otp = otp;
       await account.save();
       return {
-        message: "Please verify your account",
+        message: {
+          ENG: "Please verify your account. A verify code has been sent to your email",
+          VN: "Hãy kích hoạt tài khoản của bạn. Một mã otp đã được gửi đến email của bạn",
+        },
         success: false,
         status: HTTP_STATUS_CODE.UNAUTHORIZED,
       };
     }
 
+    console.log(`log at: => Auth.Service.js => line 143 => login success `);
     return {
-      message: "Login Successfully",
+      message: {
+        ENG: "Login Successfully",
+        VN: "Đăng nhập thành công",
+      },
       data: {
         idUser: account.idUser,
         role: account.role,
@@ -150,6 +178,7 @@ const login = async (username, password) => {
       status: HTTP_STATUS_CODE.OK,
     };
   } catch (error) {
+    console.log(`log at: => Auth.Service.js => line 161 => error: `, error);
     return {
       success: false,
       message: error.message,
@@ -164,19 +193,23 @@ const register = async (body) => {
     const userWithEmailExists = await User.findOne({ email: email });
     if (userWithEmailExists)
       return {
-        data: "",
         success: false,
-        message: "Email already has been used",
-        status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+        message: {
+          ENG: "Email already has been used",
+          VN: "Email đã được sử dụng",
+        },
+        status: HTTP_STATUS_CODE.CONFLICT,
       };
 
     const userWithPhoneExists = await User.findOne({ phone: phone });
     if (userWithPhoneExists)
       return {
-        data: "",
         success: false,
-        message: "Phone already has been used",
-        status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+        message: {
+          ENG: "Phone already has been used",
+          VN: "Số điện thoại đã được sử dụng",
+        },
+        status: HTTP_STATUS_CODE.CONFLICT,
       };
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -207,9 +240,12 @@ const register = async (body) => {
     await newCart.save();
 
     return {
-      data: "",
+      data: "data",
       success: true,
-      message: "Register successfully. Please verify your account",
+      message: {
+        ENG: "Register successfully. Please verify your account. A verify code has been sent to your email",
+        VN: "Đăng ký thành công. Hãy kích hoạt tài khoản của bạn. Một mã otp đã được gửi đến email của bạn",
+      },
       status: HTTP_STATUS_CODE.OK,
     };
   } catch (error) {
@@ -221,13 +257,61 @@ const register = async (body) => {
   }
 }; //DONE
 
+const sendNewPassword = async (email, otp) => {
+  try {
+    const account = await Account.findOne({ username: email });
+    if (!account)
+      return {
+        message: {
+          ENG: "Account not found",
+          VN: "Tài khoản không tồn tại",
+        },
+        success: false,
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+
+    if (otp !== account.otp)
+      return {
+        message: {
+          ENG: "Invalid otp",
+          VN: "Mã otp không đúng",
+        },
+        success: false,
+        status: HTTP_STATUS_CODE.FORBIDDEN,
+      };
+    const randomPassword = await generateString(8, true);
+    await sendPassword(email, randomPassword);
+    const hashedPassword = await bcrypt.hash(randomPassword, 10);
+    account.password = hashedPassword;
+    await account.save();
+    return {
+      data: "data",
+      success: true,
+      message: {
+        ENG: "New password has been sent to your email",
+        VN: "Mật khẩu mới đã được gửi vào email của bạn",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+      status: error.status,
+    };
+  }
+};
+
 const verifyAccount = async (username, otp) => {
   try {
     const account = await Account.findOne({ username: username });
     if (!account) {
       return {
         success: false,
-        message: "Account not found",
+        message: {
+          ENG: "Account not found",
+          VN: "Tài khoản không tồn tại",
+        },
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
     }
@@ -239,15 +323,21 @@ const verifyAccount = async (username, otp) => {
 
     if (account.isVerified === true)
       return {
-        data: "",
+        data: "data",
         success: true,
-        message: "Your account is verified",
+        message: {
+          ENG: "Your account is verified",
+          VN: "Tài khoản của bạn đã được kích hoạt",
+        },
         status: HTTP_STATUS_CODE.OK,
       };
 
     return {
       success: false,
-      message: "Invalid otp",
+      message: {
+        ENG: "Invalid otp",
+        VN: "Mã otp không hợp đúng",
+      },
       status: HTTP_STATUS_CODE.UNAUTHORIZED,
     };
   } catch (error) {
@@ -262,8 +352,9 @@ const verifyAccount = async (username, otp) => {
 module.exports = {
   changePassword,
   forgotPassword,
-  getRole,
+  getAuth,
   login,
   register,
+  sendNewPassword,
   verifyAccount,
 };

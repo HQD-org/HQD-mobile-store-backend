@@ -1,7 +1,7 @@
 exports.AUTH_PATH = {
   CHANGE_PASSWORD: "change-password",
   FORGOT_PASSWORD: "forgot-password",
-  GET_ROLE: "get-role",
+  GET_AUTH: "get-auth",
   LOGIN: "login",
   REGISTER: "register",
   VERIFY: "verify",
@@ -19,6 +19,7 @@ exports.MOBILE_BRAND_PATH = {
   CREATE: "create",
   // DELETE: "delete",
   FIND_BY_NAME: "find-by-name",
+  FILTER_BY_STATUS: "filter-by-status",
   GET_ALL: "get-all",
   UPDATE: "update",
 };
@@ -34,6 +35,7 @@ exports.MOBILE_MODEL_PATH = {
 exports.PREFIX_PATH = {
   ADMIN: "admin",
   AUTH: "auth",
+  MOBILE_BRAND: "mobile-brand",
 };
 
 exports.PRODUCT_PATH = {

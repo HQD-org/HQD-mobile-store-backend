@@ -5,7 +5,7 @@ const sendOtp = async (email, otp) => {
   try {
     const body =
       "Chào mừng bạn đến với HQD mobile, đây là mã xác thực của bạn: " + otp;
-    await sendMail(email, "Kích hoạt tài khoản", body);
+    await sendMail(email, "Mã xác thực tài khoản", body);
 
     return {
       message: "Verify code has been sent",
@@ -22,7 +22,7 @@ const sendOtp = async (email, otp) => {
   }
 }; //done
 
-const sendNewPassword = async (email, newPassword) => {
+const sendPassword = async (email, newPassword) => {
   try {
     const body = `Đây là mật khẩu mới của bạn: ${newPassword} 
     Hãy đăng nhập lại và đổi mật khẩu để đảm bảo an toàn`;
@@ -44,6 +44,6 @@ const sendNewPassword = async (email, newPassword) => {
 }; //done
 
 module.exports = {
-  sendNewPassword,
+  sendPassword,
   sendOtp,
 };

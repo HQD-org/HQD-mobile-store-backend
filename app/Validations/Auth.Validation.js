@@ -8,10 +8,10 @@ module.exports.schema = {
     phone: Joi.string().regex(REGEX.PHONE_VN).required(),
     password: Joi.string().regex(REGEX.PASSWORD).required(),
     address: Joi.object({
-      detail: Joi.string().regex(REGEX.UNICODE_STRING).required(),
-      village: Joi.string().regex(REGEX.UNICODE_LETTER).required(),
-      district: Joi.string().regex(REGEX.UNICODE_LETTER).required(),
-      province: Joi.string().regex(REGEX.UNICODE_LETTER).required(),
+      detail: Joi.string().regex(REGEX.UNICODE_STRING),
+      village: Joi.string().regex(REGEX.UNICODE_STRING).required(),
+      district: Joi.string().regex(REGEX.UNICODE_STRING).required(),
+      province: Joi.string().regex(REGEX.UNICODE_STRING).required(),
     }),
   }),
 
@@ -26,7 +26,7 @@ module.exports.schema = {
   }),
 
   forgotPassword: Joi.object().keys({
-    email: Joi.string().email().required(),
+    username: Joi.string().email().required(),
   }),
 
   changePassword: Joi.object().keys({

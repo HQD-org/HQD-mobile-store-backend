@@ -7,6 +7,7 @@ const connectDb = async () => {
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false,
     })
     .then(() => console.log("Success!!!!"))
     .catch((error) => console.error("Failed: ", error));
