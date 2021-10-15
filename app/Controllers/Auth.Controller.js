@@ -1,4 +1,4 @@
-const { encodedToken } = require("../Services/Token.Service");
+const { encodedToken } = require("../Middlewares/Token.Middleware");
 const { sendError, sendSuccess } = require("./Controller");
 const {
   changePassword,

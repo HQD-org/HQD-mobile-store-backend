@@ -1,4 +1,3 @@
-const bodyParser = require("body-parser");
 const connectDb = require("./Common/ConnectDb");
 const cors = require("cors");
 require("dotenv").config();
@@ -13,9 +12,12 @@ app.use(
     methods: "GET,POST",
   })
 );
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+//express version from v4.16.0
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use("/Uploads", express.static("Uploads"));
 app.use("/", router);
+
 connectDb();
 
 app.listen(PORT, () => console.log(`Listen on port ${PORT}`));

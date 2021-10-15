@@ -32,6 +32,12 @@ exports.DEFAULT_MODEL = {
   object: { type: Object, default: {} },
 };
 
+exports.FOLDER = {
+  MOBILE_BRAND: "MobileBrand",
+  MOBILE_MODEL: "MobileModel",
+  PRODUCT: "Product",
+};
+
 exports.HTTP_STATUS_CODE = {
   CREATE: 201,
   OK: 200,
@@ -54,6 +60,7 @@ exports.ROLE = {
   ADMIN: "admin",
   MANAGER_BRANCH: "manager branch",
   USER: "user",
+  GUEST: "guest",
 };
 
 exports.STATUS = {
