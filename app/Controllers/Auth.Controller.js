@@ -1,4 +1,4 @@
-const { encodedToken } = require("../Services/Token.Service");
+const { encodedToken } = require("../Middlewares/Token.Middleware");
 const { sendError, sendSuccess } = require("./Controller");
 const {
   changePassword,
@@ -19,8 +19,8 @@ const handleChangePassword = async (req, res) => {
 };
 
 const handleForgotPassword = async (req, res) => {
-  const { email } = req.body;
-  const result = await forgotPassword(email);
+  const { username } = req.body;
+  const result = await forgotPassword(username);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
