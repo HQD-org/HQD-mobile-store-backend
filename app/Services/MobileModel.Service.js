@@ -83,7 +83,7 @@ const findByName = async (query) => {
   try {
     let itemPerPage = ~~query.itemPerPage || 12;
     let page = ~~query.page || 1;
-    const name = query.searchTerm;
+    const name = query.name;
     let queryObj = {};
     if (name) {
       queryObj.name = new RegExp(name, "i");

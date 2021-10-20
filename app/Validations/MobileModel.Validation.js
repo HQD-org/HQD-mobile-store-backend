@@ -42,6 +42,7 @@ exports.schema = {
       STATUS.STOP_SELLING,
       STATUS.OUT_OF_STOCK
     ),
+    description: Joi.string(),
   }),
   search: Joi.object().keys({
     page: Joi.number(),
