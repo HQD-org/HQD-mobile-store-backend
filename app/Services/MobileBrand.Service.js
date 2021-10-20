@@ -1,5 +1,6 @@
 const { MobileBrand } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
+const { mapToRegexExactly } = require("../Common/Helper");
 const removeFile = require("../Common/StorageEngine");
 
 const createBrand = async (req) => {
@@ -55,70 +56,20 @@ const createBrand = async (req) => {
   }
 };
 
-const findByName = async (query) => {
-  try {
-    let itemPerPage = ~~query.itemPerPage || 12;
-    let page = ~~query.page || 1;
-    const name = query.searchTerm;
-    let brands = [];
-    if (name) {
-      brands = await MobileBrand.find({
-        name: new RegExp(name, "i"),
-      })
-        .skip(itemPerPage * page - itemPerPage)
-        .limit(itemPerPage);
-    } else {
-      brands = await MobileBrand.find()
-        .skip(itemPerPage * page - itemPerPage)
-        .limit(itemPerPage);
-    }
-    return {
-      data: brands,
-      success: true,
-      message: {
-        ENG: "Find successfully",
-        VN: "Tìm kiếm thành công",
-      },
-      status: HTTP_STATUS_CODE.OK,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: error.message,
-      status: error.status,
-    };
+const filter = async (query) => {
+  let { name, itemPerPage, page, ...remainQuery } = query;
+  itemPerPage = ~~itemPerPage || 12;
+  page = ~~page || 1;
+  mapToRegexExactly(remainQuery);
+  let queryObj = {
+    ...remainQuery,
+  };
+  if (name) {
+    queryObj.name = new RegExp(name, "i");
   }
-};
-
-const filterByStatus = async (query) => {
-  let itemPerPage = ~~query.itemPerPage || 12;
-  let page = ~~query.page || 1;
-  const { searchTerm, status } = query;
-  let brands = [];
-  if (searchTerm && status) {
-    brands = await MobileBrand.find({
-      name: new RegExp(searchTerm, "i"),
-      status: new RegExp("^" + status + "$", "i"),
-    })
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-  } else if (searchTerm && !status) {
-    brands = await MobileBrand.find({
-      name: new RegExp(searchTerm, "i"),
-    })
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-  } else if (!searchTerm && status) {
-    brands = await MobileBrand.find({
-      status: new RegExp("^" + status + "$", "i"),
-    })
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-  } else {
-    brands = await MobileBrand.find()
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-  }
+  const brands = await MobileBrand.find(queryObj)
+    .skip(itemPerPage * page - itemPerPage)
+    .limit(itemPerPage);
   return {
     data: brands,
     success: true,
@@ -217,8 +168,7 @@ const updateBrand = async (req) => {
 
 module.exports = {
   createBrand,
-  findByName,
-  filterByStatus,
+  filter,
   getAll,
   updateBrand,
 };

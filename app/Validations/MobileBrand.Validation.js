@@ -23,7 +23,7 @@ module.exports.schema = {
   search: Joi.object().keys({
     page: Joi.number(),
     itemPerPage: Joi.number(),
-    searchTerm: Joi.string(),
+    name: Joi.string(),
     status: Joi.string(),
   }),
 };
