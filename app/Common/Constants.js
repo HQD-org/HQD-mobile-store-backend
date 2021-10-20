@@ -29,7 +29,7 @@ exports.DEFAULT_MODEL = {
   number: { type: Number, default: 0 },
   boolean: { type: Boolean, default: true },
   booleanFalse: { type: Boolean, default: false },
-  object: { type: Object, default: {} },
+  object: { type: {}, default: {} },
 };
 
 exports.FOLDER = {

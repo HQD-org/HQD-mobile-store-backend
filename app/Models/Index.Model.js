@@ -3,7 +3,7 @@ const Branch = require("./Branch.Model");
 const Cart = require("./Cart.Model");
 const Coupon = require("./Coupon.Model");
 const MobileBrand = require("./MobileBrand.Model");
-const MobileProduct = require("./MobileModel.Model");
+const MobileModel = require("./MobileModel.Model");
 const Order = require("./Order.Model");
 const Product = require("./Product.Model");
 const User = require("./User.Model");
@@ -14,7 +14,7 @@ module.exports = {
   Cart,
   Coupon,
   MobileBrand,
-  MobileProduct,
+  MobileModel,
   Order,
   Product,
   User,

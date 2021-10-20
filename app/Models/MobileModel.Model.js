@@ -4,7 +4,7 @@ const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
 
 const mobileModel = {
   name: DEFAULT_MODEL.stringUnique,
-  idBrand: DEFAULT_MODEL.stringIdMongo,
+  brand: DEFAULT_MODEL.object,
   screen: DEFAULT_MODEL.stringRequire,
   operation: DEFAULT_MODEL.stringRequire,
   rearCamera: DEFAULT_MODEL.stringRequire,
@@ -13,8 +13,8 @@ const mobileModel = {
   sim: DEFAULT_MODEL.stringRequire,
   battery: DEFAULT_MODEL.stringRequire,
   charger: DEFAULT_MODEL.stringRequire,
-  memoryStick: DEFAULT_MODEL.string,
-  timeDebut: DEFAULT_MODEL.string,
+  memoryStick: { ...DEFAULT_MODEL.string, default: "Không hỗ trợ" },
+  timeDebut: DEFAULT_MODEL.stringRequire,
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },
   description: DEFAULT_MODEL.string,
 };
