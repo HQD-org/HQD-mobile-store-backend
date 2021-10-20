@@ -13,6 +13,22 @@ const generateString = (length, containNaN) => {
   return result;
 };
 
+const mapToRegexExactly = (object) => {
+  Object.keys(object).map((key) => {
+    object[key] = new RegExp("^" + object[key] + "$", "i");
+  });
+  return object;
+};
+
+const mapToRegexContains = (object) => {
+  Object.keys(object).map((key) => {
+    object[key] = new RegExp(object[key], "i");
+  });
+  return object;
+};
+
 module.exports = {
   generateString,
+  mapToRegexContains,
+  mapToRegexExactly,
 };

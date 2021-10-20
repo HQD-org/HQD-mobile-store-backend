@@ -18,8 +18,7 @@ exports.BRANCH_PATH = {
 exports.MOBILE_BRAND_PATH = {
   CREATE: "create",
   // DELETE: "delete",
-  FIND_BY_NAME: "find-by-name",
-  FILTER_BY_STATUS: "filter-by-status",
+  FILTER: "filter",
   GET_ALL: "get-all",
   UPDATE: "update",
 };
@@ -27,6 +26,7 @@ exports.MOBILE_BRAND_PATH = {
 exports.MOBILE_MODEL_PATH = {
   CREATE: "create",
   // DELETE: "delete",
+  FILTER: "filter",
   FIND_BY_NAME: "find-by-name",
   GET_ALL: "get-all",
   UPDATE: "update",
@@ -36,6 +36,7 @@ exports.PREFIX_PATH = {
   ADMIN: "admin",
   AUTH: "auth",
   MOBILE_BRAND: "mobile-brand",
+  MOBILE_MODEL: "mobile-model",
 };
 
 exports.PRODUCT_PATH = {
