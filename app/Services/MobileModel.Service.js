@@ -3,8 +3,9 @@ const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const { mapToRegexExactly } = require("../Common/Helper");
 const mongoose = require("mongoose");
 
-const createModel = async (body) => {
+const createModel = async (req) => {
   try {
+    const body = req.body;
     const brand = await MobileBrand.findById(body.idBrand);
     if (!brand)
       return {
@@ -28,7 +29,7 @@ const createModel = async (body) => {
         status: HTTP_STATUS_CODE.CONFLICT,
       };
     }
-    delete body.idBrand;
+    // delete body.idBrand;
     const newModel = new MobileModel(body);
     await newModel.save();
     return {

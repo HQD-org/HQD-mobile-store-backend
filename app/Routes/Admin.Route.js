@@ -3,7 +3,7 @@ const {
   PREFIX_PATH,
   MOBILE_MODEL_PATH,
 } = require("../Common/RoutePath");
-const { FOLDER, ROLE } = require("../Common/Constants");
+const { ROLE } = require("../Common/Constants");
 const controller = require("../Controllers/Admin.Controller");
 const express = require("express");
 const mobileBrandSchema =
@@ -11,7 +11,6 @@ const mobileBrandSchema =
 const mobileModelSchema =
   require("../Validations/MobileModel.Validation").schema;
 const { validateBody } = require("../Validations/Validation");
-const { saveImage } = require("../Middlewares/File.Middleware");
 const { isRole } = require("../Middlewares/Role.Middleware");
 const { verifyToken } = require("../Middlewares/Token.Middleware");
 const router = express.Router();
@@ -20,24 +19,14 @@ const router = express.Router();
 router
   .route(`/${PREFIX_PATH.MOBILE_BRAND}/${MOBILE_BRAND_PATH.CREATE}`)
   .post(
-    [
-      verifyToken,
-      isRole([ROLE.ADMIN]),
-      saveImage("image", FOLDER.MOBILE_BRAND),
-      validateBody(mobileBrandSchema.create),
-    ],
+    [verifyToken, isRole([ROLE.ADMIN]), validateBody(mobileBrandSchema.create)],
     controller.handleCreateBrand
   );
 
 router
   .route(`/${PREFIX_PATH.MOBILE_BRAND}/${MOBILE_BRAND_PATH.UPDATE}`)
   .post(
-    [
-      verifyToken,
-      isRole([ROLE.ADMIN]),
-      saveImage("image", FOLDER.MOBILE_BRAND),
-      validateBody(mobileBrandSchema.update),
-    ],
+    [verifyToken, isRole([ROLE.ADMIN]), validateBody(mobileBrandSchema.update)],
     controller.handleUpdateBrand
   );
 

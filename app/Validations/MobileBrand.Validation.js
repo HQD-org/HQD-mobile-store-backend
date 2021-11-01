@@ -10,6 +10,7 @@ module.exports.schema = {
       STATUS.STOP_SELLING,
       STATUS.OUT_OF_STOCK
     ),
+    image: Joi.string().required(),
   }),
   update: Joi.object().keys({
     id: Joi.string().regex(REGEX.ID_MONGO).required(),
@@ -19,6 +20,7 @@ module.exports.schema = {
       STATUS.STOP_SELLING,
       STATUS.OUT_OF_STOCK
     ),
+    image: Joi.string(),
   }),
   search: Joi.object().keys({
     page: Joi.number(),
