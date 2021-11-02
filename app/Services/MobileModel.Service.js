@@ -3,9 +3,8 @@ const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const { mapToRegexExactly } = require("../Common/Helper");
 const mongoose = require("mongoose");
 
-const createModel = async (req) => {
+const createModel = async (body) => {
   try {
-    const body = req.body;
     const brand = await MobileBrand.findById(body.idBrand);
     if (!brand)
       return {

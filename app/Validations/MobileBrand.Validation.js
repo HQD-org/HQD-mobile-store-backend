@@ -11,6 +11,8 @@ module.exports.schema = {
       STATUS.OUT_OF_STOCK
     ),
     image: Joi.string().required(),
+    token: Joi.object(),
+    description: Joi.string(),
   }),
   update: Joi.object().keys({
     id: Joi.string().regex(REGEX.ID_MONGO).required(),
@@ -21,6 +23,8 @@ module.exports.schema = {
       STATUS.OUT_OF_STOCK
     ),
     image: Joi.string(),
+    token: Joi.object(),
+    description: Joi.string(),
   }),
   search: Joi.object().keys({
     page: Joi.number(),

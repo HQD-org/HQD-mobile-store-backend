@@ -2,9 +2,9 @@ const { MobileBrand } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const { mapToRegexExactly } = require("../Common/Helper");
 
-const createBrand = async (req) => {
+const createBrand = async (body) => {
   try {
-    const { name, status, image } = req.body;
+    const { name, status, image, description } = body;
     const brandFromDb = await MobileBrand.findOne({ name });
     if (brandFromDb) {
       return {
@@ -21,6 +21,7 @@ const createBrand = async (req) => {
       name,
       status,
       image,
+      description,
     });
 
     await newBrand.save();
