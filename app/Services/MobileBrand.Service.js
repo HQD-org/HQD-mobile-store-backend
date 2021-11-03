@@ -57,8 +57,10 @@ const filter = async (query) => {
   const brands = await MobileBrand.find(queryObj)
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
+  const totalBrand = await MobileBrand.find(queryObj).countDocuments();
+
   return {
-    data: brands,
+    data: { brands, totalBrand },
     success: true,
     message: {
       ENG: "Find successfully",
@@ -75,8 +77,9 @@ const getAll = async (query) => {
     const brands = await MobileBrand.find()
       .skip(itemPerPage * page - itemPerPage)
       .limit(itemPerPage);
+    const totalBrand = await MobileBrand.estimatedDocumentCount();
     return {
-      data: brands,
+      data: { brands, totalBrand },
       success: true,
       message: {
         ENG: "Find successfully",
