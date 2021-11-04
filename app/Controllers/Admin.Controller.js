@@ -3,7 +3,7 @@ const { createModel, updateModel } = require("../Services/MobileModel.Service");
 const { sendError, sendSuccess } = require("./Controller");
 
 const handleCreateBrand = async (req, res) => {
-  const result = await createBrand(req);
+  const result = await createBrand(req.body);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
@@ -17,7 +17,7 @@ const handleCreateModel = async (req, res) => {
 };
 
 const handleUpdateBrand = async (req, res) => {
-  const result = await updateBrand(req);
+  const result = await updateBrand(req.body);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);

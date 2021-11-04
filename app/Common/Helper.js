@@ -15,14 +15,14 @@ const generateString = (length, containNaN) => {
 
 const mapToRegexExactly = (object) => {
   Object.keys(object).map((key) => {
-    object[key] = new RegExp(object[key], "i");
+    object[key] = new RegExp("^" + object[key] + "$", "i");
   });
   return object;
 };
 
 const mapToRegexContains = (object) => {
   Object.keys(object).map((key) => {
-    object[key] = new RegExp("^" + object[key] + "$", "i");
+    object[key] = new RegExp(object[key], "i");
   });
   return object;
 };

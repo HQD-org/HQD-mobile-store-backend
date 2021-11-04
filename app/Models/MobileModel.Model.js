@@ -15,6 +15,15 @@ const mobileModel = {
   charger: DEFAULT_MODEL.stringRequire,
   memoryStick: { ...DEFAULT_MODEL.string, default: "Không hỗ trợ" },
   timeDebut: DEFAULT_MODEL.stringRequire,
+  color: {
+    type: [
+      {
+        name: DEFAULT_MODEL.stringRequire,
+        images: DEFAULT_MODEL.object,
+      },
+    ],
+    default: [],
+  },
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },
   description: DEFAULT_MODEL.string,
 };

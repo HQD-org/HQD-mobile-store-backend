@@ -4,17 +4,23 @@ const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
 
 const product = {
   name: DEFAULT_MODEL.stringRequire,
-  idModel: DEFAULT_MODEL.stringIdMongo,
-  price: DEFAULT_MODEL.number,
-  color: DEFAULT_MODEL.stringRequire,
-  picture: DEFAULT_MODEL.object,
+  model: DEFAULT_MODEL.object,
   capacity: DEFAULT_MODEL.stringRequire,
   ram: DEFAULT_MODEL.stringRequire,
-  quantityInfo: {
+  color: {
     type: [
       {
-        idBranch: DEFAULT_MODEL.stringIdMongo,
-        quantity: DEFAULT_MODEL.number,
+        name: DEFAULT_MODEL.stringRequire,
+        price: DEFAULT_MODEL.number,
+        quantityInfo: {
+          type: [
+            {
+              idBranch: DEFAULT_MODEL.stringIdMongo,
+              quantity: DEFAULT_MODEL.number,
+            },
+          ],
+          default: [],
+        },
       },
     ],
     default: [],

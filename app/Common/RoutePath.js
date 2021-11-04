@@ -18,8 +18,7 @@ exports.BRANCH_PATH = {
 exports.MOBILE_BRAND_PATH = {
   CREATE: "create",
   // DELETE: "delete",
-  FIND_BY_NAME: "find-by-name",
-  FILTER_BY_STATUS: "filter",
+  FILTER: "filter",
   GET_ALL: "get-all",
   UPDATE: "update",
 };

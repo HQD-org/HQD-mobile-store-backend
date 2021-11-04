@@ -104,9 +104,11 @@ const getAuth = async (idUser) => {
         message: "Unauthenticated",
         status: HTTP_STATUS_CODE.FORBIDDEN,
       };
-
     return {
-      data: { role: account.role, user: user },
+      data: {
+        ...user.toObject(),
+        role: account.role,
+      },
       success: true,
       message: "Get auth successfully",
       status: HTTP_STATUS_CODE.OK,

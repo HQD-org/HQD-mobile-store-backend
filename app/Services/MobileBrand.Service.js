@@ -1,24 +1,12 @@
 const { MobileBrand } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
-const removeFile = require("../Common/StorageEngine");
+const { mapToRegexExactly } = require("../Common/Helper");
 
-const createBrand = async (req) => {
+const createBrand = async (body) => {
   try {
-    const file = req.file;
-    if (!file)
-      return {
-        success: false,
-        message: {
-          ENG: "File not found (png, jpg, jpeg)",
-          VN: "Không tìm thấy file ảnh (png, jpg, jpeg)",
-        },
-        status: HTTP_STATUS_CODE.BAD_REQUEST,
-      };
-    const path = file.path;
-    const { name, status } = req.body;
-    const brandFromDb = await MobileBrand.findOne({ name: name });
+    const { name, status, image, description } = body;
+    const brandFromDb = await MobileBrand.findOne({ name });
     if (brandFromDb) {
-      removeFile(path);
       return {
         success: false,
         message: {
@@ -32,7 +20,8 @@ const createBrand = async (req) => {
     const newBrand = new MobileBrand({
       name,
       status,
-      image: path,
+      image,
+      description,
     });
 
     await newBrand.save();
@@ -46,7 +35,6 @@ const createBrand = async (req) => {
       status: HTTP_STATUS_CODE.OK,
     };
   } catch (error) {
-    removeFile(req.file);
     return {
       success: false,
       message: error.message,
@@ -55,72 +43,24 @@ const createBrand = async (req) => {
   }
 };
 
-const findByName = async (query) => {
-  try {
-    let itemPerPage = ~~query.itemPerPage || 12;
-    let page = ~~query.page || 1;
-    const name = query.searchTerm;
-    let brands = [];
-    if (name) {
-      brands = await MobileBrand.find({
-        name: new RegExp(name, "i"),
-      })
-        .skip(itemPerPage * page - itemPerPage)
-        .limit(itemPerPage);
-    } else {
-      brands = await MobileBrand.find()
-        .skip(itemPerPage * page - itemPerPage)
-        .limit(itemPerPage);
-    }
-    return {
-      data: brands,
-      success: true,
-      message: {
-        ENG: "Find successfully",
-        VN: "Tìm kiếm thành công",
-      },
-      status: HTTP_STATUS_CODE.OK,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: error.message,
-      status: error.status,
-    };
+const filter = async (query) => {
+  let { name, itemPerPage, page, ...remainQuery } = query;
+  itemPerPage = ~~itemPerPage || 12;
+  page = ~~page || 1;
+  mapToRegexExactly(remainQuery);
+  let queryObj = {
+    ...remainQuery,
+  };
+  if (name) {
+    queryObj.name = new RegExp(name, "i");
   }
-};
+  const brands = await MobileBrand.find(queryObj)
+    .skip(itemPerPage * page - itemPerPage)
+    .limit(itemPerPage);
+  const totalBrand = await MobileBrand.find(queryObj).countDocuments();
 
-const filterByStatus = async (query) => {
-  let itemPerPage = ~~query.itemPerPage || 12;
-  let page = ~~query.page || 1;
-  const { searchTerm, status } = query;
-  let brands = [];
-  if (searchTerm && status) {
-    brands = await MobileBrand.find({
-      name: new RegExp(searchTerm, "i"),
-      status: new RegExp("^" + status + "$", "i"),
-    })
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-  } else if (searchTerm && !status) {
-    brands = await MobileBrand.find({
-      name: new RegExp(searchTerm, "i"),
-    })
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-  } else if (!searchTerm && status) {
-    brands = await MobileBrand.find({
-      status: new RegExp("^" + status + "$", "i"),
-    })
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-  } else {
-    brands = await MobileBrand.find()
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-  }
   return {
-    data: brands,
+    data: { brands, totalBrand },
     success: true,
     message: {
       ENG: "Find successfully",
@@ -137,8 +77,9 @@ const getAll = async (query) => {
     const brands = await MobileBrand.find()
       .skip(itemPerPage * page - itemPerPage)
       .limit(itemPerPage);
+    const totalBrand = await MobileBrand.estimatedDocumentCount();
     return {
-      data: brands,
+      data: { brands, totalBrand },
       success: true,
       message: {
         ENG: "Find successfully",
@@ -155,37 +96,13 @@ const getAll = async (query) => {
   }
 };
 
-const updateBrand = async (req) => {
+const updateBrand = async (body) => {
   try {
-    const newInfo = req.body;
-    const file = req.file;
-    let oldPath = "";
-    if (file) {
-      newInfo.image = file.path;
-      const oldBrand = await MobileBrand.findById({ _id: newInfo.id });
-      if (!oldBrand) {
-        removeFile(file.path);
-        return {
-          success: false,
-          message: {
-            ENG: "Brand not found",
-            VN: "Không tìm thấy thương hiệu",
-          },
-          status: HTTP_STATUS_CODE.NOT_FOUND,
-        };
-      }
-      oldPath = oldBrand.image;
-    }
-    const brand = await MobileBrand.findOneAndUpdate(
-      { _id: newInfo.id },
-      req.body,
-      {
-        new: true,
-      }
-    );
+    const brand = await MobileBrand.findOneAndUpdate({ _id: body.id }, body, {
+      new: true,
+    });
 
-    if (!brand) {
-      removeFile(file.path);
+    if (!brand)
       return {
         success: false,
         message: {
@@ -194,8 +111,6 @@ const updateBrand = async (req) => {
         },
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
-    }
-    removeFile(oldPath);
     return {
       data: brand,
       success: true,
@@ -206,7 +121,6 @@ const updateBrand = async (req) => {
       status: HTTP_STATUS_CODE.NOT_FOUND,
     };
   } catch (error) {
-    removeFile(file.path);
     return {
       message: error.message,
       status: error.status,
@@ -217,8 +131,7 @@ const updateBrand = async (req) => {
 
 module.exports = {
   createBrand,
-  findByName,
-  filterByStatus,
+  filter,
   getAll,
   updateBrand,
 };
