@@ -22,6 +22,7 @@ exports.schema = {
       STATUS.OUT_OF_STOCK
     ),
     description: Joi.string(),
+    token: Joi.object(),
   }),
   update: Joi.object().keys({
     id: Joi.string().regex(REGEX.ID_MONGO).required(),
@@ -43,6 +44,7 @@ exports.schema = {
       STATUS.OUT_OF_STOCK
     ),
     description: Joi.string(),
+    token: Joi.object(),
   }),
   search: Joi.object().keys({
     page: Joi.number(),

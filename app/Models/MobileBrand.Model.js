@@ -6,6 +6,7 @@ const mobileBrand = {
   name: DEFAULT_MODEL.stringUnique,
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },
   image: DEFAULT_MODEL.stringRequire,
+  description: DEFAULT_MODEL.string,
 };
 
 module.exports = Brand = mongoose.model(

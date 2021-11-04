@@ -32,11 +32,11 @@ exports.DEFAULT_MODEL = {
   object: { type: {}, default: {} },
 };
 
-exports.FOLDER = {
-  MOBILE_BRAND: "MobileBrand",
-  MOBILE_MODEL: "MobileModel",
-  PRODUCT: "Product",
-};
+// exports.FOLDER = {
+//   MOBILE_BRAND: "MobileBrand",
+//   MOBILE_MODEL: "MobileModel",
+//   PRODUCT: "Product",
+// };
 
 exports.HTTP_STATUS_CODE = {
   CREATE: 201,

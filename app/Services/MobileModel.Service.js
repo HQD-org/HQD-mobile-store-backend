@@ -28,7 +28,7 @@ const createModel = async (body) => {
         status: HTTP_STATUS_CODE.CONFLICT,
       };
     }
-    delete body.idBrand;
+    // delete body.idBrand;
     const newModel = new MobileModel(body);
     await newModel.save();
     return {
