@@ -32,7 +32,7 @@ const createBrand = async (body) => {
         ENG: "Create Mobile Brand successfully",
         VN: "Tạo thương hiệu thành công",
       },
-      status: HTTP_STATUS_CODE.OK,
+      status: HTTP_STATUS_CODE.CREATE,
     };
   } catch (error) {
     return {
@@ -118,7 +118,7 @@ const updateBrand = async (body) => {
         ENG: "Update brand successfully",
         VN: "Cập nhật thương hiệu thành công",
       },
-      status: HTTP_STATUS_CODE.NOT_FOUND,
+      status: HTTP_STATUS_CODE.OK,
     };
   } catch (error) {
     return {
