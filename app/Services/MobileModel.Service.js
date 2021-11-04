@@ -16,7 +16,6 @@ const createModel = async (body) => {
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
     body.brand = brand;
-    console.log(body);
     const modelFromDb = await MobileModel.findOne({ name: body.name });
     if (modelFromDb) {
       return {
@@ -28,7 +27,6 @@ const createModel = async (body) => {
         status: HTTP_STATUS_CODE.CONFLICT,
       };
     }
-    // delete body.idBrand;
     const newModel = new MobileModel(body);
     await newModel.save();
     return {
@@ -38,7 +36,7 @@ const createModel = async (body) => {
         ENG: "Create Mobile Model successfully",
         VN: "Tạo model điện thoại thành công",
       },
-      status: HTTP_STATUS_CODE.OK,
+      status: HTTP_STATUS_CODE.CREATE,
     };
   } catch (error) {
     return {
