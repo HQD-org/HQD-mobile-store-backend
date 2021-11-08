@@ -27,7 +27,6 @@ exports.MOBILE_MODEL_PATH = {
   CREATE: "create",
   // DELETE: "delete",
   FILTER: "filter",
-  FIND_BY_NAME: "find-by-name",
   GET_ALL: "get-all",
   UPDATE: "update",
 };

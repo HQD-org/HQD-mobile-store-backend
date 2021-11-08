@@ -72,8 +72,6 @@ const filter = async (query) => {
 
 const getAll = async (query) => {
   try {
-    let itemPerPage = ~~query.itemPerPage || 12;
-    let page = ~~query.page || 1;
     const brands = await MobileBrand.find()
       .skip(itemPerPage * page - itemPerPage)
       .limit(itemPerPage);
