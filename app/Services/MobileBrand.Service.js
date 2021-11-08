@@ -32,7 +32,7 @@ const createBrand = async (body) => {
         ENG: "Create Mobile Brand successfully",
         VN: "Tạo thương hiệu thành công",
       },
-      status: HTTP_STATUS_CODE.OK,
+      status: HTTP_STATUS_CODE.CREATE,
     };
   } catch (error) {
     return {
@@ -72,8 +72,6 @@ const filter = async (query) => {
 
 const getAll = async (query) => {
   try {
-    let itemPerPage = ~~query.itemPerPage || 12;
-    let page = ~~query.page || 1;
     const brands = await MobileBrand.find()
       .skip(itemPerPage * page - itemPerPage)
       .limit(itemPerPage);
@@ -118,7 +116,7 @@ const updateBrand = async (body) => {
         ENG: "Update brand successfully",
         VN: "Cập nhật thương hiệu thành công",
       },
-      status: HTTP_STATUS_CODE.NOT_FOUND,
+      status: HTTP_STATUS_CODE.OK,
     };
   } catch (error) {
     return {

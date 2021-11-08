@@ -1,7 +1,17 @@
 const { MobileBrand, MobileModel } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const { mapToRegexExactly } = require("../Common/Helper");
-const mongoose = require("mongoose");
+
+const uniqueColor = (arrayColor) => {
+  const flags = [],
+    uniqueColor = [];
+  for (let i = 0; i < arrayColor.length; i++) {
+    if (flags[arrayColor[i].name]) continue;
+    flags[arrayColor[i].name] = true;
+    uniqueColor.push(arrayColor[i]);
+  }
+  return uniqueColor;
+};
 
 const createModel = async (body) => {
   try {
@@ -15,8 +25,6 @@ const createModel = async (body) => {
         },
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
-    body.brand = brand;
-    console.log(body);
     const modelFromDb = await MobileModel.findOne({ name: body.name });
     if (modelFromDb) {
       return {
@@ -28,7 +36,8 @@ const createModel = async (body) => {
         status: HTTP_STATUS_CODE.CONFLICT,
       };
     }
-    // delete body.idBrand;
+
+    body.color = uniqueColor(body.color);
     const newModel = new MobileModel(body);
     await newModel.save();
     return {
@@ -38,7 +47,7 @@ const createModel = async (body) => {
         ENG: "Create Mobile Model successfully",
         VN: "Tạo model điện thoại thành công",
       },
-      status: HTTP_STATUS_CODE.OK,
+      status: HTTP_STATUS_CODE.CREATE,
     };
   } catch (error) {
     return {
@@ -58,12 +67,7 @@ const filter = async (query) => {
     name: new RegExp(name, "i"),
     ...remainQuery,
   };
-  if (idBrand) {
-    queryObj = {
-      ...queryObj,
-      "brand._id": mongoose.Types.ObjectId(idBrand),
-    };
-  }
+
   const models = await MobileModel.find(queryObj)
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
@@ -79,43 +83,9 @@ const filter = async (query) => {
   };
 };
 
-const findByName = async (query) => {
+const getAll = async () => {
   try {
-    let itemPerPage = ~~query.itemPerPage || 12;
-    let page = ~~query.page || 1;
-    const name = query.name;
-    let queryObj = {};
-    if (name) {
-      queryObj.name = new RegExp(name, "i");
-    }
-    const models = await MobileModel.find(queryObj)
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-    return {
-      data: models,
-      success: true,
-      message: {
-        ENG: "Find successfully",
-        VN: "Tìm kiếm thành công",
-      },
-      status: HTTP_STATUS_CODE.OK,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: error.message,
-      status: error.status,
-    };
-  }
-};
-
-const getAll = async (query) => {
-  try {
-    let itemPerPage = ~~query.itemPerPage || 12;
-    let page = ~~query.page || 1;
-    const models = await MobileModel.find()
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
+    const models = await MobileModel.find();
     return {
       data: models,
       success: true,
@@ -149,6 +119,7 @@ const updateModel = async (body) => {
         },
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
+    if (body.color) body.color = uniqueColor(body.color);
     const model = await MobileModel.findOneAndUpdate({ _id: body.id }, body, {
       new: true,
     });
@@ -184,7 +155,6 @@ const updateModel = async (body) => {
 module.exports = {
   createModel,
   filter,
-  findByName,
   getAll,
   updateModel,
 };

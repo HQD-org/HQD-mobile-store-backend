@@ -21,6 +21,16 @@ exports.schema = {
       STATUS.STOP_SELLING,
       STATUS.OUT_OF_STOCK
     ),
+    color: Joi.array()
+      .items(
+        Joi.object()
+          .keys({
+            name: Joi.string().required(),
+            images: Joi.array().items(Joi.string().required()).required(),
+          })
+          .required()
+      )
+      .required(),
     description: Joi.string(),
     token: Joi.object(),
   }),
@@ -42,6 +52,14 @@ exports.schema = {
       STATUS.ACTIVE,
       STATUS.STOP_SELLING,
       STATUS.OUT_OF_STOCK
+    ),
+    color: Joi.array().items(
+      Joi.object()
+        .keys({
+          name: Joi.string().required(),
+          images: Joi.array().items(Joi.string().required()).required(),
+        })
+        .required()
     ),
     description: Joi.string(),
     token: Joi.object(),
