@@ -2,27 +2,27 @@ const mongoose = require("mongoose");
 const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
 
+const colorSchema = createSchema({
+  name: DEFAULT_MODEL.stringRequire,
+  price: DEFAULT_MODEL.number,
+  quantityInfo: {
+    type: [
+      {
+        idBranch: DEFAULT_MODEL.stringIdMongo,
+        quantity: DEFAULT_MODEL.number,
+      },
+    ],
+    default: [],
+  },
+});
+
 const product = {
   name: DEFAULT_MODEL.stringRequire,
-  model: DEFAULT_MODEL.object,
+  idModel: DEFAULT_MODEL.stringIdMongo,
   capacity: DEFAULT_MODEL.stringRequire,
   ram: DEFAULT_MODEL.stringRequire,
   color: {
-    type: [
-      {
-        name: DEFAULT_MODEL.stringRequire,
-        price: DEFAULT_MODEL.number,
-        quantityInfo: {
-          type: [
-            {
-              idBranch: DEFAULT_MODEL.stringIdMongo,
-              quantity: DEFAULT_MODEL.number,
-            },
-          ],
-          default: [],
-        },
-      },
-    ],
+    type: [colorSchema],
     default: [],
   },
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },

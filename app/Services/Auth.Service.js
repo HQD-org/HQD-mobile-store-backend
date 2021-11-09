@@ -59,11 +59,11 @@ const forgotPassword = async (email) => {
     if (!account)
       return {
         message: {
-          ENG: "Account not found",
-          VN: "Tài khoản không tồn tại",
+          ENG: "Cannot send otp. Please check your email again",
+          VN: "Không thể gửi mã otp. Vui lòng kiểm tra lại email",
         },
         success: false,
-        status: HTTP_STATUS_CODE.NOT_FOUND,
+        status: HTTP_STATUS_CODE.UNAUTHORIZED,
       };
 
     const otp = await generateString(4, false);
@@ -131,11 +131,11 @@ const login = async (username, password) => {
     if (!account) {
       return {
         message: {
-          ENG: "Account not found",
-          VN: "Tài khoản không tồn tại",
+          ENG: "Account or password is incorrect",
+          VN: "Tài khoản hoặc mật khẩu không chính xác",
         },
         success: false,
-        status: HTTP_STATUS_CODE.NOT_FOUND,
+        status: HTTP_STATUS_CODE.FORBIDDEN,
       };
     }
 
@@ -143,8 +143,8 @@ const login = async (username, password) => {
     if (!isCorrectPassword) {
       return {
         message: {
-          ENG: "Password is incorrect",
-          VN: "Mật khẩu không chính xác",
+          ENG: "Account or password is incorrect",
+          VN: "Tài khoản hoặc mật khẩu không chính xác",
         },
         success: false,
         status: HTTP_STATUS_CODE.FORBIDDEN,
@@ -265,11 +265,11 @@ const sendNewPassword = async (email, otp) => {
     if (!account)
       return {
         message: {
-          ENG: "Account not found",
-          VN: "Tài khoản không tồn tại",
+          ENG: "Cannot send new password. Please check your email again",
+          VN: "Không thể mật khẩu mới. Vui lòng kiểm tra lại email",
         },
         success: false,
-        status: HTTP_STATUS_CODE.NOT_FOUND,
+        status: HTTP_STATUS_CODE.UNAUTHORIZED,
       };
 
     if (otp !== account.otp)
@@ -285,6 +285,7 @@ const sendNewPassword = async (email, otp) => {
     await sendPassword(email, randomPassword);
     const hashedPassword = await bcrypt.hash(randomPassword, 10);
     account.password = hashedPassword;
+    account.otp = "";
     await account.save();
     return {
       data: "data",
@@ -320,6 +321,7 @@ const verifyAccount = async (username, otp) => {
 
     if (account.otp === otp) {
       account.isVerified = true;
+      account.otp = "";
       await account.save();
     }
 
