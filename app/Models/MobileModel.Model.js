@@ -2,9 +2,14 @@ const mongoose = require("mongoose");
 const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
 
+const colorSchema = createSchema({
+  name: DEFAULT_MODEL.stringRequire,
+  images: DEFAULT_MODEL.array,
+});
+
 const mobileModel = {
   name: DEFAULT_MODEL.stringUnique,
-  brand: DEFAULT_MODEL.object,
+  idBrand: DEFAULT_MODEL.stringIdMongo,
   screen: DEFAULT_MODEL.stringRequire,
   operation: DEFAULT_MODEL.stringRequire,
   rearCamera: DEFAULT_MODEL.stringRequire,
@@ -16,12 +21,7 @@ const mobileModel = {
   memoryStick: { ...DEFAULT_MODEL.string, default: "Không hỗ trợ" },
   timeDebut: DEFAULT_MODEL.stringRequire,
   color: {
-    type: [
-      {
-        name: DEFAULT_MODEL.stringRequire,
-        images: DEFAULT_MODEL.object,
-      },
-    ],
+    type: [colorSchema],
     default: [],
   },
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },

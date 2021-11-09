@@ -2,7 +2,7 @@ const { filter, getAll } = require("../Services/MobileBrand.Service");
 const { sendError, sendSuccess } = require("./Controller");
 
 const handleGetAll = async (req, res) => {
-  const result = await getAll(req.query);
+  const result = await getAll();
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
