@@ -1,0 +1,78 @@
+const Joi = require("@hapi/joi");
+const { REGEX } = require("../Common/Regex");
+const { STATUS } = require("../Common/Constants");
+
+exports.schema = {
+  create: Joi.object().keys({
+    name: Joi.string().required(),
+    idModel: Joi.string().regex(REGEX.ID_MONGO).required(),
+    capacity: Joi.string().required(),
+    ram: Joi.string().required(),
+    status: Joi.string().valid(
+      STATUS.ACTIVE,
+      STATUS.STOP_SELLING,
+      STATUS.OUT_OF_STOCK
+    ),
+    color: Joi.array()
+      .items(
+        Joi.object()
+          .keys({
+            name: Joi.string().required(),
+            images: Joi.array().items(Joi.string().required()).required(),
+          })
+          .required()
+      )
+      .required(),
+    description: Joi.string(),
+    token: Joi.object(),
+  }),
+  update: Joi.object().keys({
+    id: Joi.string().regex(REGEX.ID_MONGO).required(),
+    name: Joi.string(),
+    idBrand: Joi.string().regex(REGEX.ID_MONGO),
+    screen: Joi.string(),
+    operation: Joi.string(),
+    rearCamera: Joi.string(),
+    frontCamera: Joi.string(),
+    chip: Joi.string(),
+    sim: Joi.string(),
+    battery: Joi.string(),
+    charger: Joi.string(),
+    memoryStick: Joi.string(),
+    timeDebut: Joi.string(),
+    status: Joi.string().valid(
+      STATUS.ACTIVE,
+      STATUS.STOP_SELLING,
+      STATUS.OUT_OF_STOCK
+    ),
+    color: Joi.array().items(
+      Joi.object()
+        .keys({
+          name: Joi.string().required(),
+          images: Joi.array().items(Joi.string().required()).required(),
+        })
+        .required()
+    ),
+    description: Joi.string(),
+    token: Joi.object(),
+  }),
+  search: Joi.object().keys({
+    page: Joi.number(),
+    itemPerPage: Joi.number(),
+    status: Joi.string(),
+    name: Joi.string(),
+    idBrand: Joi.string(),
+    screen: Joi.string(),
+    operation: Joi.string(),
+    rearCamera: Joi.string(),
+    frontCamera: Joi.string(),
+    chip: Joi.string(),
+    sim: Joi.string(),
+    battery: Joi.string(),
+    charger: Joi.string(),
+    memoryStick: Joi.string(),
+    timeDebut: Joi.string(),
+    description: Joi.string(),
+    brand: Joi.string(),
+  }),
+};

@@ -8,6 +8,7 @@ const cart = {
       {
         idProduct: DEFAULT_MODEL.stringIdMongo,
         quantity: DEFAULT_MODEL.stringRequire,
+        price: DEFAULT_MODEL.number,
       },
     ],
     default: [],
