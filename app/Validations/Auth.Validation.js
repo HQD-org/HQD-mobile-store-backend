@@ -17,7 +17,7 @@ module.exports.schema = {
 
   login: Joi.object().keys({
     username: Joi.string().email().required(),
-    password: Joi.string().regex(REGEX.PASSWORD).required(),
+    password: Joi.string().required(),
   }),
 
   verify: Joi.object().keys({
