@@ -44,6 +44,5 @@ exports.PRODUCT_PATH = {
   FILTER_BY_BRAND: "filter-by-brand",
   FILTER_BY_MODEL: "filter-by-model",
   GET_ALL: "get-all",
-  SEARCH: "search",
   UPDATE: "update",
 };

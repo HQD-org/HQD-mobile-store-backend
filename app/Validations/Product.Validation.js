@@ -18,7 +18,11 @@ exports.schema = {
         Joi.object()
           .keys({
             name: Joi.string().required(),
-            images: Joi.array().items(Joi.string().required()).required(),
+            price: Joi.number().required(),
+            quantityInfo: Joi.object().keys({
+              quantity: Joi.number().required(),
+              idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
+            }),
           })
           .required()
       )
@@ -29,17 +33,9 @@ exports.schema = {
   update: Joi.object().keys({
     id: Joi.string().regex(REGEX.ID_MONGO).required(),
     name: Joi.string(),
-    idBrand: Joi.string().regex(REGEX.ID_MONGO),
-    screen: Joi.string(),
-    operation: Joi.string(),
-    rearCamera: Joi.string(),
-    frontCamera: Joi.string(),
-    chip: Joi.string(),
-    sim: Joi.string(),
-    battery: Joi.string(),
-    charger: Joi.string(),
-    memoryStick: Joi.string(),
-    timeDebut: Joi.string(),
+    idModel: Joi.string().regex(REGEX.ID_MONGO),
+    capacity: Joi.string(),
+    ram: Joi.string(),
     status: Joi.string().valid(
       STATUS.ACTIVE,
       STATUS.STOP_SELLING,
@@ -49,7 +45,11 @@ exports.schema = {
       Joi.object()
         .keys({
           name: Joi.string().required(),
-          images: Joi.array().items(Joi.string().required()).required(),
+          price: Joi.number().required(),
+          quantityInfo: Joi.object().keys({
+            quantity: Joi.number().required(),
+            idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
+          }),
         })
         .required()
     ),
@@ -61,18 +61,9 @@ exports.schema = {
     itemPerPage: Joi.number(),
     status: Joi.string(),
     name: Joi.string(),
-    idBrand: Joi.string(),
-    screen: Joi.string(),
-    operation: Joi.string(),
-    rearCamera: Joi.string(),
-    frontCamera: Joi.string(),
-    chip: Joi.string(),
-    sim: Joi.string(),
-    battery: Joi.string(),
-    charger: Joi.string(),
-    memoryStick: Joi.string(),
-    timeDebut: Joi.string(),
+    idModel: Joi.string(),
+    capacity: Joi.string(),
+    ram: Joi.string(),
     description: Joi.string(),
-    brand: Joi.string(),
   }),
 };
