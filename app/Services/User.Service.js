@@ -5,7 +5,7 @@ const { HTTP_STATUS_CODE, ROLE, AUTH_TYPE } = require("../Common/Constants");
 
 // service chỉnh sủa thông tin người dùng
 const updateUser = async(idUser,body)=>{
-    const {name, phone, email, address}=body;
+    const {name, phone, address}=body;
    // console.log(`service ${idUser}`);
     try {
         const user =  await User.findOne({_id:idUser});
@@ -21,12 +21,19 @@ const updateUser = async(idUser,body)=>{
         }else{
             user.name =name;
             user.phone=phone;
-            user.email=email;
-            user.address.detail = address.detail;
-            user.address.province = address.province;
-            user.address.district = address.district;
-            user.address.village = address.village;
+            var addressNew = {
+                detail:address.detail,
+                province:address.province,
+                address:address.district,
+                village:address.village,
+            }
+            // user.address.detail = address.detail;
+            // user.address.province = address.province;
+            // user.address.district = address.district;
+            // user.address.village = address.village;
+            user.address=addressNew;
             await user.save();
+            console.log(addressNew);
             return {
                 message: {
                     ENG: "Upgrade successful",

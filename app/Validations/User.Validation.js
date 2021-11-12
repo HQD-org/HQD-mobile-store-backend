@@ -8,7 +8,6 @@ exports.schema={
     // validate các trường khi update profile user
     update: Joi.object().keys({ 
         name: Joi.string().regex(REGEX.UNICODE_LETTER),
-        email: Joi.string().email(),
         phone: Joi.string().regex(REGEX.PHONE_VN),
         address: Joi.object({
             detail: Joi.string().regex(REGEX.UNICODE_STRING),
