@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.route('/update').post([validateBody(schema.update) ,verifyToken],controller.handleUpdate);
 router.route('/get-all-user').get(controller.handleFindAllUser);
-router.route('/search-by-name').get([validateQuery(schema.search)],controller.handleSearchUserByName);
+router.route('/search-by-name').get(controller.handleSearchUserByName); //[validateQuery(schema.search)]
 module.exports = router
 

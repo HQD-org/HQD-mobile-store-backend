@@ -97,8 +97,9 @@ const findAllUser = async()=>{
 const searchByName= async(query)=>{
     try{
         const searchName = query;
-        console.log(query.name);
-        const data = await User.find({name:{ $regex: query.name, $options: '$i' }});
+        //console.log(query.name);
+        //{ $or: [ { <expression1> }, { <expression2> }, ... , { <expressionN> } ] }
+        const data = await User.find( {$or:[ {name:{ $regex: query.name, $options: '$i' }},{phone:{ $regex: query.name, $options: '$i' }}] });
         console.log(query.name);
         const listData=[];
         if(!data){
