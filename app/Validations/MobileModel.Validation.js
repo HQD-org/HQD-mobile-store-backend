@@ -81,6 +81,5 @@ exports.schema = {
     memoryStick: Joi.string(),
     timeDebut: Joi.string(),
     description: Joi.string(),
-    brand: Joi.string(),
   }),
 };
