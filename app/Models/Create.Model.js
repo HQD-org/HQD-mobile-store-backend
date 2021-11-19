@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const createSchema = (schema) => {
-  const model = new Schema(schema, { timestamps: true });
-  return model;
+  return new Schema(schema, { timestamps: true });
 };
 
 module.exports = { createSchema };
