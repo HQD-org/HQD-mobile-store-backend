@@ -59,16 +59,17 @@ const createModel = async (body) => {
 };
 
 const filter = async (query) => {
-  let { name, idBrand, itemPerPage, page, ...remainQuery } = query;
+  let { name, itemPerPage, page, ...remainQuery } = query;
   itemPerPage = ~~itemPerPage || 12;
   page = ~~page || 1;
   mapToRegexExactly(remainQuery);
-  let queryObj = {
+  const queryObj = {
     ...remainQuery,
   };
   if (name) {
     queryObj.name = new RegExp(name, "i");
   }
+
   const models = await MobileModel.find(queryObj)
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
