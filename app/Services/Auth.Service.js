@@ -108,6 +108,7 @@ const getAuth = async (idUser) => {
       data: {
         ...user.toObject(),
         role: account.role,
+        idBrand: account.idBrand || "",
       },
       success: true,
       message: "Get auth successfully",

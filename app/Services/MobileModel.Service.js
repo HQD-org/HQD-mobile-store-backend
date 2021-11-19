@@ -64,16 +64,18 @@ const filter = async (query) => {
   page = ~~page || 1;
   mapToRegexExactly(remainQuery);
   let queryObj = {
-    name: new RegExp(name, "i"),
     ...remainQuery,
   };
-
+  if (name) {
+    queryObj.name = new RegExp(name, "i");
+  }
   const models = await MobileModel.find(queryObj)
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
+  const totalItem = await MobileModel.find(queryObj).countDocuments();
 
   return {
-    data: models,
+    data: { models, pagination: { itemPerPage, page, totalItem } },
     success: true,
     message: {
       ENG: "Find successfully",
