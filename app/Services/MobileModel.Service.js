@@ -1,6 +1,6 @@
 const { MobileBrand, MobileModel } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
-const { mapToRegexExactly } = require("../Common/Helper");
+const { mapToRegexContains } = require("../Common/Helper");
 
 const uniqueColor = (arrayColor) => {
   const flags = [],
@@ -59,16 +59,15 @@ const createModel = async (body) => {
 };
 
 const filter = async (query) => {
-  let { name, itemPerPage, page, ...remainQuery } = query;
+  let { idBrand, status, itemPerPage, page, ...remainQuery } = query;
   itemPerPage = ~~itemPerPage || 12;
   page = ~~page || 1;
-  mapToRegexExactly(remainQuery);
+  mapToRegexContains(remainQuery);
   const queryObj = {
     ...remainQuery,
   };
-  if (name) {
-    queryObj.name = new RegExp(name, "i");
-  }
+  if (status) queryObj.status = new RegExp("^" + status + "$", "i");
+  if (idBrand) queryObj.idBrand = new RegExp("^" + idBrand + "$", "i");
 
   const models = await MobileModel.find(queryObj)
     .skip(itemPerPage * page - itemPerPage)
