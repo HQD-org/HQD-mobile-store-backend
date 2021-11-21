@@ -27,7 +27,6 @@ exports.MOBILE_MODEL_PATH = {
   CREATE: "create",
   // DELETE: "delete",
   FILTER: "filter",
-  FIND_BY_NAME: "find-by-name",
   GET_ALL: "get-all",
   UPDATE: "update",
 };
@@ -45,6 +44,5 @@ exports.PRODUCT_PATH = {
   FILTER_BY_BRAND: "filter-by-brand",
   FILTER_BY_MODEL: "filter-by-model",
   GET_ALL: "get-all",
-  SEARCH: "search",
   UPDATE: "update",
 };

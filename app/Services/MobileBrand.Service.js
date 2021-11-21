@@ -57,10 +57,10 @@ const filter = async (query) => {
   const brands = await MobileBrand.find(queryObj)
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
-  const totalBrand = await MobileBrand.find(queryObj).countDocuments();
+  const totalItem = await MobileBrand.find(queryObj).countDocuments();
 
   return {
-    data: { brands, totalBrand },
+    data: { brands, pagination: { itemPerPage, page, totalItem } },
     success: true,
     message: {
       ENG: "Find successfully",
@@ -70,16 +70,11 @@ const filter = async (query) => {
   };
 };
 
-const getAll = async (query) => {
+const getAll = async () => {
   try {
-    let itemPerPage = ~~query.itemPerPage || 12;
-    let page = ~~query.page || 1;
-    const brands = await MobileBrand.find()
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-    const totalBrand = await MobileBrand.estimatedDocumentCount();
+    const brands = await MobileBrand.find();
     return {
-      data: { brands, totalBrand },
+      data: brands,
       success: true,
       message: {
         ENG: "Find successfully",
