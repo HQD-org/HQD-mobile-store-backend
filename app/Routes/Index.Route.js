@@ -8,4 +8,5 @@ router.use(`/${PREFIX_PATH.MOBILE_BRAND}`, require("./MobileBrand.Route"));
 router.use(`/${PREFIX_PATH.MOBILE_MODEL}`, require("./MobileModel.Route"));
 router.use('/user',require("./User.Route"));
 router.use('/branch',require("./Branch.Route"));
+router.use('/product',require("./Product.Route"));
 module.exports = router;
