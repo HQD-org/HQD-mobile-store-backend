@@ -6,7 +6,10 @@ const { sendPassword, sendOtp } = require("./Mail.Service");
 
 const changePassword = async (idUser, oldPassword, newPassword) => {
   try {
-    const account = await Account.findOne({ idUser: idUser });
+    const account = await Account.findOne({}).populate({
+      path: "idUser",
+      match: { _id: idUser },
+    });
     if (!account)
       return {
         message: {
@@ -90,15 +93,11 @@ const forgotPassword = async (email) => {
 
 const getAuth = async (idUser) => {
   try {
-    const account = await Account.findOne({ idUser: idUser });
+    const account = await Account.findOne({}).populate({
+      path: "idUser",
+      match: { _id: idUser },
+    });
     if (!account)
-      return {
-        success: false,
-        message: "Unauthenticated",
-        status: HTTP_STATUS_CODE.FORBIDDEN,
-      };
-    const user = await User.findById(idUser);
-    if (!user)
       return {
         success: false,
         message: "Unauthenticated",
@@ -106,7 +105,7 @@ const getAuth = async (idUser) => {
       };
     return {
       data: {
-        ...user.toObject(),
+        user: account.idUser,
         role: account.role,
         idBrand: account.idBrand || "",
       },
@@ -167,7 +166,6 @@ const login = async (username, password) => {
       };
     }
 
-    console.log(`log at: => Auth.Service.js => line 143 => login success `);
     return {
       message: {
         ENG: "Login Successfully",
@@ -181,7 +179,6 @@ const login = async (username, password) => {
       status: HTTP_STATUS_CODE.OK,
     };
   } catch (error) {
-    console.log(`log at: => Auth.Service.js => line 161 => error: `, error);
     return {
       success: false,
       message: error.message,
