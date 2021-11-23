@@ -2,6 +2,7 @@ const {
   MOBILE_BRAND_PATH,
   PREFIX_PATH,
   MOBILE_MODEL_PATH,
+  USER_PATH,
 } = require("../Common/RoutePath");
 const { ROLE } = require("../Common/Constants");
 const controller = require("../Controllers/Admin.Controller");
@@ -10,7 +11,8 @@ const mobileBrandSchema =
   require("../Validations/MobileBrand.Validation").schema;
 const mobileModelSchema =
   require("../Validations/MobileModel.Validation").schema;
-const { validateBody } = require("../Validations/Validation");
+const userSchema = require("../Validations/User.Validation").schema;
+const { validateBody, validateQuery } = require("../Validations/Validation");
 const { isRole } = require("../Middlewares/Role.Middleware");
 const { verifyToken } = require("../Middlewares/Token.Middleware");
 const router = express.Router();
@@ -43,6 +45,32 @@ router
   .post(
     [validateBody(mobileModelSchema.update), verifyToken, isRole([ROLE.ADMIN])],
     controller.handleUpdateModel
+  );
+
+// User
+router
+  .route(`/${PREFIX_PATH.USER}/${USER_PATH.CREATE}`)
+  .post(
+    [validateBody(userSchema.create), verifyToken, isRole([ROLE.ADMIN])],
+    controller.handleCreateUser
+  );
+
+router
+  .route(`/${PREFIX_PATH.USER}/${USER_PATH.FILTER}`)
+  .get(
+    [validateQuery(userSchema.search), verifyToken, isRole([ROLE.ADMIN])],
+    controller.handleFilterUser
+  );
+
+router
+  .route(`/${PREFIX_PATH.USER}/${USER_PATH.GET_ALL}`)
+  .get([verifyToken, isRole([ROLE.ADMIN])], controller.handleGetAllUser);
+
+router
+  .route(`/${PREFIX_PATH.USER}/${USER_PATH.UPDATE}`)
+  .post(
+    [validateBody(userSchema.update), verifyToken, isRole([ROLE.ADMIN])],
+    controller.handleUpdateUser
   );
 
 module.exports = router;
