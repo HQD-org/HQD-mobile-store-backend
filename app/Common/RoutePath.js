@@ -36,6 +36,7 @@ exports.PREFIX_PATH = {
   AUTH: "auth",
   MOBILE_BRAND: "mobile-brand",
   MOBILE_MODEL: "mobile-model",
+  USER: "user",
 };
 
 exports.PRODUCT_PATH = {
@@ -47,4 +48,11 @@ exports.PRODUCT_PATH = {
   UPDATE: "update",
   GETDATA:"get-data",
   FILTER:"filter",
+};
+
+exports.USER_PATH = {
+  CREATE: "create",
+  FILTER: "filter",
+  GET_ALL: "get-all",
+  UPDATE: "update",
 };

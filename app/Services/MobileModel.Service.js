@@ -80,6 +80,10 @@ const filter = async (query) => {
   }else{
 
     models = await MobileModel.find(queryObj)
+  if (idBrand) queryObj.idBrand = idBrand;
+
+  const models = await MobileModel.find(queryObj)
+    .populate("idBrand")
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
    totalItem = await MobileModel.find(queryObj).countDocuments();
@@ -99,7 +103,7 @@ const filter = async (query) => {
 
 const getAll = async () => {
   try {
-    const models = await MobileModel.find();
+    const models = await MobileModel.find().populate("idBrand");
     return {
       data: models,
       success: true,
@@ -133,6 +137,18 @@ const updateModel = async (body) => {
         },
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
+    if (body.idBrand) {
+      const brand = await MobileBrand.findById(body.idBrand);
+      if (!brand)
+        return {
+          success: false,
+          message: {
+            ENG: "Mobile brand not found",
+            VN: "Không tìm thấy thương hiệu",
+          },
+          status: HTTP_STATUS_CODE.NOT_FOUND,
+        };
+    }
     if (body.color) body.color = uniqueColor(body.color);
     const model = await MobileModel.findOneAndUpdate({ _id: body.id }, body, {
       new: true,

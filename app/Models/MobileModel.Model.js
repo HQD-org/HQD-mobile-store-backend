@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema
 const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
+const Schema = mongoose.Schema;
 
 const colorSchema = createSchema({
   name: DEFAULT_MODEL.stringRequire,
@@ -10,7 +11,7 @@ const colorSchema = createSchema({
 
 const mobileModel = {
   name: DEFAULT_MODEL.stringUnique,
-  idBrand: {type:Schema.Types.ObjectId,ref:'MobileBrand'}, 
+  idBrand: { type: Schema.Types.ObjectId, ref: "MobileBrand" },
   screen: DEFAULT_MODEL.stringRequire,
   operation: DEFAULT_MODEL.stringRequire,
   rearCamera: DEFAULT_MODEL.stringRequire,
