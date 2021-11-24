@@ -1,5 +1,5 @@
 const { sendError, sendSuccess } = require("./Controller");
-const {createProduct,updateProduct,getDataProduct,getAllData,filterByBrand} = require("../Services/Product.Service")
+const {createProduct,updateProduct,getDataProduct,getAllData,filterByBrand,fliter} = require("../Services/Product.Service")
 
 const handleCreateProduct = async (req,res)=>{
     const result =  await createProduct(req.body);
@@ -34,10 +34,17 @@ const handleFilterByBrand = async(req,res)=>{
         return sendSuccess(res, result.data, result.message, result.status);
     return sendError(res, result.message, result.status);
 }
+const handleFilter = async(req,res)=>{
+    const result = await fliter(req.query);
+    if (result.success)
+        return sendSuccess(res, result.data, result.message, result.status);
+    return sendError(res, result.message, result.status);
+}
 module.exports={
     handleCreateProduct,
     handleUpdateProduct,
     handleGetDataProduct,
     handleGetAllData,
-    handleFilterByBrand
+    handleFilterByBrand,
+    handleFilter
 }

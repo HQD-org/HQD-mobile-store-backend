@@ -1,6 +1,7 @@
 const { MobileBrand, MobileModel } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const { mapToRegexContains } = require("../Common/Helper");
+const mongoose = require('mongoose');
 
 const uniqueColor = (arrayColor) => {
   const flags = [],
@@ -67,12 +68,23 @@ const filter = async (query) => {
     ...remainQuery,
   };
   if (status) queryObj.status = new RegExp("^" + status + "$", "i");
-  if (idBrand) queryObj.idBrand = new RegExp("^" + idBrand + "$", "i");
+  let models =[];
+  let totalItem = 0;
+  if (idBrand) {
+    queryObj.idBrand = mongoose.Types.ObjectId(idBrand);
+    models = await MobileModel.find(queryObj)
+    .skip(itemPerPage * page - itemPerPage)
+    .limit(itemPerPage)
+    totalItem = await MobileModel.find(queryObj).countDocuments();
 
-  const models = await MobileModel.find(queryObj)
+  }else{
+
+    models = await MobileModel.find(queryObj)
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
-  const totalItem = await MobileModel.find(queryObj).countDocuments();
+   totalItem = await MobileModel.find(queryObj).countDocuments();
+
+  }
 
   return {
     data: { models, pagination: { itemPerPage, page, totalItem } },

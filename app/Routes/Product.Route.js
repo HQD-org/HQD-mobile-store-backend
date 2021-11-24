@@ -15,4 +15,5 @@ contronller.handleUpdateProduct);
 router.route(`/${PRODUCT_PATH.GETDATA}`).get([validateQuery(schema.getData)],contronller.handleGetDataProduct);
 router.route(`/${PRODUCT_PATH.GET_ALL}`).get(contronller.handleGetAllData);
 router.route(`/${PRODUCT_PATH.FILTER_BY_BRAND}`).get(contronller.handleFilterByBrand);
+router.route(`/${PRODUCT_PATH.FILTER}`).get(contronller.handleFilter);
 module.exports=router;

@@ -46,4 +46,5 @@ exports.PRODUCT_PATH = {
   GET_ALL: "get-all",
   UPDATE: "update",
   GETDATA:"get-data",
+  FILTER:"filter",
 };

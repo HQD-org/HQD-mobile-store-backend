@@ -1,6 +1,7 @@
 const { MobileModel, Product, MobileBrand } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
-
+const { mapToRegexContains } = require("../Common/Helper");
+const mongoose = require('mongoose');
 // const createProduct = async (body) => {
 //   try {
 //     const model = await MobileModel.findById(body.idModel);
@@ -161,6 +162,8 @@ const getDataProduct = async (query)=>{
         status:HTTP_STATUS_CODE.NOT_FOUND,
       };
     }
+    const dataProduct = await Product.findOne({_id:query.id}).populate('idModel');
+    console.log(dataProduct);
     return {
       success: true,
       data:{
@@ -184,8 +187,9 @@ const getDataProduct = async (query)=>{
 
 const getAllData = async ()=>{
   try {
-    const getAll = await Product.find().lean();
-    const list = [];
+   // const getAll1 = await Product.find().lean();
+   //const list =  await Promise.all(getAll1.map(async e=>{return {...e,model:await MobileModel.findById(e.idModel).lean() };}));
+    const getAll = await Product.find({}).populate('idModel');
     if(getAll.length==0)
     {
       return {
@@ -197,24 +201,9 @@ const getAllData = async ()=>{
         status:HTTP_STATUS_CODE.NOT_FOUND,
       };
     }
-    // const getAllProduct_ID = [];
-    // for(let i=0;i<getAll.length;i++)
-    // {
-    //   getAllProduct_ID.push(getAll[i].id)
-    // }
-    // data = [{
-    //   product,
-    //   model,
-    // }];
-    for(const product of getAll){
-        const resultMobileModel = await MobileModel.findById(product.idModel).lean();
-        
-        list.push({...product,model:resultMobileModel});
-    }
-  
     return {
       success: true,
-      data: list,
+      data: getAll,
       message:{
         ENG:"getAll data product Success",
         VN:"Lấy dữ liệu tất cả sản phẩm thành công",
@@ -228,15 +217,14 @@ const getAllData = async ()=>{
       status: err.status,
     };
   }
-  
-
 }
 
 const filterByBrand = async (query)=>{
   try{
     const dataBrand = await MobileBrand.find().lean();
-    const dataModel = await MobileModel.find({idBrand:query.idBrand});
-    console.log(query.idBrand);
+    const idBrandCast = mongoose.Types.ObjectId(query.idBrand);
+    const dataModel = await MobileModel.find({}).populate('idBrand');
+    //console.log(dataModel);
     const list =[]; // list ID của model theo Brand đã truyền
     const listProduct = [];
     if(!dataBrand){
@@ -256,13 +244,13 @@ const filterByBrand = async (query)=>{
     for(const IdModel of list)
     {
      // console.log(IdModel)
+     //const idCast =  mongoose.Types.ObjectId(IdModel);
       const resultMobileModel = await MobileModel.findById( IdModel).lean();
       const resultProduct = await Product.find({idModel:IdModel});
       // console.log(resultMobileModel);
       //listProduct.push({...product,model:resultMobileModel});
       listProduct.push({...resultMobileModel,product:resultProduct});
     }
-
     return{
       success: true,
       data: listProduct,
@@ -281,10 +269,44 @@ const filterByBrand = async (query)=>{
   }
 }
 
+const fliter = async(query)=>{
+  let { idBrand, name, itemPerPage, page, ...remainQuery } = query;
+  itemPerPage = ~~itemPerPage || 12;
+  page = ~~page || 1;
+  mapToRegexContains(remainQuery);
+  const queryObj = {
+    ...remainQuery,
+  };
+  if (idBrand) queryObj.idBrand = new RegExp("^" + idBrand + "$", "i");
+  if (name) {
+    queryObj.name = new RegExp(name, "i");
+  }
+  const products =  await Product.find(queryObj)
+  .populate({path: 'idModel',}).populate( {path: 'idBrand' })
+  .skip(itemPerPage * page - itemPerPage)
+  .limit(itemPerPage);
+  const totalItem = await Product.find(queryObj).countDocuments();
+  return {
+    success:true,
+    data:{
+      products,
+      pagination: { itemPerPage, page, totalItem }
+    },
+    message: {
+      ENG: "Find successfully",
+      VN: "Tìm kiếm thành công",
+    },
+    status: HTTP_STATUS_CODE.OK,
+  };
+
+}
+
+
 module.exports={
   createProduct,
   updateProduct,
   getDataProduct,
   getAllData,
-  filterByBrand
+  filterByBrand,
+  fliter
 }
