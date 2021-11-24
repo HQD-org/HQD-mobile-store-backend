@@ -93,10 +93,9 @@ const forgotPassword = async (email) => {
 
 const getAuth = async (idUser) => {
   try {
-    const account = await Account.findOne({}).populate({
-      path: "idUser",
-      match: { _id: idUser },
-    });
+    const account = await Account.findOne({ idUser })
+      .populate("idUser")
+      .populate("idBranch");
     if (!account)
       return {
         success: false,
@@ -107,7 +106,7 @@ const getAuth = async (idUser) => {
       data: {
         user: account.idUser,
         role: account.role,
-        idBrand: account.idBrand || "",
+        idBranch: account.idBranch || "",
       },
       success: true,
       message: "Get auth successfully",
