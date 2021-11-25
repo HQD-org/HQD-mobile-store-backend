@@ -134,7 +134,9 @@ const updateUser = async (body) => {
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
     }
-    body.password = await bcrypt.hash(body.password, 10);
+    if (body.password) {
+      body.password = await bcrypt.hash(body.password, 10);
+    }
     const account = await Account.findOneAndUpdate(
       { idUser: body.idUser },
       body,
