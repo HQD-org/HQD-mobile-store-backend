@@ -2,7 +2,10 @@ const { Account, User } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
-const { mapToRegexContainMongoDbQuery } = require("../Common/Helper");
+const {
+  convertObjToArrayProps,
+  mapToRegexContainMongoDbQuery,
+} = require("../Common/Helper");
 
 const createUser = async (body) => {
   try {
@@ -256,6 +259,8 @@ const filterUser = async (query) => {
     }
 
     const userQuery = mapToRegexContainMongoDbQuery(remainQuery, "idUser");
+    const arrUserQuery = convertObjToArrayProps(userQuery);
+    console.log(arrUserQuery);
     const accountQuery = {};
     if (status) accountQuery.status = status;
     if (idBranch) accountQuery.idBranch = idBranch;
@@ -277,7 +282,7 @@ const filterUser = async (query) => {
         $unwind: "$idUser",
       },
       {
-        $match: userQuery,
+        $match: { $or: arrUserQuery },
       },
       {
         $facet: {

@@ -41,7 +41,16 @@ const mapToRegexContainMongoDbQuery = (query, data) => {
   return obj;
 };
 
+const convertObjToArrayProps = (obj) => {
+  const arr = [];
+  Object.keys(obj).map((key) => {
+    arr.push({ [key]: obj[key] });
+  });
+  return arr;
+};
+
 module.exports = {
+  convertObjToArrayProps,
   generateString,
   mapToRegexContains,
   mapToRegexExactly,
