@@ -2,7 +2,7 @@ const { Account, User } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
-const { mapToRegexContains } = require("../Common/Helper");
+const { mapToRegexContainMongoDbQuery } = require("../Common/Helper");
 
 const createUser = async (body) => {
   try {
@@ -212,48 +212,104 @@ const getAllUser = async (query) => {
 
 const filterUser = async (query) => {
   try {
-    let { idBranch, status, role, option, itemPerPage, page, ...remainQuery } =
-      query;
+    let {
+      idBranch,
+      status,
+      role,
+      option,
+      sortBy,
+      ascSort,
+      itemPerPage,
+      page,
+      ...remainQuery
+    } = query;
     itemPerPage = ~~itemPerPage || 12;
     page = ~~page || 1;
+
     const options = { password: 0 };
-    const optionReceive = query.option;
-    if (Array.isArray(optionReceive)) {
-      optionReceive.forEach((option) => {
-        options[option] = 1;
+    if (Array.isArray(option)) {
+      option.forEach((op) => {
+        options[op] = 1;
       });
       delete options.password;
-    } else if (typeof optionReceive === "string") {
-      options[optionReceive] = 1;
+    } else if (typeof option === "string") {
+      options[option] = 1;
       delete options.password;
     }
 
-    mapToRegexContains(remainQuery);
-    const userQuery = {
-      ...remainQuery,
-    };
+    const sortOption = {};
+    const type = ascSort === "asc" ? 1 : -1;
+    switch (sortBy) {
+      case "name":
+      case "phone":
+      case "email":
+        sortOption[`idUser.${sortBy}`] = type;
+        break;
+      case "address":
+        sortOption[`idUser.address.province`] = type;
+        break;
+      case "role":
+        sortOption.role = type;
+        break;
+      default:
+        break;
+    }
 
+    const userQuery = mapToRegexContainMongoDbQuery(remainQuery, "idUser");
     const accountQuery = {};
-    if (status) accountQuery.status = new RegExp("^" + status + "$", "i");
-    if (idBranch) accountQuery.idBranch = new RegExp("^" + idBranch + "$", "i");
-    if (role) accountQuery.role = new RegExp("^" + role + "$", "i");
+    if (status) accountQuery.status = status;
+    if (idBranch) accountQuery.idBranch = idBranch;
+    if (role) accountQuery.role = role;
 
-    const users = await Account.find(accountQuery, options)
-      .populate({
-        path: "idUser",
-        match: userQuery,
-        select: options,
-      })
-      .skip(itemPerPage * page - itemPerPage)
-      .limit(itemPerPage);
-    const totalItem = await Account.find(accountQuery).countDocuments();
-
+    const users = await Account.aggregate([
+      {
+        $match: accountQuery,
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "idUser",
+          foreignField: "_id",
+          as: "idUser",
+        },
+      },
+      {
+        $unwind: "$idUser",
+      },
+      {
+        $match: userQuery,
+      },
+      {
+        $facet: {
+          data: [
+            {
+              $sort: sortOption,
+            },
+            { $skip: itemPerPage * page - itemPerPage },
+            { $limit: itemPerPage },
+          ],
+          info: [
+            {
+              $count: "count",
+            },
+          ],
+        },
+      },
+    ]);
+    const info = users[0].info;
     return {
       message: {
         ENG: "Get list User success",
-        VN: "Lấy tất cả người dùng thành công",
+        VN: "Tìm kiếm người dùng thành công",
       },
-      data: { users, pagination: { itemPerPage, page, totalItem } },
+      data: {
+        users: users[0].data,
+        pagination: {
+          itemPerPage,
+          page,
+          totalItem: info.length > 0 ? info[0].count : 0,
+        },
+      },
       success: true,
       status: HTTP_STATUS_CODE.OK,
     };
