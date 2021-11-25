@@ -17,7 +17,7 @@ exports.schema = {
     role: Joi.string()
       .valid(ROLE.ADMIN, ROLE.USER, ROLE.MANAGER_BRANCH)
       .required(),
-    idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
+    idBranch: Joi.string().regex(REGEX.ID_MONGO),
     status: Joi.string().valid(STATUS.ACTIVE, STATUS.BLOCK),
   }),
   updateProfile: Joi.object().keys({
