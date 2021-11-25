@@ -55,5 +55,7 @@ exports.schema = {
     role: Joi.string(),
     idBranch: Joi.string(),
     option: Joi.alternatives().try(Joi.array(), Joi.string()),
+    sortBy: Joi.string(),
+    ascSort: Joi.string(),
   }),
 };

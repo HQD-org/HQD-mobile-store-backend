@@ -27,8 +27,23 @@ const mapToRegexContains = (object) => {
   return object;
 };
 
+const mapToRegexContainMongoDbQuery = (query, data) => {
+  const obj = {};
+  if (data) {
+    Object.keys(query).map((key) => {
+      obj[`${data}.${key}`] = { $regex: query[key], $options: "i" };
+    });
+    return obj;
+  }
+  Object.keys(query).map((key) => {
+    obj[`${key}`] = { $regex: query[key], $options: "i" };
+  });
+  return obj;
+};
+
 module.exports = {
   generateString,
   mapToRegexContains,
   mapToRegexExactly,
+  mapToRegexContainMongoDbQuery,
 };
