@@ -260,7 +260,6 @@ const filterUser = async (query) => {
 
     const userQuery = mapToRegexContainMongoDbQuery(remainQuery, "idUser");
     const arrUserQuery = convertObjToArrayProps(userQuery);
-    console.log(arrUserQuery);
     const accountQuery = {};
     if (status) accountQuery.status = status;
     if (idBranch) accountQuery.idBranch = idBranch;
@@ -282,7 +281,7 @@ const filterUser = async (query) => {
         $unwind: "$idUser",
       },
       {
-        $match: { $or: arrUserQuery },
+        $match: arrUserQuery.length > 0 ? { $or: arrUserQuery } : {},
       },
       {
         $facet: {
