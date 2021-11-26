@@ -16,4 +16,5 @@ router.route(`/${PRODUCT_PATH.GETDATA}`).get([validateQuery(schema.getData)],con
 router.route(`/${PRODUCT_PATH.GET_ALL}`).get(contronller.handleGetAllData);
 router.route(`/${PRODUCT_PATH.FILTER_BY_BRAND}`).get(contronller.handleFilterByBrand);
 router.route(`/${PRODUCT_PATH.FILTER}`).get(contronller.handleFilter);
+router.route('/fliter-by-price').get(contronller.handleFilterByPrice);
 module.exports=router;

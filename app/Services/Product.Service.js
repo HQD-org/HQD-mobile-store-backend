@@ -223,8 +223,6 @@ const filterByBrand = async (query)=>{
   try{
     const dataBrand = await MobileBrand.find().lean();
     const idBrandCast = mongoose.Types.ObjectId(query.idBrand);
-    const dataModel = await MobileModel.find({}).populate('idBrand');
-    //console.log(dataModel);
     const list =[]; // list ID của model theo Brand đã truyền
     const listProduct = [];
     if(!dataBrand){
@@ -237,19 +235,18 @@ const filterByBrand = async (query)=>{
         status:HTTP_STATUS_CODE.NOT_FOUND,
       };
     }
+    // const resultProduct = await Product.find({})
+    // .populate('idModel')
+    // .populate({path:'idBrand',match:{idBrand:idBrandCast}});
+    const dataModel = await MobileModel.find({idBrand:idBrandCast});
     for(let i=0;i<dataModel.length;i++)
     {
       list.push(dataModel[i]._id);
     }
-    for(const IdModel of list)
-    {
-     // console.log(IdModel)
-     //const idCast =  mongoose.Types.ObjectId(IdModel);
-      const resultMobileModel = await MobileModel.findById( IdModel).lean();
-      const resultProduct = await Product.find({idModel:IdModel});
-      // console.log(resultMobileModel);
-      //listProduct.push({...product,model:resultMobileModel});
-      listProduct.push({...resultMobileModel,product:resultProduct});
+    for(const id of list){
+      //const resultMobileModel = await MobileModel.findById( id).lean();
+      const resultProduct = await Product.find({}).populate({path:'idModel',match:{idModel:id}});
+      listProduct.push({...resultProduct.idModel,product:resultProduct});
     }
     return{
       success: true,
@@ -281,6 +278,7 @@ const fliter = async(query)=>{
   if (name) {
     queryObj.name = new RegExp(name, "i");
   }
+
   const products =  await Product.find(queryObj)
   .populate({path: 'idModel',}).populate( {path: 'idBrand' })
   .skip(itemPerPage * page - itemPerPage)
@@ -300,7 +298,46 @@ const fliter = async(query)=>{
   };
 
 }
-
+const filterByPrice = async(query) =>{
+  // < 9tr
+  // 9<= price <=20tr
+  // >20tr
+  let { minPrice, maxPrice, name, itemPerPage, page, ...remainQuery } = query;
+  itemPerPage = ~~itemPerPage || 12;
+  page = ~~page || 1;
+  mapToRegexContains(remainQuery);
+  const queryObj = {
+    ...remainQuery,
+  };
+  //const listProduct =[];
+  const products =[];
+  const totalItem=0;
+  if(minPrice) {
+    queryObj.minPrice = new RegExp("^" + minPrice + "$", "i");
+     products = await Product.find({"color.price":{$lt:minPrice}}).populate('idModel');
+     totalItem = await Product.find({"color.price":{$lt:minPrice}}).populate('idModel').countDocuments();
+  }
+  if(maxPrice) {
+    queryObj.maxPrice = new RegExp("^" + maxPrice + "$", "i");
+      products = await Product.find({"color.price":{$gt:minPrice}}).populate('idModel');
+      totalItem = await Product.find({"color.price":{$gt:minPrice}}).populate('idModel').countDocuments();
+  }
+  
+  console.log(products);
+  console.log("total: "+totalItem);
+  return {
+    success:true,
+    data:{
+      products,
+      pagination: { itemPerPage, page, totalItem }
+    },
+    message:{
+      ENG: "Find successfully",
+      VN: "Tìm kiếm thành công",
+    },
+    status: HTTP_STATUS_CODE.OK,
+  }
+}
 
 module.exports={
   createProduct,
@@ -308,5 +345,6 @@ module.exports={
   getDataProduct,
   getAllData,
   filterByBrand,
-  fliter
+  fliter,
+  filterByPrice
 }
