@@ -4,7 +4,7 @@ const { STATUS } = require("../Common/Constants");
 
 exports.schema = {
   create: Joi.object().keys({
-    name: Joi.string().required(),
+    name: Joi.string().regex(REGEX.UNICODE_STRING).required(),
     idModel: Joi.string().regex(REGEX.ID_MONGO).required(),
     capacity: Joi.string().required(),
     ram: Joi.string().required(),
@@ -19,14 +19,19 @@ exports.schema = {
           .keys({
             name: Joi.string().required(),
             price: Joi.number().required(),
-            quantityInfo: Joi.object().keys({
-              quantity: Joi.number().required(),
-              idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
-            }),
+             quantityInfo: Joi.array().items(
+              Joi.object().keys({
+                quantity: Joi.number().required(),
+                idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
+              })
+             ),
+             //Joi.object().keys({
+            //   quantity: Joi.number().required(),
+            //   idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
+            // }),
           })
           .required()
-      )
-      .required(),
+      ).required(),
     description: Joi.string(),
     token: Joi.object(),
   }),
@@ -46,10 +51,12 @@ exports.schema = {
         .keys({
           name: Joi.string().required(),
           price: Joi.number().required(),
-          quantityInfo: Joi.object().keys({
-            quantity: Joi.number().required(),
-            idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
-          }),
+          quantityInfo: Joi.array().items(
+            Joi.object().keys({
+              quantity: Joi.number().required(),
+              idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
+            })
+           ),
         })
         .required()
     ),
@@ -65,5 +72,8 @@ exports.schema = {
     capacity: Joi.string(),
     ram: Joi.string(),
     description: Joi.string(),
+  }),
+  getData: Joi.object().keys({
+    id: Joi.string().regex(REGEX.ID_MONGO).required(),
   }),
 };

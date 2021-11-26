@@ -46,6 +46,8 @@ exports.PRODUCT_PATH = {
   FILTER_BY_MODEL: "filter-by-model",
   GET_ALL: "get-all",
   UPDATE: "update",
+  GETDATA:"get-data",
+  FILTER:"filter",
 };
 
 exports.USER_PATH = {
