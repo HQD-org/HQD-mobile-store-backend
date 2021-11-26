@@ -65,7 +65,7 @@ exports.ROLE = {
 
 exports.STATUS = {
   ACTIVE: "active",
-  BLOCK: "block",
+  LOCK: "lock",
   CANCEL: "cancel",
   CLOSE: "close",
   DONE: "done",

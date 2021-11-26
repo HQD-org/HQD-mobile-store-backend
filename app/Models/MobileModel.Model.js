@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema
 const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
-const Schema = mongoose.Schema;
 
 const colorSchema = createSchema({
   name: DEFAULT_MODEL.stringRequire,

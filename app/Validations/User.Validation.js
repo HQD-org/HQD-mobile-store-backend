@@ -17,8 +17,7 @@ exports.schema = {
     role: Joi.string()
       .valid(ROLE.ADMIN, ROLE.USER, ROLE.MANAGER_BRANCH)
       .required(),
-    idBranch: Joi.string().regex(REGEX.ID_MONGO),
-    status: Joi.string().valid(STATUS.ACTIVE, STATUS.BLOCK),
+    status: Joi.string().valid(STATUS.ACTIVE, STATUS.LOCK),
   }),
   updateProfile: Joi.object().keys({
     name: Joi.string().regex(REGEX.UNICODE_LETTER),
@@ -42,8 +41,7 @@ exports.schema = {
     }),
     password: Joi.string().regex(REGEX.PASSWORD),
     role: Joi.string().valid(ROLE.ADMIN, ROLE.USER, ROLE.MANAGER_BRANCH),
-    idBranch: Joi.string().regex(REGEX.ID_MONGO),
-    status: Joi.string().valid(STATUS.ACTIVE, STATUS.BLOCK),
+    status: Joi.string().valid(STATUS.ACTIVE, STATUS.LOCK),
   }),
   search: Joi.object().keys({
     page: Joi.number(),
@@ -54,7 +52,6 @@ exports.schema = {
     email: Joi.string(),
     role: Joi.string(),
     idBranch: Joi.string(),
-    option: Joi.alternatives().try(Joi.array(), Joi.string()),
     sortBy: Joi.string(),
     ascSort: Joi.string(),
   }),
