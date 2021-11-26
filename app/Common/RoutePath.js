@@ -10,7 +10,7 @@ exports.AUTH_PATH = {
 exports.BRANCH_PATH = {
   CREATE: "create",
   // DELETE: "delete",
-  FIND_BY_NAME: "find-by-name",
+  FILTER: "filter",
   GET_ALL: "get-all",
   UPDATE: "update",
 };
@@ -34,6 +34,7 @@ exports.MOBILE_MODEL_PATH = {
 exports.PREFIX_PATH = {
   ADMIN: "admin",
   AUTH: "auth",
+  BRANCH: "branch",
   MOBILE_BRAND: "mobile-brand",
   MOBILE_MODEL: "mobile-model",
   USER: "user",
@@ -46,8 +47,8 @@ exports.PRODUCT_PATH = {
   FILTER_BY_MODEL: "filter-by-model",
   GET_ALL: "get-all",
   UPDATE: "update",
-  GETDATA:"get-data",
-  FILTER:"filter",
+  GETDATA: "get-data",
+  FILTER: "filter",
 };
 
 exports.USER_PATH = {

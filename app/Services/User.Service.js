@@ -104,6 +104,7 @@ const updateUser = async (body) => {
   try {
     const isExistPhone = await User.findOne({
       phone: body.phone,
+      _id: { $ne: body.idUser },
     });
     if (isExistPhone) {
       await session.abortTransaction();
@@ -217,30 +218,10 @@ const getAllUser = async (query) => {
 
 const filterUser = async (query) => {
   try {
-    let {
-      idBranch,
-      status,
-      role,
-      option,
-      sortBy,
-      ascSort,
-      itemPerPage,
-      page,
-      ...remainQuery
-    } = query;
+    let { status, role, sortBy, ascSort, itemPerPage, page, ...remainQuery } =
+      query;
     itemPerPage = ~~itemPerPage || 12;
     page = ~~page || 1;
-
-    const options = { password: 0 };
-    if (Array.isArray(option)) {
-      option.forEach((op) => {
-        options[op] = 1;
-      });
-      delete options.password;
-    } else if (typeof option === "string") {
-      options[option] = 1;
-      delete options.password;
-    }
 
     const sortOption = {};
     const type = ascSort === "asc" ? 1 : -1;
@@ -264,7 +245,6 @@ const filterUser = async (query) => {
     const arrUserQuery = convertObjToArrayProps(userQuery);
     const accountQuery = {};
     if (status) accountQuery.status = status;
-    if (idBranch) accountQuery.idBranch = idBranch;
     if (role) accountQuery.role = role;
 
     const users = await Account.aggregate([
@@ -284,6 +264,14 @@ const filterUser = async (query) => {
       },
       {
         $match: arrUserQuery.length > 0 ? { $or: arrUserQuery } : {},
+      },
+      {
+        $project: {
+          password: 0,
+          otp: 0,
+          authGoogleID: 0,
+          authFacebookID: 0,
+        },
       },
       {
         $facet: {
