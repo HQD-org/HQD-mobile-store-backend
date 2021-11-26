@@ -6,16 +6,17 @@ const {
   AUTH_TYPE,
   STATUS,
 } = require("../Common/Constants");
+const Schema = mongoose.Schema;
 
 const account = {
   username: DEFAULT_MODEL.stringUnique,
   password: DEFAULT_MODEL.stringRequire,
   role: { ...DEFAULT_MODEL.stringRequire, default: ROLE.USER },
-  idBranch: DEFAULT_MODEL.stringIdMongo,
+  idBranch: { type: Schema.Types.ObjectId, ref: "Branch" },
   isVerified: DEFAULT_MODEL.booleanFalse,
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },
   otp: DEFAULT_MODEL.stringOtp,
-  idUser: DEFAULT_MODEL.stringIdMongo,
+  idUser: { type: Schema.Types.ObjectId, ref: "User" },
   authType: { ...DEFAULT_MODEL.string, default: AUTH_TYPE.LOCAL },
   authGoogleID: DEFAULT_MODEL.string,
   authFacebookID: DEFAULT_MODEL.string,

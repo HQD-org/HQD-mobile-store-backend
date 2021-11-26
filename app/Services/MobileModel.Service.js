@@ -1,6 +1,6 @@
 const { MobileBrand, MobileModel } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
-const { mapToRegexExactly } = require("../Common/Helper");
+const { mapToRegexContains } = require("../Common/Helper");
 
 const uniqueColor = (arrayColor) => {
   const flags = [],
@@ -59,21 +59,24 @@ const createModel = async (body) => {
 };
 
 const filter = async (query) => {
-  let { name, idBrand, itemPerPage, page, ...remainQuery } = query;
+  let { idBrand, status, itemPerPage, page, ...remainQuery } = query;
   itemPerPage = ~~itemPerPage || 12;
   page = ~~page || 1;
-  mapToRegexExactly(remainQuery);
-  let queryObj = {
-    name: new RegExp(name, "i"),
+  mapToRegexContains(remainQuery);
+  const queryObj = {
     ...remainQuery,
   };
+  if (status) queryObj.status = new RegExp("^" + status + "$", "i");
+  if (idBrand) queryObj.idBrand = idBrand;
 
   const models = await MobileModel.find(queryObj)
+    .populate("idBrand")
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
+  const totalItem = await MobileModel.find(queryObj).countDocuments();
 
   return {
-    data: models,
+    data: { models, pagination: { itemPerPage, page, totalItem } },
     success: true,
     message: {
       ENG: "Find successfully",
@@ -85,7 +88,7 @@ const filter = async (query) => {
 
 const getAll = async () => {
   try {
-    const models = await MobileModel.find();
+    const models = await MobileModel.find().populate("idBrand");
     return {
       data: models,
       success: true,
@@ -119,6 +122,18 @@ const updateModel = async (body) => {
         },
         status: HTTP_STATUS_CODE.NOT_FOUND,
       };
+    if (body.idBrand) {
+      const brand = await MobileBrand.findById(body.idBrand);
+      if (!brand)
+        return {
+          success: false,
+          message: {
+            ENG: "Mobile brand not found",
+            VN: "Không tìm thấy thương hiệu",
+          },
+          status: HTTP_STATUS_CODE.NOT_FOUND,
+        };
+    }
     if (body.color) body.color = uniqueColor(body.color);
     const model = await MobileModel.findOneAndUpdate({ _id: body.id }, body, {
       new: true,
