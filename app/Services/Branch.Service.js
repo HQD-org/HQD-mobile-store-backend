@@ -178,7 +178,7 @@ const searchBranch = async (query) => {
     }
     const branches = await Branch.aggregate([
       {
-        $match: { name: { $regex: name, $options: "$i" } },
+        $match: name ? { name: { $regex: name, $options: "i" } } : {},
       },
       {
         $lookup: {
