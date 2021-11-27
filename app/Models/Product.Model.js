@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
 
@@ -19,7 +19,7 @@ const colorSchema = createSchema({
 
 const product = {
   name: DEFAULT_MODEL.stringRequire,
-  idModel: {type:Schema.Types.ObjectId,ref:'MobileModel'},//DEFAULT_MODEL.stringIdMongo,
+  idModel: { type: Schema.Types.ObjectId, ref: "MobileModel" },
   capacity: DEFAULT_MODEL.stringRequire,
   ram: DEFAULT_MODEL.stringRequire,
   color: {

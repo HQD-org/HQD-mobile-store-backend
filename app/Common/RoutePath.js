@@ -37,6 +37,7 @@ exports.PREFIX_PATH = {
   BRANCH: "branch",
   MOBILE_BRAND: "mobile-brand",
   MOBILE_MODEL: "mobile-model",
+  PRODUCT: "product",
   USER: "user",
 };
 

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema
 const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
 
@@ -6,8 +7,8 @@ const cart = {
   products: {
     type: [
       {
-        idProduct: DEFAULT_MODEL.stringIdMongo,
-        quantity: DEFAULT_MODEL.stringRequire,
+        idProduct:{type:Schema.Types.ObjectId,ref:"Product"},
+        quantity: {type:Number,default :1, required:true},
         price: DEFAULT_MODEL.number,
       },
     ],
