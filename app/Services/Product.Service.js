@@ -1,7 +1,7 @@
 const { MobileModel, Product, MobileBrand } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const { mapToRegexContains } = require("../Common/Helper");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 // const createProduct = async (body) => {
 //   try {
 //     const model = await MobileModel.findById(body.idModel);
@@ -45,12 +45,12 @@ const uniqueColor = (arrayColor) => {
   return uniqueColor;
 };
 
-const createProduct = async (body)=>{
-    try {
-      const{name , idModel, capacity, ram,color,status,description} = body;
-      console.log(name);
-    const model = await MobileModel.findOne({_id:idModel}); // không tìm thấy model
-    if(!model){
+const createProduct = async (body) => {
+  try {
+    const { name, idModel, capacity, ram, color, status, description } = body;
+    console.log(name);
+    const model = await MobileModel.findOne({ _id: idModel }); // không tìm thấy model
+    if (!model) {
       return {
         success: false,
         message: {
@@ -72,201 +72,209 @@ const createProduct = async (body)=>{
     //   };
     // }
     //console.log(color.quantityInfo);
-   //color = uniqueColor(color);
+    //color = uniqueColor(color);
     let newProduct = new Product({
-      name , idModel, capacity, ram,color,status,description}
-    )
+      name,
+      idModel,
+      capacity,
+      ram,
+      color,
+      status,
+      description,
+    });
     await newProduct.save();
     return {
       success: true,
-      message:{
+      message: {
         ENG: "Create Product successfull",
-        VN: "Tạo sản phẩm thành công"
+        VN: "Tạo sản phẩm thành công",
       },
-      status:HTTP_STATUS_CODE.OK,
-    }
-    
-    }catch(err){
-      return {
-        success: false,
-        message: err.message,
-        status: err.status,
-      };
-    }
-};
-
-const updateProduct = async (body)=>{
-  try{
-    const productMongoDB = await Product.findOne({_id:body.id});
-    if(!productMongoDB){
-      return {
-        success:false,
-        message:{
-          ENG:"Product not exist",
-          VN:"Sản phẩm không tồn tại"
-        },
-        status:HTTP_STATUS_CODE.NOT_FOUND
-      }
-    }
-    const newProduct = await Product.findOneAndUpdate({_id:body.id},body,{new :true});
-    if(!newProduct){
-      return {
-        success:false,
-        message:{
-          ENG:"Product not exist",
-          VN:"Sản phẩm không tồn tại",
-        },
-        status:HTTP_STATUS_CODE.NOT_FOUND
-      }
-    }
-    return {
-      success:true,
-        message:{
-          ENG:"Update product successfull",
-          VN:"Sửa sản phẩm thành công"
-        },
-        status:HTTP_STATUS_CODE.OK
-    }
-
-  }catch(err){
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (err) {
     return {
       success: false,
       message: err.message,
       status: err.status,
     };
   }
-    
-}
+};
 
-const getDataProduct = async (query)=>{
-  try{
-    const product = await Product.findOne({_id:query.id});
-    if(!product){
-      return{
-        success: false,
-        message:{
-          ENG:"Product not exist",
-          VN:"Sản phẩm không tồn tại",
-        },
-        status:HTTP_STATUS_CODE.NOT_FOUND,
-      };
-    }
-    const model = await MobileModel.findOne({_id:product.idModel});
-    if(!model){
+const updateProduct = async (body) => {
+  try {
+    const productMongoDB = await Product.findOne({ _id: body.id });
+    if (!productMongoDB) {
       return {
         success: false,
-        message:{
-          ENG:"Model not exist",
-          VN:"Model không tồn tại",
+        message: {
+          ENG: "Product not exist",
+          VN: "Sản phẩm không tồn tại",
         },
-        status:HTTP_STATUS_CODE.NOT_FOUND,
+        status: HTTP_STATUS_CODE.NOT_FOUND,
       };
     }
-    const dataProduct = await Product.findOne({_id:query.id}).populate('idModel');
+    const newProduct = await Product.findOneAndUpdate({ _id: body.id }, body, {
+      new: true,
+    });
+    if (!newProduct) {
+      return {
+        success: false,
+        message: {
+          ENG: "Product not exist",
+          VN: "Sản phẩm không tồn tại",
+        },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+    }
+    return {
+      success: true,
+      message: {
+        ENG: "Update product successfull",
+        VN: "Sửa sản phẩm thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
+
+const getDataProduct = async (query) => {
+  try {
+    const product = await Product.findOne({ _id: query.id });
+    if (!product) {
+      return {
+        success: false,
+        message: {
+          ENG: "Product not exist",
+          VN: "Sản phẩm không tồn tại",
+        },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+    }
+    const model = await MobileModel.findOne({ _id: product.idModel });
+    if (!model) {
+      return {
+        success: false,
+        message: {
+          ENG: "Model not exist",
+          VN: "Model không tồn tại",
+        },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+    }
+    const dataProduct = await Product.findOne({ _id: query.id }).populate(
+      "idModel"
+    );
     console.log(dataProduct);
     return {
       success: true,
-      data:{
-        product:product,
-        model:model,
+      data: {
+        product: product,
+        model: model,
       },
-      message:{
-        ENG:"Get data successfull",
-        VN:"lấy thông tin sản phẩm thành công",
+      message: {
+        ENG: "Get data successfull",
+        VN: "lấy thông tin sản phẩm thành công",
       },
-      status:HTTP_STATUS_CODE.OK
+      status: HTTP_STATUS_CODE.OK,
     };
-  }catch(err){
+  } catch (err) {
     return {
       success: false,
       message: err.message,
       status: err.status,
     };
   }
-}
+};
 
-const getAllData = async ()=>{
+const getAllData = async () => {
   try {
-   // const getAll1 = await Product.find().lean();
-   //const list =  await Promise.all(getAll1.map(async e=>{return {...e,model:await MobileModel.findById(e.idModel).lean() };}));
-    const getAll = await Product.find({}).populate('idModel');
-    if(getAll.length==0)
-    {
+    // const getAll1 = await Product.find().lean();
+    //const list =  await Promise.all(getAll1.map(async e=>{return {...e,model:await MobileModel.findById(e.idModel).lean() };}));
+    const getAll = await Product.find({}).populate("idModel");
+    if (getAll.length == 0) {
       return {
         success: false,
-        message:{
-          ENG:"getAll data product fail",
-          VN:"Lấy dữ liệu tất cả sản phẩm fail",
+        message: {
+          ENG: "getAll data product fail",
+          VN: "Lấy dữ liệu tất cả sản phẩm fail",
         },
-        status:HTTP_STATUS_CODE.NOT_FOUND,
+        status: HTTP_STATUS_CODE.NOT_FOUND,
       };
     }
     return {
       success: true,
       data: getAll,
-      message:{
-        ENG:"getAll data product Success",
-        VN:"Lấy dữ liệu tất cả sản phẩm thành công",
+      message: {
+        ENG: "getAll data product Success",
+        VN: "Lấy dữ liệu tất cả sản phẩm thành công",
       },
-      status:HTTP_STATUS_CODE.OK,
+      status: HTTP_STATUS_CODE.OK,
     };
-  }catch(err){
+  } catch (err) {
     return {
       success: false,
       message: err.message,
       status: err.status,
     };
   }
-}
+};
 
-const filterByBrand = async (query)=>{
-  try{
+const filterByBrand = async (query) => {
+  try {
     const dataBrand = await MobileBrand.find().lean();
     const idBrandCast = mongoose.Types.ObjectId(query.idBrand);
-    const list =[]; // list ID của model theo Brand đã truyền
+    const list = []; // list ID của model theo Brand đã truyền
     const listProduct = [];
-    if(!dataBrand){
+    if (!dataBrand) {
       return {
         success: false,
         message: {
-          ENG:"Brand is not Exist",
-          VN:"Hãng không tồn tại"
+          ENG: "Brand is not Exist",
+          VN: "Hãng không tồn tại",
         },
-        status:HTTP_STATUS_CODE.NOT_FOUND,
+        status: HTTP_STATUS_CODE.NOT_FOUND,
       };
     }
     // const resultProduct = await Product.find({})
     // .populate('idModel')
     // .populate({path:'idBrand',match:{idBrand:idBrandCast}});
-    const dataModel = await MobileModel.find({idBrand:idBrandCast});
-    for(let i=0;i<dataModel.length;i++)
-    {
+    const dataModel = await MobileModel.find({ idBrand: idBrandCast });
+    for (let i = 0; i < dataModel.length; i++) {
       list.push(dataModel[i]._id);
     }
-    for(const id of list){
+    for (const id of list) {
       //const resultMobileModel = await MobileModel.findById( id).lean();
-      const resultProduct = await Product.find({}).populate({path:'idModel',match:{idModel:id}});
-      listProduct.push({...resultProduct.idModel,product:resultProduct});
+      const resultProduct = await Product.find({}).populate({
+        path: "idModel",
+        match: { idModel: id },
+      });
+      listProduct.push({ ...resultProduct.idModel, product: resultProduct });
     }
-    return{
+    return {
       success: true,
       data: listProduct,
       message: {
-        ENG:"Get data product by Brand success",
-        VN:"Lấy dữ liệu sản phẩm theo Brand thành công",
+        ENG: "Get data product by Brand success",
+        VN: "Lấy dữ liệu sản phẩm theo Brand thành công",
       },
       status: HTTP_STATUS_CODE.OK,
     };
-  }catch(err){
+  } catch (err) {
     return {
       success: false,
       message: err.message,
       status: err.status,
     };
   }
-}
+};
 
-const fliter = async(query)=>{
+const fliter = async (query) => {
   let { idBrand, name, itemPerPage, page, ...remainQuery } = query;
   itemPerPage = ~~itemPerPage || 12;
   page = ~~page || 1;
@@ -279,16 +287,17 @@ const fliter = async(query)=>{
     queryObj.name = new RegExp(name, "i");
   }
 
-  const products =  await Product.find(queryObj)
-  .populate({path: 'idModel',}).populate( {path: 'idBrand' })
-  .skip(itemPerPage * page - itemPerPage)
-  .limit(itemPerPage);
+  const products = await Product.find(queryObj)
+    .populate({ path: "idModel" })
+    .populate({ path: "idBrand" })
+    .skip(itemPerPage * page - itemPerPage)
+    .limit(itemPerPage);
   const totalItem = await Product.find(queryObj).countDocuments();
   return {
-    success:true,
-    data:{
+    success: true,
+    data: {
       products,
-      pagination: { itemPerPage, page, totalItem }
+      pagination: { itemPerPage, page, totalItem },
     },
     message: {
       ENG: "Find successfully",
@@ -296,9 +305,8 @@ const fliter = async(query)=>{
     },
     status: HTTP_STATUS_CODE.OK,
   };
-
-}
-const filterByPrice = async(query) =>{
+};
+const filterByPrice = async (query) => {
   // < 9tr
   // 9<= price <=20tr
   // >20tr
@@ -310,41 +318,49 @@ const filterByPrice = async(query) =>{
     ...remainQuery,
   };
   //const listProduct =[];
-  const products =[];
-  const totalItem=0;
-  if(minPrice) {
+  const products = [];
+  const totalItem = 0;
+  if (minPrice) {
     queryObj.minPrice = new RegExp("^" + minPrice + "$", "i");
-     products = await Product.find({"color.price":{$lt:minPrice}}).populate('idModel');
-     totalItem = await Product.find({"color.price":{$lt:minPrice}}).populate('idModel').countDocuments();
+    products = await Product.find({
+      "color.price": { $lt: minPrice },
+    }).populate("idModel");
+    totalItem = await Product.find({ "color.price": { $lt: minPrice } })
+      .populate("idModel")
+      .countDocuments();
   }
-  if(maxPrice) {
+  if (maxPrice) {
     queryObj.maxPrice = new RegExp("^" + maxPrice + "$", "i");
-      products = await Product.find({"color.price":{$gt:minPrice}}).populate('idModel');
-      totalItem = await Product.find({"color.price":{$gt:minPrice}}).populate('idModel').countDocuments();
+    products = await Product.find({
+      "color.price": { $gt: minPrice },
+    }).populate("idModel");
+    totalItem = await Product.find({ "color.price": { $gt: minPrice } })
+      .populate("idModel")
+      .countDocuments();
   }
-  
+
   console.log(products);
-  console.log("total: "+totalItem);
+  console.log("total: " + totalItem);
   return {
-    success:true,
-    data:{
+    success: true,
+    data: {
       products,
-      pagination: { itemPerPage, page, totalItem }
+      pagination: { itemPerPage, page, totalItem },
     },
-    message:{
+    message: {
       ENG: "Find successfully",
       VN: "Tìm kiếm thành công",
     },
     status: HTTP_STATUS_CODE.OK,
-  }
-}
+  };
+};
 
-module.exports={
+module.exports = {
   createProduct,
   updateProduct,
   getDataProduct,
   getAllData,
   filterByBrand,
   fliter,
-  filterByPrice
-}
+  filterByPrice,
+};
