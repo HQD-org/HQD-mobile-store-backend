@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
+const Schema = mongoose.Schema;
 
 const branch = {
   name: DEFAULT_MODEL.stringUnique,
@@ -14,6 +15,7 @@ const branch = {
     default: {},
   },
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.OPEN },
+  idManager: { type: Schema.Types.ObjectId, ref: "Account" },
 };
 
 module.exports = Branch = mongoose.model("Branch", createSchema(branch));
