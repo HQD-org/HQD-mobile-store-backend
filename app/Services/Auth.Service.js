@@ -1,4 +1,4 @@
-const { Account, User } = require("../Models/Index.Model");
+const { Account, User, Branch } = require("../Models/Index.Model");
 const bcrypt = require("bcrypt");
 const { HTTP_STATUS_CODE, ROLE, AUTH_TYPE } = require("../Common/Constants");
 const { generateString } = require("../Common/Helper");
@@ -93,9 +93,8 @@ const forgotPassword = async (email) => {
 
 const getAuth = async (idUser) => {
   try {
-    const account = await Account.findOne({ idUser })
-      .populate("idUser")
-      .populate("idBranch");
+    const account = await Account.findOne({ idUser }).populate("idUser");
+    const branch = await Branch.findOne({ idManager: account._id });
     if (!account)
       return {
         success: false,
@@ -106,7 +105,7 @@ const getAuth = async (idUser) => {
       data: {
         user: account.idUser,
         role: account.role,
-        idBranch: account.idBranch || "",
+        idBranch: branch || "",
       },
       success: true,
       message: "Get auth successfully",

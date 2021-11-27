@@ -12,7 +12,6 @@ const account = {
   username: DEFAULT_MODEL.stringUnique,
   password: DEFAULT_MODEL.stringRequire,
   role: { ...DEFAULT_MODEL.stringRequire, default: ROLE.USER },
-  idBranch: { type: Schema.Types.ObjectId, ref: "Branch" },
   isVerified: DEFAULT_MODEL.booleanFalse,
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },
   otp: DEFAULT_MODEL.stringOtp,
