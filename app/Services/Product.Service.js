@@ -318,42 +318,73 @@ const filterByPrice = async (query) => {
     ...remainQuery,
   };
   //const listProduct =[];
-  const products = [];
-  const totalItem = 0;
-  if (minPrice) {
+
+  let products =[];
+  let totalItem=0;
+  if(minPrice && maxPrice)
+  {
     queryObj.minPrice = new RegExp("^" + minPrice + "$", "i");
-    products = await Product.find({
-      "color.price": { $lt: minPrice },
-    }).populate("idModel");
-    totalItem = await Product.find({ "color.price": { $lt: minPrice } })
-      .populate("idModel")
-      .countDocuments();
+    queryObj.maxPrice = new RegExp("^" + maxPrice + "$", "i");
+    products = await Product.find({$and: [{"color.price":{$gte:minPrice}},{"color.price":{$lte:maxPrice}}]})
+    .populate('idModel');
+    totalItem = await Product.find({$and: [{"color.price":{$gte:minPrice}},{"color.price":{$lte:maxPrice}}]})
+    .populate('idModel')
+    .countDocuments();
+    console.log("min max");
+    return {
+      success:true,
+      data:{
+        products,
+        pagination: { itemPerPage, page, totalItem }
+      },
+      message:{
+        ENG: "Find successfully",
+        VN: "Tìm kiếm thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    }
+  }
+  if(minPrice) {
+    queryObj.minPrice = new RegExp("^" + minPrice + "$", "i");
+     products = await Product.find({"color.price":{$lt:minPrice}}).populate('idModel');
+     totalItem = await Product.find({"color.price":{$lt:minPrice}}).populate('idModel').countDocuments();
+    console.log("min");
+     return {
+       success:true,
+       data:{
+         products,
+         pagination: { itemPerPage, page, totalItem }
+       },
+       message:{
+         ENG: "Find successfully",
+         VN: "Tìm kiếm thành công",
+       },
+       status: HTTP_STATUS_CODE.OK,
+     }
   }
   if (maxPrice) {
     queryObj.maxPrice = new RegExp("^" + maxPrice + "$", "i");
-    products = await Product.find({
-      "color.price": { $gt: minPrice },
-    }).populate("idModel");
-    totalItem = await Product.find({ "color.price": { $gt: minPrice } })
-      .populate("idModel")
-      .countDocuments();
-  }
 
-  console.log(products);
-  console.log("total: " + totalItem);
-  return {
-    success: true,
-    data: {
-      products,
-      pagination: { itemPerPage, page, totalItem },
-    },
-    message: {
-      ENG: "Find successfully",
-      VN: "Tìm kiếm thành công",
-    },
-    status: HTTP_STATUS_CODE.OK,
-  };
-};
+      products = await Product.find({"color.price":{$gt:maxPrice}}).populate('idModel');
+      totalItem = await Product.find({"color.price":{$gt:maxPrice}}).populate('idModel').countDocuments();
+      console.log("max");
+      return {
+        success:true,
+        data:{
+          products,
+          pagination: { itemPerPage, page, totalItem }
+        },
+        message:{
+          ENG: "Find successfully",
+          VN: "Tìm kiếm thành công",
+        },
+        status: HTTP_STATUS_CODE.OK,
+      }
+  }
+  
+ 
+}
+
 
 module.exports = {
   createProduct,
