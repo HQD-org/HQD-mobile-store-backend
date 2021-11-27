@@ -19,21 +19,17 @@ exports.schema = {
           .keys({
             name: Joi.string().required(),
             price: Joi.number().required(),
-             quantityInfo: Joi.array().items(
+            quantityInfo: Joi.array().items(
               Joi.object().keys({
                 quantity: Joi.number().required(),
                 idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
               })
-             ),
-             //Joi.object().keys({
-            //   quantity: Joi.number().required(),
-            //   idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
-            // }),
+            ),
           })
           .required()
-      ).required(),
+      )
+      .required(),
     description: Joi.string(),
-    token: Joi.object(),
   }),
   update: Joi.object().keys({
     id: Joi.string().regex(REGEX.ID_MONGO).required(),
@@ -56,12 +52,11 @@ exports.schema = {
               quantity: Joi.number().required(),
               idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
             })
-           ),
+          ),
         })
         .required()
     ),
     description: Joi.string(),
-    token: Joi.object(),
   }),
   search: Joi.object().keys({
     page: Joi.number(),

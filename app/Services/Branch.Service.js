@@ -161,7 +161,7 @@ const updateBranch = async (body) => {
 
 const searchBranch = async (query) => {
   try {
-    let { sortBy, ascSort, itemPerPage, page, ...remainQuery } = query;
+    let { sortBy, ascSort, itemPerPage, page, name } = query;
     itemPerPage = ~~itemPerPage || 12;
     page = ~~page || 1;
 
@@ -178,7 +178,7 @@ const searchBranch = async (query) => {
     }
     const branches = await Branch.aggregate([
       {
-        $match: remainQuery,
+        $match: { name: { $regex: name, $options: "$i" } },
       },
       {
         $lookup: {

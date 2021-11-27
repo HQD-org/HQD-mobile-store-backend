@@ -26,7 +26,4 @@ exports.schema = {
     idManager: Joi.string().regex(REGEX.ID_MONGO),
     status: Joi.string().valid(STATUS.OPEN, STATUS.CLOSE),
   }),
-  search: Joi.object().keys({
-    name: Joi.string().regex(REGEX.UNICODE_STRING),
-  }),
 };
