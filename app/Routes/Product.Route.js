@@ -2,7 +2,7 @@ const { PRODUCT_PATH } = require("../Common/RoutePath");
 const controller = require("../Controllers/Product.Controller");
 const express = require("express");
 const { schema } = require("../Validations/Product.Validation");
-const { validateQuery, validateBody } = require("../Validations/Validation");
+const { validateBody } = require("../Validations/Validation");
 const { isRole } = require("../Middlewares/Role.Middleware");
 const { verifyToken } = require("../Middlewares/Token.Middleware");
 const { ROLE } = require("../Common/Constants");
@@ -22,18 +22,10 @@ router
     controller.handleUpdateProduct
   );
 
-router
-  .route(`/${PRODUCT_PATH.GETDATA}`)
-  .get([validateQuery(schema.getData)], controller.handleGetDataProduct);
+router.route(`/${PRODUCT_PATH.FIND_BY_ID}/:id`).get(controller.handleFindById);
 
-router.route(`/${PRODUCT_PATH.GET_ALL}`).get(controller.handleGetAllData);
-
-router
-  .route(`/${PRODUCT_PATH.FILTER_BY_BRAND}`)
-  .get(controller.handleFilterByBrand);
+router.route(`/${PRODUCT_PATH.GET_ALL}`).get(controller.handleGetAll);
 
 router.route(`/${PRODUCT_PATH.FILTER}`).get(controller.handleFilter);
-
-router.route("/fliter-by-price").get(controller.handleFilterByPrice);
 
 module.exports = router;

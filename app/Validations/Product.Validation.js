@@ -68,7 +68,4 @@ exports.schema = {
     ram: Joi.string(),
     description: Joi.string(),
   }),
-  getData: Joi.object().keys({
-    id: Joi.string().regex(REGEX.ID_MONGO).required(),
-  }),
 };
