@@ -2,6 +2,7 @@ const { MobileModel, Product, MobileBrand } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const { mapToRegexContains } = require("../Common/Helper");
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 const createProduct = async (body) => {
   try {
@@ -184,29 +185,63 @@ const filterByBrand = async (query) => {
 };
 
 const filter = async (query) => {
-  let { idBrand, name, itemPerPage, page, ...remainQuery } = query;
+  let { name, itemPerPage, page, idModel } = query;
   itemPerPage = ~~itemPerPage || 12;
   page = ~~page || 1;
-  mapToRegexContains(remainQuery);
-  const queryObj = {
-    ...remainQuery,
-  };
-  if (idBrand) queryObj.idBrand = new RegExp("^" + idBrand + "$", "i");
-  if (name) {
-    queryObj.name = new RegExp(name, "i");
-  }
+  const queryObj = {};
+  if (name) queryObj.name = { $regex: name, $options: "i" };
+  if (idModel) queryObj.idModel = ObjectId(idModel);
 
-  const products = await Product.find(queryObj)
-    .populate({ path: "idModel" })
-    .populate({ path: "idBrand" })
-    .skip(itemPerPage * page - itemPerPage)
-    .limit(itemPerPage);
-  const totalItem = await Product.find(queryObj).countDocuments();
+  const products = await Product.aggregate([
+    {
+      $match: queryObj,
+    },
+    {
+      $lookup: {
+        from: "mobilemodels",
+        localField: "idModel",
+        foreignField: "_id",
+        as: "model",
+      },
+    },
+    {
+      $unwind: {
+        path: "$model",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $lookup: {
+        from: "mobilebrands",
+        localField: "model.idBrand",
+        foreignField: "_id",
+        as: "brand",
+      },
+    },
+    {
+      $facet: {
+        data: [
+          { $skip: itemPerPage * page - itemPerPage },
+          { $limit: itemPerPage },
+        ],
+        info: [
+          {
+            $count: "count",
+          },
+        ],
+      },
+    },
+  ]);
+  const info = products[0].info;
   return {
     success: true,
     data: {
-      products,
-      pagination: { itemPerPage, page, totalItem },
+      products: products[0].data,
+      pagination: {
+        itemPerPage,
+        page,
+        totalItem: info.length > 0 ? info[0].count : 0,
+      },
     },
     message: {
       ENG: "Find successfully",
