@@ -43,12 +43,9 @@ exports.PREFIX_PATH = {
 
 exports.PRODUCT_PATH = {
   CREATE: "create",
-  FILTER_ALL: "filter-all",
-  FILTER_BY_BRAND: "filter-by-brand",
-  FILTER_BY_MODEL: "filter-by-model",
+  FIND_BY_ID: "find-by-id",
   GET_ALL: "get-all",
   UPDATE: "update",
-  GETDATA: "get-data",
   FILTER: "filter",
 };
 
