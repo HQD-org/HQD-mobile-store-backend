@@ -1,6 +1,5 @@
-const { MobileModel, Product, MobileBrand } = require("../Models/Index.Model");
+const { MobileModel, Product } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
-const { mapToRegexContains } = require("../Common/Helper");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -18,6 +17,16 @@ const createProduct = async (body) => {
       };
     }
 
+    const colors = body.color;
+    model.color.forEach((item) => {
+      if (!colors.find((color) => color.name === item.name)) {
+        colors.push({
+          name: item.name,
+          price: 0,
+        });
+      }
+    });
+    body.color = colors;
     const newProduct = await Product.create(body);
     return {
       data: newProduct,
@@ -53,6 +62,7 @@ const updateProduct = async (body) => {
       };
     }
     return {
+      data: newProduct,
       success: true,
       message: {
         ENG: "Update product successfull",
