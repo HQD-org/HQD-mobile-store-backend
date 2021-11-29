@@ -17,7 +17,7 @@ const addTocart = async(idUser,body)=>{
     // khởi tạo cart khi người dùng bấm nút "Add to cart"
     // Đồng thời thêm sản phẩm vào giỏ hàng với số lượng ban đầu là 1
     try{
-        let {idProduct} = body;
+        let {idProduct,color,image} = body;
         const cart = await Cart.findOne({user:idUser}); 
         if(cart){
             // nếu cart đã tồn tại trước đó
@@ -48,6 +48,8 @@ const addTocart = async(idUser,body)=>{
                     idProduct:idProduct,
                     quantity:~~1,
                     price: ~~P.color[0].price,  
+                    color:color.trim(),
+                    image:image,
                 }
                 cart.products.push(newProduct);
                 await cart.save();
@@ -67,6 +69,8 @@ const addTocart = async(idUser,body)=>{
             idProduct:idProduct,
             quantity:~~1,
             price: ~~product.color[0].price,  
+            color:color.trim(),
+            image:image
         };
         const newCart = new Cart({products:pro,user:idUser,status:'active'});
         await newCart.save();
@@ -191,31 +195,78 @@ const deleteProductInCart = async(idUser, body) =>{
 
 const getProductInCart = async(idUser)=>{
     try{
-        const productsCart = await Cart.find({user:idUser})
-        .populate({path:'products.idProduct'});
-        //.populate({path:'idModel',math:{idModel:productsCart.$.idProduct.idModel}})
-       // console.log(productsCart[0].products[0].idProduct.idModel);
-       const listProducts = [];
+    //     const productsCart = await Cart.find({user:idUser})
+    //     .populate({path:'products.idProduct'});
+    //     //.populate({path:'idModel',math:{idModel:productsCart.$.idProduct.idModel}})
+    //    // console.log(productsCart[0].products[0].idProduct.idModel);
+    //    const listProducts = [];
       
-       for(let i=0;i<productsCart[0].products.length;i++)
-       {
-            const dataModel = await MobileModel.findOne({_id:productsCart[0].products[i].idProduct.idModel});
-            listProducts.push({dataCart: productsCart[0].products[i],Model:dataModel});
-       }
+    //    for(let i=0;i<productsCart[0].products.length;i++)
+    //    {
+    //         const dataModel = await MobileModel.findOne({_id:productsCart[0].products[i].idProduct.idModel});
+    //         listProducts.push({dataCart: productsCart[0].products[i],Model:dataModel});
+    //    }
        
-        if(!productsCart){
-            return{
-                success:false,
-                message:{
-                    ENG:"Your cart  is empty",
-                    VN:"Chưa có sản phẩm trong giỏ hàng"
-                },
-                status:HTTP_STATUS_CODE.NOT_FOUND
-            };
-        }
+    //     if(!productsCart){
+    //         return{
+    //             success:false,
+    //             message:{
+    //                 ENG:"Your cart  is empty",
+    //                 VN:"Chưa có sản phẩm trong giỏ hàng"
+    //             },
+    //             status:HTTP_STATUS_CODE.NOT_FOUND
+    //         };
+    //     }
+        const listProducts = await Cart.aggregate([
+            {
+                $match:{user:idUser}
+            },
+            {
+                $unwind:{
+                path:'$products',
+                preserveNullAndEmptyArrays: true,
+            }},
+            {
+                $project:{
+                    createdAt:0,
+                    updatedAt:0
+                }
+            },
+            {
+                $lookup:{
+                    from:"products",
+                    localField:"products.idProduct",
+                    foreignField:"_id",
+                    as:"dataProduct"
+                } 
+            },
+            {
+                $project:{
+                    "dataProduct.createdAt":0,
+                    "dataProduct.updatedAt":0,
+                    "dataProduct.color.createdAt":0,
+                    "dataProduct.color.updatedAt":0,
+                }
+            },
+           
+        ]);
+        
+        const newListProduct = listProducts.map((item)=>{
+            const fliterColor = item.products.color;
+           const listdataProduct = item.dataProduct[0].color.filter((color)=>{
+               return color.name === fliterColor
+            });
+            return {
+                ...item,
+                dataProduct:{
+                    ...item.dataProduct[0],color:listdataProduct
+                }
+            }
+        });
+
         return {
             success:true,
-            data:listProducts,
+            data:newListProduct,
             message:{
                 ENG:"Get products in your cart success",
                 VN:"Lấy sản phẩm trong cart thành công"

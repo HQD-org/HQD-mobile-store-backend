@@ -10,6 +10,8 @@ const cart = {
         idProduct:{type:Schema.Types.ObjectId,ref:"Product"},
         quantity: {type:Number,default :1, required:true},
         price: DEFAULT_MODEL.number,
+        color: {type:String,default:"",required:true},
+        image: {type:String,default:"",required:true},
       },
     ],
     default: [],
