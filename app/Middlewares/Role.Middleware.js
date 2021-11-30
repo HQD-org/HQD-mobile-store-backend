@@ -4,10 +4,9 @@ const { Account } = require("../Models/Index.Model");
 const isRole = (roles = []) => {
   return async (req, res, next) => {
     try {
-      const account = await Account.findOne({}).populate({
-        path: "idUser",
-        match: { _id: req.body.token.id },
-      });
+      const account = await Account.findOne({
+        idUser: req.body.token.id,
+      }).populate("idUser");
       if (!account)
         return res.status(HTTP_STATUS_CODE.NOT_FOUND).json({
           message: "User not found",
