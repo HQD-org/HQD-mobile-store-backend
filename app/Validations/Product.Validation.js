@@ -58,6 +58,19 @@ exports.schema = {
     ),
     description: Joi.string(),
   }),
+  updateQuantity: Joi.object().keys({
+    id: Joi.string().regex(REGEX.ID_MONGO).required(),
+    color: Joi.array()
+      .items(
+        Joi.object()
+          .keys({
+            name: Joi.string().required(),
+            quantity: Joi.number().required(),
+          })
+          .required()
+      )
+      .required(),
+  }),
   search: Joi.object().keys({
     page: Joi.number(),
     itemPerPage: Joi.number(),

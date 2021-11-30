@@ -2,6 +2,7 @@ const { sendError, sendSuccess } = require("./Controller");
 const {
   createProduct,
   updateProduct,
+  updateQuantityProduct,
   findById,
   getAll,
   filter,
@@ -16,6 +17,13 @@ const handleCreateProduct = async (req, res) => {
 
 const handleUpdateProduct = async (req, res) => {
   const result = await updateProduct(req.body);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
+const handleUpdateQuantityProduct = async (req, res) => {
+  const result = await updateQuantityProduct(req.body);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
@@ -45,6 +53,7 @@ const handleFilter = async (req, res) => {
 module.exports = {
   handleCreateProduct,
   handleUpdateProduct,
+  handleUpdateQuantityProduct,
   handleFindById,
   handleGetAll,
   handleFilter,

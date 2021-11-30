@@ -6,10 +6,9 @@ const { sendPassword, sendOtp } = require("./Mail.Service");
 
 const changePassword = async (idUser, oldPassword, newPassword) => {
   try {
-    const account = await Account.findOne({}).populate({
-      path: "idUser",
-      match: { _id: idUser },
-    });
+    const account = await Account.findOne({
+      idUser,
+    }).populate("idUser");
     if (!account)
       return {
         message: {
