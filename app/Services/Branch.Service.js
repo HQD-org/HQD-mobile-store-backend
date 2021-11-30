@@ -246,10 +246,10 @@ const searchBranch = async (query) => {
   }
 };
 
-const getByListId = async (body) => {
+const getByListId = async (query) => {
   try {
     const branches = await Branch.find({
-      _id: { $in: body.listId.map((id) => ObjectId(id)) },
+      _id: { $in: query.id.map((id) => ObjectId(id)) },
     });
     return {
       data: branches,

@@ -35,7 +35,7 @@ const handleSearchBranch = async (req, res) => {
 };
 
 const handleGetByListId = async (req, res) => {
-  const result = await getByListId(req.body);
+  const result = await getByListId(req.query);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
