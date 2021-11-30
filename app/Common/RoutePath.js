@@ -13,6 +13,7 @@ exports.BRANCH_PATH = {
   FILTER: "filter",
   GET_ALL: "get-all",
   UPDATE: "update",
+  GET_BY_LIST_ID: "get-by-list-id",
 };
 
 exports.MOBILE_BRAND_PATH = {

@@ -1,5 +1,7 @@
 const { Account, Branch } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 const createBranch = async (body) => {
   try {
@@ -244,9 +246,33 @@ const searchBranch = async (query) => {
   }
 };
 
+const getByListId = async (body) => {
+  try {
+    const branches = await Branch.find({
+      _id: { $in: body.listId.map((id) => ObjectId(id)) },
+    });
+    return {
+      data: branches,
+      success: true,
+      message: {
+        ENG: "Find successfully",
+        VN: "Tìm kiếm thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      status: err.status,
+      message: err.message,
+    };
+  }
+};
+
 module.exports = {
   createBranch,
   getAllBranch,
   updateBranch,
   searchBranch,
+  getByListId,
 };

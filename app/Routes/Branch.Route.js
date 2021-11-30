@@ -27,4 +27,8 @@ router
 
 router.route(`/${BRANCH_PATH.FILTER}`).get(controller.handleSearchBranch);
 
+router
+  .route(`/${BRANCH_PATH.GET_BY_LIST_ID}`)
+  .get(controller.handleGetByListId);
+
 module.exports = router;
