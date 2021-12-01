@@ -248,9 +248,12 @@ const searchBranch = async (query) => {
 
 const getByListId = async (query) => {
   try {
-    const branches = await Branch.find({
-      _id: { $in: query.id.map((id) => ObjectId(id)) },
-    });
+    let branches = [];
+    if (Array.isArray(query.id)) {
+      branches = await Branch.find({
+        _id: { $in: query.id.map((id) => ObjectId(id)) },
+      });
+    }
     return {
       data: branches,
       success: true,
