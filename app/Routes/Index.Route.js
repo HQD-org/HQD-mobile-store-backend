@@ -9,7 +9,7 @@ router.use(`/${PREFIX_PATH.MOBILE_MODEL}`, require("./MobileModel.Route"));
 router.use(`/${PREFIX_PATH.BRANCH}`, require("./Branch.Route"));
 router.use(`/${PREFIX_PATH.PRODUCT}`, require("./Product.Route"));
 router.use(`/${PREFIX_PATH.USER}`, require("./User.Route"));
-router.use('/cart',require("./Cart.Route"));
+router.use(`/${PREFIX_PATH.CART}`, require("./Cart.Route"));
 
-router.use('/order',require("./Order.Route"));
+router.use("/order", require("./Order.Route"));
 module.exports = router;

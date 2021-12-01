@@ -16,6 +16,14 @@ exports.BRANCH_PATH = {
   GET_BY_LIST_ID: "get-by-list-id",
 };
 
+exports.CART_PATH = {
+  ADD_TO_CART: "add-to-cart",
+  DELETE_CART: "delete-cart",
+  GET_PRODUCT_CART: "get-product-cart",
+  UPDATE_CART: "update-cart",
+  GET_CART: "get-cart",
+};
+
 exports.MOBILE_BRAND_PATH = {
   CREATE: "create",
   // DELETE: "delete",
@@ -35,6 +43,7 @@ exports.MOBILE_MODEL_PATH = {
 exports.PREFIX_PATH = {
   ADMIN: "admin",
   AUTH: "auth",
+  CART: "cart",
   BRANCH: "branch",
   MOBILE_BRAND: "mobile-brand",
   MOBILE_MODEL: "mobile-model",
