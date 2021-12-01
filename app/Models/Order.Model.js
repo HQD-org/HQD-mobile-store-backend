@@ -3,9 +3,19 @@ const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, RECEIVE_TYPE, STATUS } = require("../Common/Constants");
 
 const order = {
-  idCart: DEFAULT_MODEL.stringIdMongo,
+  //idCart: DEFAULT_MODEL.stringIdMongo,
+  products: {type:[
+    {
+      idProduct:DEFAULT_MODEL.stringIdMongo,
+      quantity:DEFAULT_MODEL.number,
+      color: {type:String,default:"",required:true},
+      image: {type:String,default:"",required:true},
+    }
+  ], 
+     default:[]  
+  },
   totalPrice: DEFAULT_MODEL.number,
-  coupon: DEFAULT_MODEL.stringIdMongo,
+  coupon: DEFAULT_MODEL.stringRequire,
   user: DEFAULT_MODEL.stringIdMongo,
   receiveInfo: {
     type: {
@@ -14,7 +24,7 @@ const order = {
       address: DEFAULT_MODEL.stringRequire,
       receiveAt: { ...DEFAULT_MODEL.stringRequire, default: RECEIVE_TYPE.HOME },
       timeReceive: DEFAULT_MODEL.string,
-      status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.UNPAID },
+      status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.COD },
       message: DEFAULT_MODEL.string,
     },
     required: true,

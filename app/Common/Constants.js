@@ -77,4 +77,6 @@ exports.STATUS = {
   REFUND: "refund",
   UNPAID: "unpaid",
   WAIT: "wait",
+  COD:"cod",
+  ONLINE:"online"
 };
