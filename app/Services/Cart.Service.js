@@ -294,12 +294,6 @@ const getCart = async (idUser) => {
         },
       },
       {
-        $unwind: {
-          path: "$products",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
         $project: {
           createdAt: 0,
           updatedAt: 0,
@@ -313,7 +307,7 @@ const getCart = async (idUser) => {
 
     return {
       success: true,
-      data: cart,
+      data: cart.length > 0 ? cart[0] : [],
       message: {
         ENG: "Get cart success",
         VN: "Lấy giỏ hàng thành công",
