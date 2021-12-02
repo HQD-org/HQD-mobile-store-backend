@@ -181,7 +181,8 @@ const deleteProductInCart = async (idUser, body) => {
         $pull: {
           products: { $and: [{ idProduct }, { color }] },
         },
-      }
+      },
+      { new: true }
     );
     if (!cart) {
       return {
