@@ -71,14 +71,4 @@ exports.schema = {
       )
       .required(),
   }),
-  search: Joi.object().keys({
-    page: Joi.number(),
-    itemPerPage: Joi.number(),
-    status: Joi.string(),
-    name: Joi.string(),
-    idModel: Joi.string(),
-    capacity: Joi.string(),
-    ram: Joi.string(),
-    description: Joi.string(),
-  }),
 };
