@@ -1,20 +1,46 @@
 const e = require("express");
 const paypal = require("paypal-rest-sdk");
+const { Cart, Product ,  Order, } = require("../Models/Index.Model");
+const { HTTP_STATUS_CODE } = require("../Common/Constants");
 
 
-  const Order = async(req, res, next)=> {
+  const OrderPaypal = async(req, res, next)=> {
     const { price } = req.body;
     console.log(req.body.token.id);
     console.log("price",price);
     const dollar = price/23100;
     const dollar2f = parseFloat(dollar.toFixed(2));
+    const idUser = req.body.token.id;
+    const idBranch = req.body.idBranch;
+    const coupon = req.body.coupon;
+    const receiver = req.body.receiver;
+    const phone = req.body.phone;
+    const address = req.body.address;
+    const receiveAt = req.body.receiveAt;
+    const timeReceive = req.body.timeReceive;
+    const status = req.body.status;
+    const message = req.body.message;
+    const reqQuery = queryString.stringify({
+      idUser,
+      idBranch,
+      coupon,
+      receiver,
+      phone,
+      address,
+      receiveAt,
+      timeReceive,
+      status,
+      message,
+    });
+
+
     const create_payment_json = {
       intent: "sale",
       payer: {
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url: `http:///localhost:8080/payment/success?price=${dollar2f}`,
+        return_url: `http:///localhost:8080/payment/success?price=${dollar2f}?${reqQuery}`,
         cancel_url: "http://localhost:8080/payment/cancel",
       },
       transactions: [
@@ -60,6 +86,18 @@ const paypal = require("paypal-rest-sdk");
   }
 
   const PaymentSuccess = async(req, res, next) =>{
+    let{
+      idUser,
+      idBranch,
+      coupon,
+      receiver,
+      phone,
+      address,
+      receiveAt,
+      timeReceive,
+      status,
+      message,
+    } = req.query;
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
     const price = req.query.price;
@@ -84,12 +122,65 @@ const paypal = require("paypal-rest-sdk");
             console.log("ủa sao fail");
           res.status(400).send("Payment Fail");
         } else {
-          //save data vao db
-          //thanh toan tru 1 san pham
-          // thanh toan + poin KH
-          // thanh toan + tien
-          // llu hoa don data in payment
-          res.status(200).send("Payment Succes");
+          //save Order vao db
+          try{
+            const cart = await Cart.findOne({user:idUser});
+            if(!cart){
+              res.status(200).send("Your cart is not exsit");
+            }
+            const products = cart.products; // lấy list sản phẩm
+            let totalPrice = 0; // lấy tổng tiền
+            for(const p of products){
+                totalPrice = totalPrice + p.price; 
+                let quantityP = p.quantity;  
+                let colorP = p.color;    
+              // trừ sản phẩm trong kho
+              const product =  await Product.findOne({
+                _id:p.idProduct});
+            const r =  product.color.map((item)=>{
+                 if(item.name ===colorP)
+                 {
+                     const quantityInfo = item.quantityInfo.map((quantity)=>{
+                         if(quantity.idBranch === idBranch)
+                         {
+                             quantity.quantity = quantity.quantity - quantityP;
+                             return quantity;
+                         }
+                         return quantity;
+                     });
+                     item.quantityInfo = quantityInfo;
+                     return item;
+                 }
+                 return item;
+             });
+            product.color = r;
+            await product.save();
+            }
+            const newOrder = new Order({
+                products: products,
+                totalPrice: totalPrice,
+                coupon: coupon,
+                user: idUser,
+                receiveInfo: {
+                  receiver,
+                  phone,
+                  address,
+                  receiveAt,
+                  timeReceive,
+                  status,
+                  message,
+                },
+                status : "wait"
+            });
+            await newOrder.save();
+            res.status(200).send("Payment Succes");
+            // xóa cart cũ
+            await Cart.deleteOne({user:idUser});
+    
+        }catch(err){
+          res.status(200).send("Payment Excute Fail");
+        }
+          
         }
       }
     );
@@ -127,7 +218,7 @@ const paypal = require("paypal-rest-sdk");
 
 
 module.exports = {
-    Order,
+    OrderPaypal,
     PaymentSuccess,
     CancelPayment,
     RefundPayment
