@@ -1,6 +1,34 @@
 const { Cart, Product ,  Order, } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 
+
+
+const a = async ({id, color, idBranch, soLuong})=>{
+    const product =  await Product.findOne({
+        _id:id,
+    }
+    
+    );
+    const r =  product.color.map((item)=>{
+         if(item.name ===color)
+         {
+             const quantityInfo = item.quantityInfo.map((quantity)=>{
+                 if(quantity.idBranch === idBranch)
+                 {
+                     quantity.quantity = quantity.quantity - soLuong;
+                     return quantity;
+                 }
+                 return quantity;
+             });
+             item.quantityInfo = quantityInfo;
+             return item;
+         }
+         return item;
+     });
+    product.color = r;
+    await product.save();
+}
+
 const craeteOrder = async(idUser, body)=>{
     try{
 
@@ -27,8 +55,7 @@ const craeteOrder = async(idUser, body)=>{
         //     },
         //     status:HTTP_STATUS_CODE.OK
         // }
-
-        let {coupon, receiveInfo}=body;
+        let {coupon, receiveInfo, idBranch}=body;
         const cart = await Cart.findOne({user:idUser});
         if(!cart){
             return {
@@ -41,19 +68,42 @@ const craeteOrder = async(idUser, body)=>{
             }
         }
         const products = cart.products; // lấy list sản phẩm
-        const totalPrice = 0; // lấy tổng tiền
+        let totalPrice = 0; // lấy tổng tiền
         for(const p of products){
-            totalPrice = totalPrice + p.price;
-            // trừ sản phẩm trong kho
-            await Product.aggregate([
-                {$match:{_id:p.idProduct}},
-               // {$set:{}}
-             ]);
-            
+            totalPrice = totalPrice + p.price; 
+            let quantityP = p.quantity;  
+            let colorP = p.color;    
+          // trừ sản phẩm trong kho
+          const product =  await Product.findOne({
+            _id:p.idProduct});
+        const r =  product.color.map((item)=>{
+             if(item.name ===colorP)
+             {
+                 const quantityInfo = item.quantityInfo.map((quantity)=>{
+                     if(quantity.idBranch === idBranch)
+                     {
+                         quantity.quantity = quantity.quantity - quantityP;
+                         return quantity;
+                     }
+                     return quantity;
+                 });
+                 item.quantityInfo = quantityInfo;
+                 return item;
+             }
+             return item;
+         });
+        product.color = r;
+        await product.save();
         }
-        
-        console.log(products);
-
+        const newOrder = new Order({
+            products: products,
+            totalPrice: totalPrice,
+            coupon: coupon,
+            user: idUser,
+            receiveInfo: receiveInfo,
+            status : "wait"
+        });
+        await newOrder.save();
         return {
             success:true,
             message:{

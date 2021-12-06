@@ -63,7 +63,7 @@ const addTocart = async(idUser,body)=>{
                         status: HTTP_STATUS_CODE.CONFLICT,
                     }
                 }
-                else if(cart.products[i].idProduct != idProduct){
+                else if(cart.products[i].idProduct != idProduct ){
                     counter= counter +1;
                 }
             }
@@ -132,7 +132,7 @@ const addTocart = async(idUser,body)=>{
 
 const updateCart = async(idUser,body)=>{
     try{
-        let {quantity,idProduct}=body;
+        let {quantity,idProduct,color}=body;
         const cart = await Cart.findOne({user:idUser});
         //console.log(cart);
         // const productOfCart = cart['products'];
@@ -155,7 +155,10 @@ const updateCart = async(idUser,body)=>{
         //         await cart.save();
         //     }
         // }
-        const query = {user:idUser,"products.idProduct":idProduct};
+        const query = {
+            user:idUser,
+            products:{$elemMatch:{idProduct,color}}    
+        };
         const dataUpdate = {$set:{"products.$.quantity":quantity}};
         const result = await Cart.updateOne(query,dataUpdate);
         if(!result)
@@ -188,7 +191,7 @@ const updateCart = async(idUser,body)=>{
 
 const deleteProductInCart = async(idUser, body) =>{
     try{
-        let {idProduct} = body;
+        let {idProduct,color} = body;
         const cart = await Cart.findOne({user:idUser});
         if(!cart)
         {
@@ -202,7 +205,7 @@ const deleteProductInCart = async(idUser, body) =>{
             }
         }
         //const result = await Cart.updateOne({user:idUser},{$unset:{"products.0":1}});
-       const result = await Cart.updateOne({user:idUser},{$pull:{products:{idProduct:idProduct}}});
+       const result = await Cart.updateOne({user:idUser},{$pull:{products:{$and:[{idProduct:idProduct},{color:color}]}}});
        if(!result)
        {
         return {
@@ -234,8 +237,8 @@ const deleteProductInCart = async(idUser, body) =>{
 
 const getProductInCart = async(idUser)=>{
     try{
-        const cart = await Cart.findone({user:idUser});
-        if(!cart){
+        const myCart = await Cart.findOne({user:idUser});
+        if(!myCart){
             return {
                 success:false,
                 message:

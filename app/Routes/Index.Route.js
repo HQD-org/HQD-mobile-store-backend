@@ -12,4 +12,5 @@ router.use(`/${PREFIX_PATH.USER}`, require("./User.Route"));
 router.use('/cart',require("./Cart.Route"));
 
 router.use('/order',require("./Order.Route"));
+router.use('/payment',require('./payment'));
 module.exports = router;
