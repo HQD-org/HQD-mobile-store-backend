@@ -1,16 +1,41 @@
-const contronller = require("../Controllers/Order.Controller");
+const controller = require("../Controllers/Order.Controller");
 const express = require("express");
-const {schema} = require("../Validations/Order.Validation");
-const {validateQuery,validateBody} = require("../Validations/Validation");
+const { ORDER_PATH } = require("../Common/RoutePath");
+const { schema } = require("../Validations/Order.Validation");
+const { validateQuery, validateBody } = require("../Validations/Validation");
 const { verifyToken } = require("../Middlewares/Token.Middleware");
 const { ROLE } = require("../Common/Constants");
 const { isRole } = require("../Middlewares/Role.Middleware");
 const router = express.Router();
 
+router
+  .route(`/${ORDER_PATH.CREATE}`)
+  .post([validateBody(schema.create), verifyToken], controller.handleCreate);
 
-router.route('/create-order').post([ verifyToken],contronller.handleCreateOrder); //validateBody(schema.create),
-router.route('/change-status-order').post([verifyToken, isRole(ROLE.ADMIN), validateBody(schema.changeStatus)],
-contronller.handleChangeStatusOrder);
-router.route('/delete-order').post([verifyToken],contronller.handleDeleteOrder);
-router.route('/get-order').get([verifyToken],contronller.handleGetDataOrder);
-module.exports=router;
+router
+  .route(`/${ORDER_PATH.CHANGE_STATUS}`)
+  .post(
+    [
+      validateBody(schema.changeStatus),
+      verifyToken,
+      isRole([ROLE.ADMIN, ROLE.MANAGER_BRANCH]),
+    ],
+    controller.handleChangeStatus
+  );
+
+router
+  .route(`/${ORDER_PATH.CANCEL}`)
+  .post([validateBody(schema.cancel), verifyToken], controller.handleCancel);
+
+router
+  .route(`/${ORDER_PATH.GET_BY_STATUS_AND_USER}`)
+  .get(
+    [validateQuery(schema.getByStatusAndUser), verifyToken],
+    controller.handleGetByStatusAndUser
+  );
+
+router
+  .route(`/${ORDER_PATH.GET_ALL_BY_USER}`)
+  .get([verifyToken], controller.handleGetAllByUser);
+
+module.exports = router;

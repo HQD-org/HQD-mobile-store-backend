@@ -40,6 +40,14 @@ exports.MOBILE_MODEL_PATH = {
   UPDATE: "update",
 };
 
+exports.ORDER_PATH = {
+  CREATE: "create",
+  GET_BY_STATUS_AND_USER: "get-by-status-and-user",
+  GET_ALL_BY_USER: "get-all-by-user",
+  CANCEL: "cancel",
+  CHANGE_STATUS: "change-status",
+};
+
 exports.PREFIX_PATH = {
   ADMIN: "admin",
   AUTH: "auth",
@@ -47,6 +55,7 @@ exports.PREFIX_PATH = {
   BRANCH: "branch",
   MOBILE_BRAND: "mobile-brand",
   MOBILE_MODEL: "mobile-model",
+  ORDER: "order",
   PRODUCT: "product",
   USER: "user",
 };
