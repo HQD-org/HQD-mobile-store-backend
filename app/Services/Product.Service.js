@@ -262,6 +262,8 @@ const filter = async (query) => {
     idBrand,
     minPrice,
     maxPrice,
+    sortNew,
+    sortPrice,
     ...remainQuery
   } = query;
   itemPerPage = ~~itemPerPage || 12;
@@ -277,6 +279,12 @@ const filter = async (query) => {
   };
   if (name) queryObj.name = { $regex: name, $options: "i" };
   if (idModel) queryObj.idModel = ObjectId(idModel);
+
+  const sortOption = {
+    name: 1,
+  };
+  if (sortNew) sortOption.createdAt = -1;
+  if (sortPrice || sortNew) delete sortOption.name;
 
   const products = await Product.aggregate([
     {
@@ -316,6 +324,11 @@ const filter = async (query) => {
     {
       $facet: {
         data: [
+          {
+            $sort: sortPrice
+              ? { ...sortOption, "color.price": parseInt(sortPrice) }
+              : sortOption,
+          },
           { $skip: itemPerPage * page - itemPerPage },
           { $limit: itemPerPage },
         ],

@@ -9,7 +9,7 @@ exports.AUTH_TYPE = {
 exports.DEFAULT_MODEL = {
   date: { type: Date },
   string: { type: String, default: "" },
-  stringRequire: { type: String, required: true },
+  stringRequire: { type: String, required: true, default: "" },
   stringIdMongo: { type: String, match: REGEX.ID_MONGO },
   stringPhone: {
     type: String,
@@ -32,12 +32,6 @@ exports.DEFAULT_MODEL = {
   object: { type: {}, default: {} },
 };
 
-// exports.FOLDER = {
-//   MOBILE_BRAND: "MobileBrand",
-//   MOBILE_MODEL: "MobileModel",
-//   PRODUCT: "Product",
-// };
-
 exports.HTTP_STATUS_CODE = {
   CREATE: 201,
   OK: 200,
@@ -54,6 +48,8 @@ exports.HTTP_STATUS_CODE = {
 exports.RECEIVE_TYPE = {
   STORE: "at store",
   HOME: "at home",
+  ALL_DAY: "all day",
+  OFFICE_DAY: "office day",
 };
 
 exports.ROLE = {
@@ -77,4 +73,9 @@ exports.STATUS = {
   REFUND: "refund",
   UNPAID: "unpaid",
   WAIT: "wait",
+  COD: "cod",
+  ONLINE: "online",
+  CONFIRMED: "confirmed",
+  DELIVERING: "delivering",
+  DELIVERED: "delivered",
 };

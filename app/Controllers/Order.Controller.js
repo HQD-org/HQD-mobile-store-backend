@@ -1,56 +1,55 @@
 const { sendError, sendSuccess } = require("./Controller");
 const {
-  addToCart,
-  updateCart,
-  deleteProductInCart,
-  getProductInCart,
-  getCart,
-} = require("../Services/Cart.Service");
+  create,
+  changeStatus,
+  cancel,
+  getByStatusAndUser,
+  getAllByUser,
+} = require("../Services/Order.Service");
 
-const handleAddToCart = async (req, res) => {
+const handleCreate = async (req, res) => {
   const token = req.body.token.id;
-  const result = await addToCart(token, req.body);
+  const result = await create(token, req.body);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
 };
 
-const handleUpdateCart = async (req, res) => {
-  const token = req.body.token.id;
-  const result = await updateCart(token, req.body);
+const handleChangeStatus = async (req, res) => {
+  const result = await changeStatus(req.body);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
 };
 
-const handleDeleteProductInCart = async (req, res) => {
+const handleCancel = async (req, res) => {
   const token = req.body.token.id;
-  const result = await deleteProductInCart(token, req.body);
+  const result = await cancel(token, req.body);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
 };
 
-const handleGetProductInCart = async (req, res) => {
+const handleGetByStatusAndUser = async (req, res) => {
   const token = req.body.token.id;
-  const result = await getProductInCart(token, req.body);
+  const result = await getByStatusAndUser(token, req.query);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
 };
 
-const handleGetCart = async (req, res) => {
-  const idUser = req.body.token.id;
-  const result = await getCart(idUser, req.body);
+const handleGetAllByUser = async (req, res) => {
+  const token = req.body.token.id;
+  const result = await getAllByUser(token);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
 };
 
 module.exports = {
-  handleAddToCart,
-  handleUpdateCart,
-  handleDeleteProductInCart,
-  handleGetProductInCart,
-  handleGetCart,
+  handleCreate,
+  handleChangeStatus,
+  handleCancel,
+  handleGetByStatusAndUser,
+  handleGetAllByUser,
 };
