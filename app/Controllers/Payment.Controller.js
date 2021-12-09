@@ -2,7 +2,7 @@ const e = require("express");
 const paypal = require("paypal-rest-sdk");
 const { Cart, Product ,  Order, } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
-
+const { sendError, sendSuccess } = require("./Controller");
 
   const OrderPaypal = async(req, res, next)=> {
     const { price } = req.body;
@@ -70,6 +70,10 @@ const { HTTP_STATUS_CODE } = require("../Common/Constants");
         res.status(400).send({
           data: "",
           error: "Cannot create order!",
+          message: {
+            ENG:"Cannot create order!",
+            VN:"Không thể tạo hóa đơn"
+          }
         });
       } else {
         for (let i = 0; i < payment.links.length; i++) {
@@ -77,6 +81,10 @@ const { HTTP_STATUS_CODE } = require("../Common/Constants");
             res.status(200).send({
               data: payment.links[i].href,
               error: "Create order! success",
+              message:{
+                ENG:"Create order! success",
+                VN:"Tạo hóa đơn thành công"
+              }
             });
             //res.redirect(payment.links[i].href);
           }
@@ -120,13 +128,27 @@ const { HTTP_STATUS_CODE } = require("../Common/Constants");
       async function (error, payment) {
         if (error) {
             console.log("ủa sao fail");
-          res.status(400).send("Payment Fail");
+          res.status(400).send({
+            data:"",
+            error:"Payment Fail",
+            message: { 
+              ENG:"Payment Fail",
+              VN:"Thanh toán thất bại"
+            }
+          });
         } else {
           //save Order vao db
           try{
             const cart = await Cart.findOne({user:idUser});
             if(!cart){
-              res.status(200).send("Your cart is not exsit");
+              res.status(400).send({
+                data:"",
+                error:"Your cart is not exsit",
+                message:{
+                  ENG:"Your cart is not exsit",
+                  VN:"Giỏ hàng không tồn tại"
+                }
+              });
             }
             const products = cart.products; // lấy list sản phẩm
             let totalPrice = 0; // lấy tổng tiền
@@ -173,12 +195,25 @@ const { HTTP_STATUS_CODE } = require("../Common/Constants");
                 status : "wait"
             });
             await newOrder.save();
-            res.status(200).send("Payment Succes");
+            res.status(200).send({
+              data:"",
+              message:{
+                ENG:"Payment Succes",
+                VN:"Thanh toán thành công",
+              }
+            });
             // xóa cart cũ
             await Cart.deleteOne({user:idUser});
     
         }catch(err){
-          res.status(200).send("Payment Excute Fail");
+          res.status(400).send({
+            data:"",
+            error:"Payment Excute Fail",
+            message:{
+              ENG:"Payment Excute Fail",
+              VN:"Thanh toán thất bại err"
+            }
+          });
         }
           
         }
@@ -202,13 +237,13 @@ const { HTTP_STATUS_CODE } = require("../Common/Constants");
     paypal.sale.refund(idPayment, data, function (error, refund){
       if (error){
         res.status(200).send({
-          msg: 'Refund fail!',
+          message: 'Refund fail!',
           data: '',
           error: error,
         });
       } else {
         res.status(200).send({
-          msg: 'Refund success!',
+          message: 'Refund success!',
           data: refund,
           error: '',
         });
