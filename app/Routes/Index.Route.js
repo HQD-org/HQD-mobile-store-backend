@@ -11,10 +11,6 @@ router.use(`/${PREFIX_PATH.PRODUCT}`, require("./Product.Route"));
 router.use(`/${PREFIX_PATH.USER}`, require("./User.Route"));
 router.use(`/${PREFIX_PATH.CART}`, require("./Cart.Route"));
 router.use(`/${PREFIX_PATH.ORDER}`, require("./Order.Route"));
+router.use("/payment", require("./payment"));
 
-<<<<<<< HEAD
-router.use('/order',require("./Order.Route"));
-router.use('/payment',require('./payment'));
-=======
->>>>>>> 354c29aed8de6e391571a82d3f686dc686110bc2
 module.exports = router;
