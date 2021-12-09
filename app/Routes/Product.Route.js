@@ -22,6 +22,17 @@ router
     controller.handleUpdateProduct
   );
 
+router
+  .route(`/${PRODUCT_PATH.UPDATE_QUANTITY}`)
+  .post(
+    [
+      validateBody(schema.updateQuantity),
+      verifyToken,
+      isRole([ROLE.ADMIN, ROLE.MANAGER_BRANCH]),
+    ],
+    controller.handleUpdateQuantityProduct
+  );
+
 router.route(`/${PRODUCT_PATH.FIND_BY_ID}/:id`).get(controller.handleFindById);
 
 router.route(`/${PRODUCT_PATH.GET_ALL}`).get(controller.handleGetAll);

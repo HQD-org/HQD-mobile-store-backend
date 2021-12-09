@@ -13,6 +13,15 @@ exports.BRANCH_PATH = {
   FILTER: "filter",
   GET_ALL: "get-all",
   UPDATE: "update",
+  GET_BY_LIST_ID: "get-by-list-id",
+};
+
+exports.CART_PATH = {
+  ADD_TO_CART: "add-to-cart",
+  DELETE_CART: "delete-cart",
+  GET_PRODUCT_CART: "get-product-cart",
+  UPDATE_CART: "update-cart",
+  GET_CART: "get-cart",
 };
 
 exports.MOBILE_BRAND_PATH = {
@@ -31,12 +40,22 @@ exports.MOBILE_MODEL_PATH = {
   UPDATE: "update",
 };
 
+exports.ORDER_PATH = {
+  CREATE: "create",
+  GET_BY_STATUS_AND_USER: "get-by-status-and-user",
+  GET_ALL_BY_USER: "get-all-by-user",
+  CANCEL: "cancel",
+  CHANGE_STATUS: "change-status",
+};
+
 exports.PREFIX_PATH = {
   ADMIN: "admin",
   AUTH: "auth",
+  CART: "cart",
   BRANCH: "branch",
   MOBILE_BRAND: "mobile-brand",
   MOBILE_MODEL: "mobile-model",
+  ORDER: "order",
   PRODUCT: "product",
   USER: "user",
 };
@@ -44,6 +63,7 @@ exports.PREFIX_PATH = {
 exports.PRODUCT_PATH = {
   CREATE: "create",
   FIND_BY_ID: "find-by-id",
+  UPDATE_QUANTITY: "update-quantity",
   GET_ALL: "get-all",
   UPDATE: "update",
   FILTER: "filter",

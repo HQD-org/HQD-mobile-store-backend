@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
 
@@ -7,16 +7,16 @@ const cart = {
   products: {
     type: [
       {
-        idProduct:{type:Schema.Types.ObjectId,ref:"Product"},
-        quantity: {type:Number,default :1, required:true},
+        idProduct: { type: Schema.Types.ObjectId, ref: "Product" },
+        quantity: { ...DEFAULT_MODEL.number, default: 1 },
         price: DEFAULT_MODEL.number,
-        color: {type:String,default:"",required:true},
-        image: {type:String,default:"",required:true},
+        color: { ...DEFAULT_MODEL.stringRequire, default: "" },
+        image: { ...DEFAULT_MODEL.stringRequire, default: "" },
       },
     ],
     default: [],
   },
-  user: DEFAULT_MODEL.stringIdMongo,
+  user: { type: Schema.Types.ObjectId, ref: "User" },
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },
 };
 

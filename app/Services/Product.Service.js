@@ -1,6 +1,5 @@
-const { MobileModel, Product, MobileBrand } = require("../Models/Index.Model");
+const { MobileModel, Product } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
-const { mapToRegexContains } = require("../Common/Helper");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -18,6 +17,16 @@ const createProduct = async (body) => {
       };
     }
 
+    const colors = body.color;
+    model.color.forEach((item) => {
+      if (!colors.find((color) => color.name === item.name)) {
+        colors.push({
+          name: item.name,
+          price: 0,
+        });
+      }
+    });
+    body.color = colors;
     const newProduct = await Product.create(body);
     return {
       data: newProduct,
@@ -53,12 +62,79 @@ const updateProduct = async (body) => {
       };
     }
     return {
+      data: newProduct,
       success: true,
       message: {
         ENG: "Update product successfull",
         VN: "Sửa sản phẩm thành công",
       },
       status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
+
+const updateQuantityProduct = async (body) => {
+  try {
+    const account = await Account.findOne({ idUser: body.token.id });
+    if (!account)
+      return {
+        success: false,
+        message: { ENG: "User not found", VN: "Không tìn thấy user" },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+
+    const branchExist = await Branch.findOne({ idManager: account._id });
+    if (!branchExist)
+      return {
+        success: false,
+        message: { ENG: "Branch not found", VN: "Không tìn thấy chi nhánh" },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+
+    const product = await Product.findById(body.id);
+    if (!product)
+      return {
+        success: false,
+        message: {
+          ENG: "Product not exist",
+          VN: "Sản phẩm không tồn tại",
+        },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+
+    product.color = product.color.map((item) => {
+      const infoFromBody = body.color.find((color) => color.name === item.name);
+      if (infoFromBody) {
+        const branchIndex = item.quantityInfo.findIndex(
+          (branch) => branch.idBranch == branchExist._id
+        );
+        if (branchIndex !== -1) {
+          item.quantityInfo[branchIndex].quantity = infoFromBody.quantity;
+        } else {
+          item.quantityInfo.push({
+            idBranch: branchExist._id,
+            quantity: infoFromBody.quantity,
+          });
+        }
+      }
+      return item;
+    });
+    await product.save();
+
+    return {
+      success: true,
+      message: {
+        ENG: "Update quantity product successfull",
+        VN: "Cập nhật số lượng sản phẩm thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+      data: product,
     };
   } catch (err) {
     return {
@@ -186,12 +262,14 @@ const filter = async (query) => {
     idBrand,
     minPrice,
     maxPrice,
+    sortNew,
+    sortPrice,
     ...remainQuery
   } = query;
   itemPerPage = ~~itemPerPage || 12;
   page = ~~page || 1;
   minPrice = ~~minPrice || 0;
-  maxPrice = ~~maxPrice || 20000000;
+  maxPrice = ~~maxPrice || 1000000000;
   const queryObj = {
     $and: [
       { "color.price": { $gte: minPrice } },
@@ -201,6 +279,12 @@ const filter = async (query) => {
   };
   if (name) queryObj.name = { $regex: name, $options: "i" };
   if (idModel) queryObj.idModel = ObjectId(idModel);
+
+  const sortOption = {
+    name: 1,
+  };
+  if (sortNew) sortOption.createdAt = -1;
+  if (sortPrice || sortNew) delete sortOption.name;
 
   const products = await Product.aggregate([
     {
@@ -229,11 +313,22 @@ const filter = async (query) => {
       },
     },
     {
+      $unwind: {
+        path: "$brand",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
       $match: idBrand ? { "brand._id": ObjectId(idBrand) } : {},
     },
     {
       $facet: {
         data: [
+          {
+            $sort: sortPrice
+              ? { ...sortOption, "color.price": parseInt(sortPrice) }
+              : sortOption,
+          },
           { $skip: itemPerPage * page - itemPerPage },
           { $limit: itemPerPage },
         ],
@@ -267,6 +362,7 @@ const filter = async (query) => {
 module.exports = {
   createProduct,
   updateProduct,
+  updateQuantityProduct,
   findById,
   getAll,
   filter,
