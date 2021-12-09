@@ -30,7 +30,6 @@ exports.schema = {
           RECEIVE_TYPE.ALL_DAY,
           RECEIVE_TYPE.OFFICE_DAY
         ),
-        status: Joi.string().valid(STATUS.COD, STATUS.ONLINE),
         message: Joi.string(),
       })
       .required(),
