@@ -3,8 +3,10 @@ const {
   create,
   changeStatus,
   cancel,
+  filterByBranch,
   getByStatusAndUser,
   getAllByUser,
+  getByStatusAndBranch,
 } = require("../Services/Order.Service");
 
 const handleCreate = async (req, res) => {
@@ -46,10 +48,26 @@ const handleGetAllByUser = async (req, res) => {
   return sendError(res, result.message, result.status);
 };
 
+const handleGetByStatusAndBranch = async (req, res) => {
+  const result = await getByStatusAndBranch(req.query);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
+const handleFilterByBranch = async (req, res) => {
+  const result = await filterByBranch(req.query);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
 module.exports = {
   handleCreate,
   handleChangeStatus,
   handleCancel,
   handleGetByStatusAndUser,
   handleGetAllByUser,
+  handleGetByStatusAndBranch,
+  handleFilterByBranch,
 };

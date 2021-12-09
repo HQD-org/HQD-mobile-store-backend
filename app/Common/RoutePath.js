@@ -46,6 +46,8 @@ exports.ORDER_PATH = {
   GET_ALL_BY_USER: "get-all-by-user",
   CANCEL: "cancel",
   CHANGE_STATUS: "change-status",
+  GET_BY_STATUS_AND_BRANCH: "get-by-status-and-branch",
+  FILTER_BY_BRANCH: "filter-by-branch",
 };
 
 exports.PREFIX_PATH = {

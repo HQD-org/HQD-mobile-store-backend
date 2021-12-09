@@ -38,4 +38,15 @@ router
   .route(`/${ORDER_PATH.GET_ALL_BY_USER}`)
   .get([verifyToken], controller.handleGetAllByUser);
 
+router
+  .route(`/${ORDER_PATH.GET_BY_STATUS_AND_BRANCH}`)
+  .get(
+    [validateQuery(schema.getByStatusAndBranch)],
+    controller.handleGetByStatusAndBranch
+  );
+
+router
+  .route(`/${ORDER_PATH.FILTER_BY_BRANCH}`)
+  .get([validateQuery(schema.filterByBranch)], controller.handleFilterByBranch);
+
 module.exports = router;
