@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { createSchema } = require("./Create.Model");
 const { DEFAULT_MODEL, RECEIVE_TYPE, STATUS } = require("../Common/Constants");
+const Schema = mongoose.Schema;
 
 const order = {
   products: {
@@ -14,6 +15,7 @@ const order = {
     ],
     default: [],
   },
+  idBranch: { type: Schema.Types.ObjectId, ref: "Branch" },
   totalPrice: DEFAULT_MODEL.number,
   coupon: DEFAULT_MODEL.stringRequire,
   user: DEFAULT_MODEL.stringIdMongo,

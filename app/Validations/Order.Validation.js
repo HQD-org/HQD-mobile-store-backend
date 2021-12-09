@@ -57,4 +57,21 @@ exports.schema = {
     page: Joi.number(),
     itemPerPage: Joi.number(),
   }),
+  getByStatusAndBranch: Joi.object().keys({
+    status: Joi.string().valid(
+      STATUS.CONFIRMED,
+      STATUS.DELIVERING,
+      STATUS.DELIVERED,
+      STATUS.WAIT,
+      STATUS.CANCEL
+    ),
+    idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
+    page: Joi.number(),
+    itemPerPage: Joi.number(),
+  }),
+  filterByBranch: Joi.object().keys({
+    idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
+    page: Joi.number(),
+    itemPerPage: Joi.number(),
+  }),
 };
