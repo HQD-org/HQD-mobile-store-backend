@@ -3,6 +3,126 @@ const { HTTP_STATUS_CODE, STATUS } = require("../Common/Constants");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
+<<<<<<< HEAD
+
+
+const a = async ({id, color, idBranch, soLuong})=>{
+    const product =  await Product.findOne({
+        _id:id,
+    }
+    
+    );
+    const r =  product.color.map((item)=>{
+         if(item.name ===color)
+         {
+             const quantityInfo = item.quantityInfo.map((quantity)=>{
+                 if(quantity.idBranch === idBranch)
+                 {
+                     quantity.quantity = quantity.quantity - soLuong;
+                     return quantity;
+                 }
+                 return quantity;
+             });
+             item.quantityInfo = quantityInfo;
+             return item;
+         }
+         return item;
+     });
+    product.color = r;
+    await product.save();
+}
+
+const craeteOrder = async(idUser, body)=>{
+    try{
+
+        // let {idCart, totalPrice, user, coupon, receiveInfo, status } = body;
+        // const cart = await Cart.findOne({user:idUser});
+        // if(!cart)
+        // {
+        //     return {
+        //         success: false,
+        //         message:{
+        //             ENG:"Your cart wasn't exist",
+        //             VN:"Giỏ hàng của bạn không tồn tại"
+        //         },
+        //         status: HTTP_STATUS_CODE.NOT_FOUND
+        //     };
+        // }
+        // const newOrder = new Order({idCart,totalPrice,user,coupon,receiveInfo,status});
+        // await newOrder.save();
+        // return {
+        //     success: true,
+        //     message:{
+        //         ENG:"Create Order successfully",
+        //         VN:"Tạo đơn hàng thành công"
+        //     },
+        //     status:HTTP_STATUS_CODE.OK
+        // }
+        let {coupon, receiveInfo, idBranch}=body;
+        const cart = await Cart.findOne({user:idUser});
+        if(!cart){
+            return {
+                success: false,
+                message:{
+                    ENG:"Your cart is empty haven't to checkout",
+                    VN:"Giỏ hàng rỗng không được tạo hóa đơn"
+                },
+                status: HTTP_STATUS_CODE.NOT_FOUND
+            }
+        }
+        const products = cart.products; // lấy list sản phẩm
+        let totalPrice = 0; // lấy tổng tiền
+        for(const p of products){
+            totalPrice = totalPrice + p.price; 
+            let quantityP = p.quantity;  
+            let colorP = p.color;    
+          // trừ sản phẩm trong kho
+          const product =  await Product.findOne({
+            _id:p.idProduct});
+        const r =  product.color.map((item)=>{
+             if(item.name ===colorP)
+             {
+                 const quantityInfo = item.quantityInfo.map((quantity)=>{
+                     if(quantity.idBranch === idBranch)
+                     {
+                         quantity.quantity = quantity.quantity - quantityP;
+                         return quantity;
+                     }
+                     return quantity;
+                 });
+                 item.quantityInfo = quantityInfo;
+                 return item;
+             }
+             return item;
+         });
+        product.color = r;
+        await product.save();
+        }
+        const newOrder = new Order({
+            products: products,
+            totalPrice: totalPrice,
+            coupon: coupon,
+            user: idUser,
+            receiveInfo: receiveInfo,
+            status : "wait"
+        });
+        await newOrder.save();
+        return {
+            success:true,
+            message:{
+                ENG:"Create Order successfully",
+                VN:"Tạo đơn hàng thành công",
+            },
+            status:HTTP_STATUS_CODE.OK,
+        }
+
+    }catch(err){
+        return{
+            success: false,
+            message: err.message,
+            status: err.status,
+        };
+=======
 const create = async (idUser, body) => {
   try {
     const newOrder = await Order.create({ ...body, user: idUser });
@@ -15,6 +135,7 @@ const create = async (idUser, body) => {
           VN: "Tạo đơn hàng thất bại",
         },
       };
+>>>>>>> 354c29aed8de6e391571a82d3f686dc686110bc2
     }
     // chon chi nhanh tru so luong san pham, kho qua lam random tam :)))
     for (const p of body.products) {
