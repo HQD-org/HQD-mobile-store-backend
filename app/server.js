@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 const { PORT, ORIGIN_DEV, ORIGIN_PROD } = require("./Common/Config");
 const router = require("./Routes/Index.Route");
+const paypal = require('./config/paypal');
 
 app.use(
   cors({
@@ -17,7 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/Uploads", express.static("Uploads"));
 app.use("/", router);
-
+// Connect to paypal
+paypal.connect(process.env.CLIENT_ID,process.env.SECRET_PAYPAL_KEY);
 connectDb();
 
 app.listen(PORT, () => console.log(`Listen on port ${PORT}`));
