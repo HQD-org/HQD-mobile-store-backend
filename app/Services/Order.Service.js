@@ -5,8 +5,12 @@ const ObjectId = mongoose.Types.ObjectId;
 
 const create = async (idUser, body) => {
   try {
-    body.receiveInfo.status = "cod";
-    const newOrder = await Order.create({ ...body, user: idUser });
+  body.receiveInfo.status = "cod";
+    const newOrder = await Order.create({
+      ...body,
+      user: idUser,
+      idBranch: body.idBranch || "61a23e0527b5b90016616975",
+    });
     if (!newOrder) {
       return {
         status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
@@ -200,24 +204,136 @@ const getAllByUser = async (idUser) => {
   }
 };
 
-// const getByStatusAndBranch = async (idUser, query) => {
-//   try {
-//     const account = await Account.findOne({ idUser });
-//     const branch = await Branch.findOne({ idManager: account._id });
+const getByStatusAndBranch = async (query) => {
+  try {
+    let { itemPerPage, page, status, idBranch } = query;
+    itemPerPage = ~~itemPerPage || 12;
+    page = ~~page || 1;
+    const branch = await Branch.findById(idBranch);
+    if (!branch) {
+      return {
+        success: false,
+        message: {
+          ENG: "Branch not exist",
+          VN: "Chi nhánh không tồn tại",
+        },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+    }
+    const result = await Order.aggregate([
+      { $match: { status, idBranch: ObjectId(idBranch) } },
+      {
+        $facet: {
+          data: [
+            {
+              $sort: { createdAt: -1 },
+            },
+            { $skip: itemPerPage * page - itemPerPage },
+            { $limit: itemPerPage },
+          ],
+          info: [
+            {
+              $count: "count",
+            },
+          ],
+        },
+      },
+    ]);
 
-//   } catch (err) {
-//     return {
-//       success: false,
-//       message: err.message,
-//       status: err.status,
-//     };
-//   }
-// };
+    const info = result[0].info;
+    return {
+      success: true,
+      data: {
+        orders: result[0].data,
+        pagination: {
+          itemPerPage,
+          page,
+          totalItem: info.length > 0 ? info[0].count : 0,
+        },
+      },
+      message: {
+        ENG: "Get Order by status successfully",
+        VN: "Lấy đơn hàng thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
+
+const filterByBranch = async (query) => {
+  try {
+    let { itemPerPage, page, idBranch } = query;
+    itemPerPage = ~~itemPerPage || 12;
+    page = ~~page || 1;
+    const branch = await Branch.findById(idBranch);
+    if (!branch) {
+      return {
+        success: false,
+        message: {
+          ENG: "Branch not exist",
+          VN: "Chi nhánh không tồn tại",
+        },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+    }
+    const result = await Order.aggregate([
+      { $match: { idBranch: ObjectId(idBranch) } },
+      {
+        $facet: {
+          data: [
+            {
+              $sort: { createdAt: -1 },
+            },
+            { $skip: itemPerPage * page - itemPerPage },
+            { $limit: itemPerPage },
+          ],
+          info: [
+            {
+              $count: "count",
+            },
+          ],
+        },
+      },
+    ]);
+
+    const info = result[0].info;
+    return {
+      success: true,
+      data: {
+        orders: result[0].data,
+        pagination: {
+          itemPerPage,
+          page,
+          totalItem: info.length > 0 ? info[0].count : 0,
+        },
+      },
+      message: {
+        ENG: "Get Order by status successfully",
+        VN: "Lấy đơn hàng thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
 
 module.exports = {
   create,
   changeStatus,
   cancel,
+  filterByBranch,
   getAllByUser,
   getByStatusAndUser,
+  getByStatusAndBranch,
 };

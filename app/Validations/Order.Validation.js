@@ -9,6 +9,7 @@ exports.schema = {
         Joi.object()
           .keys({
             idProduct: Joi.string().regex(REGEX.ID_MONGO).required(),
+            name: Joi.string().required(),
             quantity: Joi.number().required(),
             color: Joi.string().required(),
             image: Joi.string().required(),
@@ -30,7 +31,6 @@ exports.schema = {
           RECEIVE_TYPE.ALL_DAY,
           RECEIVE_TYPE.OFFICE_DAY
         ),
-        status: Joi.string().valid(STATUS.COD, STATUS.ONLINE),
         message: Joi.string(),
       })
       .required(),
@@ -55,6 +55,23 @@ exports.schema = {
       STATUS.WAIT,
       STATUS.CANCEL
     ),
+    page: Joi.number(),
+    itemPerPage: Joi.number(),
+  }),
+  getByStatusAndBranch: Joi.object().keys({
+    status: Joi.string().valid(
+      STATUS.CONFIRMED,
+      STATUS.DELIVERING,
+      STATUS.DELIVERED,
+      STATUS.WAIT,
+      STATUS.CANCEL
+    ),
+    idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
+    page: Joi.number(),
+    itemPerPage: Joi.number(),
+  }),
+  filterByBranch: Joi.object().keys({
+    idBranch: Joi.string().regex(REGEX.ID_MONGO).required(),
     page: Joi.number(),
     itemPerPage: Joi.number(),
   }),

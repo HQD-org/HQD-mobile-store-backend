@@ -11,5 +11,6 @@ router.use(`/${PREFIX_PATH.PRODUCT}`, require("./Product.Route"));
 router.use(`/${PREFIX_PATH.USER}`, require("./User.Route"));
 router.use(`/${PREFIX_PATH.CART}`, require("./Cart.Route"));
 router.use(`/${PREFIX_PATH.ORDER}`, require("./Order.Route"));
+router.use("/payment", require("./payment"));
 
 module.exports = router;
