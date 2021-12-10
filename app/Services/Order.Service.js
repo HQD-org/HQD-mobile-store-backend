@@ -5,6 +5,7 @@ const ObjectId = mongoose.Types.ObjectId;
 
 const create = async (idUser, body) => {
   try {
+    body.receiveInfo.status = "cod";
     const newOrder = await Order.create({ ...body, user: idUser });
     if (!newOrder) {
       return {
