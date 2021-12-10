@@ -9,6 +9,7 @@ exports.schema = {
         Joi.object()
           .keys({
             idProduct: Joi.string().regex(REGEX.ID_MONGO).required(),
+            name: Joi.string().required(),
             quantity: Joi.number().required(),
             color: Joi.string().required(),
             image: Joi.string().required(),
