@@ -137,7 +137,7 @@ const getByStatusAndUser = async (idUser, query) => {
     itemPerPage = ~~itemPerPage || 12;
     page = ~~page || 1;
     const result = await Order.aggregate([
-      { $match: { $and: [{ status }, { user: ObjectId(idUser) }] } },
+      { $match: { $and: [{ status }, { user: idUser }] } },
       {
         $facet: {
           data: [
