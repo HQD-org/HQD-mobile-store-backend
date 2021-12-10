@@ -8,9 +8,11 @@ const order = {
     type: [
       {
         idProduct: DEFAULT_MODEL.stringIdMongo,
+        name: DEFAULT_MODEL.stringRequire,
         quantity: DEFAULT_MODEL.number,
         color: DEFAULT_MODEL.stringRequire,
         image: DEFAULT_MODEL.stringRequire,
+        price: DEFAULT_MODEL.number,
       },
     ],
     default: [],
