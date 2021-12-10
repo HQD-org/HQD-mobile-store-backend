@@ -137,7 +137,7 @@ const getByStatusAndUser = async (idUser, query) => {
     itemPerPage = ~~itemPerPage || 12;
     page = ~~page || 1;
     const result = await Order.aggregate([
-      { $match: { $and: [{ status }, { user: idUser }] } },
+      { $match: { $and: [{ status }, { user: ObjectId(idUser) }] } },
       {
         $facet: {
           data: [
@@ -220,7 +220,7 @@ const getByStatusAndBranch = async (query) => {
       };
     }
     const result = await Order.aggregate([
-      { $match: { $and: [{ status }, { idBranch }] } },
+      { $match: { status, idBranch: ObjectId(idBranch) } },
       {
         $facet: {
           data: [
@@ -282,7 +282,7 @@ const filterByBranch = async (query) => {
       };
     }
     const result = await Order.aggregate([
-      { $match: { idBranch } },
+      { $match: { idBranch: ObjectId(idBranch) } },
       {
         $facet: {
           data: [
