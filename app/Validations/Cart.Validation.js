@@ -7,6 +7,7 @@ exports.schema = {
     color: Joi.string().required(),
     image: Joi.string().required(),
     name: Joi.string(),
+    price: Joi.number()
   }),
   update: Joi.object().keys({
     idProduct: Joi.string().regex(REGEX.ID_MONGO).required(),
