@@ -10,7 +10,7 @@ exports.DEFAULT_MODEL = {
   date: { type: Date },
   string: { type: String, default: "" },
   stringRequire: { type: String, required: true, default: "" },
-  stringIdMongo: { type: String, match: REGEX.ID_MONGO },
+  stringIdMongo: { type: String, match: REGEX.ID_MONGO, default: null },
   stringPhone: {
     type: String,
     required: true,

@@ -2,17 +2,10 @@ const { Cart, Product } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
-// Các API của cart
 
-//1) Add To Cart: http://localhost:8080/cart/add-to-cart  (idUser (token), idProduct);
-//2) Update cart: http://localhost:8080/cart/update-cart (idUser (token), idProduct, quantity);
-//3) Delete cart: http://localhost:8080/cart/delete-cart (idUser (token), idProduct);
-//4) get list product in cart:
-
+// cart service voi role user (da dang nhap)
 const addToCart = async (idUser, body) => {
-  // Trường hợp này bắt đăng nhập
-  // khởi tạo cart khi người dùng bấm nút "Add to cart"
-  // Đồng thời thêm sản phẩm vào giỏ hàng với số lượng ban đầu là 1
+  // thêm sản phẩm vào giỏ hàng với số lượng là 1
   try {
     const { idProduct, color, image } = body;
     const productInDb = await Product.findById(idProduct);
@@ -57,6 +50,7 @@ const addToCart = async (idUser, body) => {
         price: colorProduct.price,
         color,
         image,
+        name: productInDb.name,
       };
 
       if (cart) {
@@ -324,10 +318,101 @@ const getCart = async (idUser) => {
   }
 };
 
+// cart service voi role guest (chua dang nhap)
+
+const updateCartGuest = async (body) => {
+  try {
+    const { quantity, idProduct, color } = body;
+    const productInDb = await Product.findById(idProduct);
+    if (!productInDb) {
+      return {
+        success: false,
+        message: {
+          ENG: "Product not exist",
+          VN: "Sản phẩm không tồn tại",
+        },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      };
+    }
+
+    const colorProduct = productInDb.color.find((c) => c.name === color);
+    if (!colorProduct) {
+      return {
+        success: false,
+        message: {
+          ENG: "Color not exist",
+          VN: "Màu sắc không tồn tại",
+        },
+        status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+      };
+    }
+
+    if (colorProduct.quantityInfo.every((q) => q.quantity < quantity)) {
+      return {
+        success: false,
+        message: {
+          ENG: "Quantity not enough",
+          VN: "Số lượng không đủ",
+        },
+        status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+      };
+    }
+
+    return {
+      success: true,
+      message: {
+        ENG: "Update cart successfully",
+        VN: "Cập nhật giỏ hàng thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+      data: productInDb,
+    };
+  } catch {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
+
+// merge cart cua guest vao tai khoan dang nhap
+const mergeCart = async (idUser, body) => {
+  try {
+    let cart = await Cart.findOne({ user: idUser });
+    if (!cart) {
+      cart = new Cart({
+        user: idUser,
+        products: body.products,
+      });
+    } else {
+      cart.products = body.products;
+    }
+    await cart.save();
+    return {
+      success: true,
+      message: {
+        ENG: "Merge cart successfully",
+        VN: "Gộp giỏ hàng thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+      data: cart,
+    };
+  } catch {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
+
 module.exports = {
   addToCart,
   updateCart,
+  updateCartGuest,
   deleteProductInCart,
   getProductInCart,
   getCart,
+  mergeCart,
 };

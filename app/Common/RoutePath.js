@@ -21,7 +21,9 @@ exports.CART_PATH = {
   DELETE_CART: "delete-cart",
   GET_PRODUCT_CART: "get-product-cart",
   UPDATE_CART: "update-cart",
+  UPDATE_CART_GUEST: "update-cart-guest",
   GET_CART: "get-cart",
+  MERGE_CART: "merge-cart",
 };
 
 exports.MOBILE_BRAND_PATH = {
@@ -42,6 +44,7 @@ exports.MOBILE_MODEL_PATH = {
 
 exports.ORDER_PATH = {
   CREATE: "create",
+  CREATE_GUEST: "create-guest",
   GET_BY_STATUS_AND_USER: "get-by-status-and-user",
   GET_ALL_BY_USER: "get-all-by-user",
   CANCEL: "cancel",
@@ -69,6 +72,7 @@ exports.PRODUCT_PATH = {
   GET_ALL: "get-all",
   UPDATE: "update",
   FILTER: "filter",
+  GET_GROUP_BY_BRAND: "get-group-by-brand",
 };
 
 exports.USER_PATH = {
