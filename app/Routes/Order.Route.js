@@ -49,4 +49,8 @@ router
   .route(`/${ORDER_PATH.FILTER_BY_BRANCH}`)
   .get([validateQuery(schema.filterByBranch)], controller.handleFilterByBranch);
 
+router
+  .route(`/${ORDER_PATH.CREATE_GUEST}`)
+  .post([validateBody(schema.create)], controller.handleCreateForGuest);
+
 module.exports = router;

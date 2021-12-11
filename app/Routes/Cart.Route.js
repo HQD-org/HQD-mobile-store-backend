@@ -32,4 +32,15 @@ router
   .route(`/${CART_PATH.GET_CART}`)
   .get([verifyToken], controller.handleGetCart);
 
+router
+  .route(`/${CART_PATH.UPDATE_CART_GUEST}`)
+  .post([validateBody(schema.update)], controller.handleUpdateCartGuest);
+
+router
+  .route(`/${CART_PATH.MERGE_CART}`)
+  .post(
+    [validateBody(schema.mergeCart), verifyToken],
+    controller.handleMergeCart
+  );
+
 module.exports = router;

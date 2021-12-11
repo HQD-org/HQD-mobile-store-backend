@@ -6,6 +6,7 @@ const {
   findById,
   getAll,
   filter,
+  getProductGroupByBrand,
 } = require("../Services/Product.Service");
 
 const handleCreateProduct = async (req, res) => {
@@ -50,6 +51,13 @@ const handleFilter = async (req, res) => {
   return sendError(res, result.message, result.status);
 };
 
+const handleGetProductGroupByBrand = async (req, res) => {
+  const result = await getProductGroupByBrand(req.query);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
 module.exports = {
   handleCreateProduct,
   handleUpdateProduct,
@@ -57,4 +65,5 @@ module.exports = {
   handleFindById,
   handleGetAll,
   handleFilter,
+  handleGetProductGroupByBrand,
 };

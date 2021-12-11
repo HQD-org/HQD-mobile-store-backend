@@ -1,4 +1,4 @@
-const { MobileModel, Product } = require("../Models/Index.Model");
+const { MobileModel, Product, MobileBrand } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
@@ -359,6 +359,85 @@ const filter = async (query) => {
   };
 };
 
+const getProductGroupByBrand = async (query) => {
+  try {
+    let { itemPerPage, page } = query;
+    itemPerPage = ~~itemPerPage || 12;
+    page = ~~page || 1;
+    const brands = await MobileBrand.find({});
+    const data = await Promise.all(
+      brands.map(async (brand) => {
+        const products = await Product.aggregate([
+          {
+            $lookup: {
+              from: "mobilemodels",
+              localField: "idModel",
+              foreignField: "_id",
+              as: "model",
+            },
+          },
+          {
+            $unwind: {
+              path: "$model",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: "mobilebrands",
+              localField: "model.idBrand",
+              foreignField: "_id",
+              as: "brand",
+            },
+          },
+          {
+            $unwind: {
+              path: "$brand",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $match: { "brand._id": brand._id },
+          },
+          {
+            $facet: {
+              data: [
+                {
+                  $sort: { createdAt: -1 },
+                },
+                { $skip: itemPerPage * page - itemPerPage },
+                { $limit: itemPerPage },
+              ],
+              info: [
+                {
+                  $count: "count",
+                },
+              ],
+            },
+          },
+        ]);
+        return { list: products[0].data, brand: brand.name };
+      })
+    );
+
+    return {
+      success: true,
+      message: {
+        ENG: "Get product group by brand successfully",
+        VN: "Lấy sản phẩm theo thương hiệu thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+      data: data,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
+
 module.exports = {
   createProduct,
   updateProduct,
@@ -366,4 +445,5 @@ module.exports = {
   findById,
   getAll,
   filter,
+  getProductGroupByBrand,
 };

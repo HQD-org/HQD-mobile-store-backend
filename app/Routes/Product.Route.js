@@ -39,4 +39,8 @@ router.route(`/${PRODUCT_PATH.GET_ALL}`).get(controller.handleGetAll);
 
 router.route(`/${PRODUCT_PATH.FILTER}`).get(controller.handleFilter);
 
+router
+  .route(`/${PRODUCT_PATH.GET_GROUP_BY_BRAND}`)
+  .get(controller.handleGetProductGroupByBrand);
+
 module.exports = router;

@@ -8,10 +8,11 @@ const cart = {
     type: [
       {
         idProduct: { type: Schema.Types.ObjectId, ref: "Product" },
+        name: DEFAULT_MODEL.stringRequire,
         quantity: { ...DEFAULT_MODEL.number, default: 1 },
         price: DEFAULT_MODEL.number,
-        color: { ...DEFAULT_MODEL.stringRequire, default: "" },
-        image: { ...DEFAULT_MODEL.stringRequire, default: "" },
+        color: DEFAULT_MODEL.stringRequire,
+        image: DEFAULT_MODEL.stringRequire,
       },
     ],
     default: [],

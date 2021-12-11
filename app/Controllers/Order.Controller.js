@@ -1,6 +1,7 @@
 const { sendError, sendSuccess } = require("./Controller");
 const {
   create,
+  createForGuest,
   changeStatus,
   cancel,
   filterByBranch,
@@ -62,8 +63,17 @@ const handleFilterByBranch = async (req, res) => {
   return sendError(res, result.message, result.status);
 };
 
+// oder controller for guest
+const handleCreateForGuest = async (req, res) => {
+  const result = await createForGuest(req.body);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
 module.exports = {
   handleCreate,
+  handleCreateForGuest,
   handleChangeStatus,
   handleCancel,
   handleGetByStatusAndUser,

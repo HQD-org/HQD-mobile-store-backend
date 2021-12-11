@@ -5,7 +5,7 @@ const ObjectId = mongoose.Types.ObjectId;
 
 const create = async (idUser, body) => {
   try {
-  body.receiveInfo.status = "cod";
+    body.receiveInfo.status = "cod";
     const newOrder = await Order.create({
       ...body,
       user: idUser,
@@ -328,8 +328,71 @@ const filterByBranch = async (query) => {
   }
 };
 
+// order service  for guest
+const createForGuest = async (body) => {
+  try {
+    body.receiveInfo.status = "cod";
+    const newOrder = await Order.create({
+      ...body,
+      idBranch: body.idBranch || "61a23e0527b5b90016616975",
+    });
+    if (!newOrder) {
+      return {
+        status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+        success: false,
+        message: {
+          ENG: "Create Order fail",
+          VN: "Tạo đơn hàng thất bại",
+        },
+      };
+    }
+    // chon chi nhanh tru so luong san pham, kho qua lam random tam :)))
+    for (const p of body.products) {
+      // trừ sản phẩm trong kho
+      await Product.findOneAndUpdate(
+        {
+          _id: ObjectId(p.idProduct),
+          color: {
+            $elemMatch: {
+              name: p.color,
+              quantityInfo: {
+                $elemMatch: {
+                  quantity: { $gte: p.quantity },
+                  idBranch: body.idBranch
+                    ? ObjectId(body.idBranch)
+                    : ObjectId("61a23e0527b5b90016616975"),
+                },
+              },
+            },
+          },
+        },
+        {
+          $inc: { "color.$.quantityInfo.$[].quantity": -p.quantity },
+        }
+      );
+    }
+
+    return {
+      data: newOrder,
+      success: true,
+      message: {
+        ENG: "Create Order successfully",
+        VN: "Tạo đơn hàng thành công",
+      },
+      status: HTTP_STATUS_CODE.CREATE,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
+
 module.exports = {
   create,
+  createForGuest,
   changeStatus,
   cancel,
   filterByBranch,
