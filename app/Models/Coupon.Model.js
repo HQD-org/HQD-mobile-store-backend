@@ -1,16 +1,20 @@
 const mongoose = require("mongoose");
 const { createSchema } = require("./Create.Model");
-const { DEFAULT_MODEL, STATUS } = require("../Common/Constants");
+const { DEFAULT_MODEL, STATUS, DISCOUNT_TYPE } = require("../Common/Constants");
 
 const coupon = {
   name: DEFAULT_MODEL.stringRequire,
   image: DEFAULT_MODEL.stringRequire,
   quantity: DEFAULT_MODEL.number,
-  discountByAmount: DEFAULT_MODEL.boolean,
-  discountByPercent: DEFAULT_MODEL.booleanFalse,
-  discountAmount: DEFAULT_MODEL.number,
-  discountPercent: DEFAULT_MODEL.number,
+  discountBy: {
+    ...DEFAULT_MODEL.stringRequire,
+    default: DISCOUNT_TYPE.PERCENT,
+  },
+  minPriceToApply: DEFAULT_MODEL.number,
+  discountValue: DEFAULT_MODEL.number,
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },
+  maxDiscount: DEFAULT_MODEL.number,
+  startedDate: DEFAULT_MODEL.stringRequire,
   expiredDate: DEFAULT_MODEL.stringRequire,
   description: DEFAULT_MODEL.string,
 };

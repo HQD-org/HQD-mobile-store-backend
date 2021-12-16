@@ -81,3 +81,11 @@ exports.USER_PATH = {
   GET_ALL: "get-all",
   UPDATE: "update",
 };
+
+exports.COUPON_PATH = {
+  CREATE: "create",
+  FILTER: "filter",
+  GET_ALL: "get-all",
+  UPDATE: "update",
+  USE: "use",
+};
