@@ -79,3 +79,8 @@ exports.STATUS = {
   DELIVERING: "delivering",
   DELIVERED: "delivered",
 };
+
+exports.DISCOUNT_TYPE = {
+  PERCENT: "percent",
+  AMOUNT: "amount",
+};
