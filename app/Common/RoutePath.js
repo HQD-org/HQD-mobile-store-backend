@@ -91,4 +91,5 @@ exports.COUPON_PATH = {
   USE: "use",
   GENERATE_NAME: "generate-name",
   FINDBYNAME: "find-by-name",
+  APPLY: "apply",
 };

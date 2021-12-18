@@ -27,8 +27,8 @@ router
 router.route(`/${COUPON_PATH.FILTER}`).get(controller.handleFilter);
 
 router
-  .route(`/${COUPON_PATH.USE}`)
-  .get([validateBody(schema.use)], controller.handleUse);
+  .route(`/${COUPON_PATH.APPLY}`)
+  .post([validateBody(schema.apply)], controller.handleApply);
 
 router
   .route(`/${COUPON_PATH.GENERATE_NAME}`)
@@ -37,6 +37,8 @@ router
     controller.handleGenerateUniqueName
   );
 
-router.route(`/${COUPON_PATH.FINDBYNAME}`).get(controller.handleFindCouponByName);
+router
+  .route(`/${COUPON_PATH.FINDBYNAME}`)
+  .get(controller.handleFindCouponByName);
 
 module.exports = router;
