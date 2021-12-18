@@ -63,6 +63,7 @@ exports.PREFIX_PATH = {
   ORDER: "order",
   PRODUCT: "product",
   USER: "user",
+  COUPON:"coupon"
 };
 
 exports.PRODUCT_PATH = {
@@ -80,4 +81,14 @@ exports.USER_PATH = {
   FILTER: "filter",
   GET_ALL: "get-all",
   UPDATE: "update",
+};
+
+exports.COUPON_PATH = {
+  CREATE: "create",
+  FILTER: "filter",
+  GET_ALL: "get-all",
+  UPDATE: "update",
+  USE: "use",
+  FINDBYNAME:"find-by-name",
+ 
 };

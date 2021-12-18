@@ -137,6 +137,7 @@ const login = async (username, password) => {
     }
 
     const isCorrectPassword = await bcrypt.compare(password, account.password);
+
     if (!isCorrectPassword) {
       return {
         message: {

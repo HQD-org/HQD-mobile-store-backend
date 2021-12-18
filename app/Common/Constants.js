@@ -78,4 +78,11 @@ exports.STATUS = {
   CONFIRMED: "confirmed",
   DELIVERING: "delivering",
   DELIVERED: "delivered",
+  PERCENTAGE:'percentage',
+  AMOUNT:'amount'
+};
+
+exports.DISCOUNT_TYPE = {
+  PERCENT: "percent",
+  AMOUNT: "amount",
 };
