@@ -34,7 +34,7 @@ exports.schema = {
     maxDiscount: Joi.number(),
     discountValue: Joi.number(),
     startedDate: Joi.date(),
-    expiryDate: Joi.date(),
+    expiredDate: Joi.date(),
     description: Joi.string(),
   }),
   use: Joi.object().keys({
