@@ -1,6 +1,6 @@
 const Joi = require("@hapi/joi");
 const { REGEX } = require("../Common/Regex");
-const { STATUS } = require("../Common/Constants");
+const { STATUS, DISCOUNT_TYPE } = require("../Common/Constants");
 
 exports.schema = {
   create: Joi.object().keys({
@@ -10,7 +10,9 @@ exports.schema = {
       .required(),
     quantity: Joi.number().required(),
     image: Joi.string().required(),
-    discountBy: Joi.string().valid(STATUS.PERCENTAGE, STATUS.AMOUNT).required(),
+    discountBy: Joi.string()
+      .valid(DISCOUNT_TYPE.PERCENT, DISCOUNT_TYPE.AMOUNT)
+      .required(),
     minPriceToApply: Joi.number().required(),
     discountValue: Joi.number().required(),
     maxDiscount: Joi.number().required(),
@@ -19,7 +21,6 @@ exports.schema = {
     description: Joi.string(),
   }),
   update: Joi.object().keys({
-    // name: Joi.string().regex(REGEX.UNICODE_STRING),
     id: Joi.string().regex(REGEX.ID_MONGO).required(),
     status: Joi.string().valid(
       STATUS.ACTIVE,
@@ -27,7 +28,7 @@ exports.schema = {
       STATUS.OUT_OF_STOCK
     ),
     image: Joi.string(),
-    discountBy: Joi.string().valid(STATUS.PERCENTAGE, STATUS.AMOUNT),
+    discountBy: Joi.string().valid(DISCOUNT_TYPE.PERCENT, DISCOUNT_TYPE.AMOUNT),
     minPriceToApply: Joi.number(),
     discountValue: Joi.number(),
     expiryDate: Joi.date(),

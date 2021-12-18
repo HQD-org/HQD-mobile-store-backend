@@ -1,6 +1,6 @@
 const { Coupon } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
-const { mapToRegexExactly } = require("../Common/Helper");
+const { mapToRegexExactly, generateString } = require("../Common/Helper");
 
 const create = async (body) => {
   try {
@@ -152,6 +152,31 @@ const use = async (body) => {
   }
 };
 
+const generateUniqueName = async () => {
+  try {
+    while (true) {
+      const name = generateString(10, true);
+      const coupon = await Coupon.findOne({ name });
+      if (!coupon)
+        return {
+          success: true,
+          message: {
+            ENG: "Generate coupon successfully",
+            VN: "Tạo mã khuyến mãi thành công",
+          },
+          status: HTTP_STATUS_CODE.CREATE,
+          data: name,
+        };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+      status: error.status,
+    };
+  }
+};
+
 const findByName = async (query)=>{
   try{
     const couponName = await Coupon.findOne({name : query.name});
@@ -191,5 +216,6 @@ module.exports = {
   getAll,
   update,
   use,
+  generateUniqueName,
   findByName
 };
