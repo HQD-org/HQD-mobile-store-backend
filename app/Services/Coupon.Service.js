@@ -49,6 +49,7 @@ const filter = async (query) => {
     queryObj.name = new RegExp(name, "i");
   }
   const coupons = await Coupon.find(queryObj)
+    .sort({ createdAt: -1 })
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
   const totalItem = await Coupon.find(queryObj).countDocuments();
@@ -66,7 +67,7 @@ const filter = async (query) => {
 
 const getAll = async () => {
   try {
-    const brands = await Coupon.find();
+    const brands = await Coupon.find().sort({ createdAt: -1 });
     return {
       data: brands,
       success: true,
@@ -177,20 +178,18 @@ const generateUniqueName = async () => {
   }
 };
 
-const findByName = async (query)=>{
-  try{
-    const couponName = await Coupon.findOne({name : query.name});
-    if(!couponName)
-    {
-      return{
+const findByName = async (query) => {
+  try {
+    const couponName = await Coupon.findOne({ name: query.name });
+    if (!couponName) {
+      return {
         success: false,
         message: {
           ENG: "Coupon not found",
           VN: "Không tìm thấy mã khuyến mãi",
         },
         status: HTTP_STATUS_CODE.NOT_FOUND,
-      }
-
+      };
     }
     return {
       data: couponName,
@@ -201,14 +200,14 @@ const findByName = async (query)=>{
       },
       status: HTTP_STATUS_CODE.OK,
     };
-  }catch(err){
+  } catch (err) {
     return {
       success: false,
       message: err.message,
       status: err.status,
     };
   }
-}
+};
 
 module.exports = {
   create,
@@ -217,5 +216,5 @@ module.exports = {
   update,
   use,
   generateUniqueName,
-  findByName
+  findByName,
 };

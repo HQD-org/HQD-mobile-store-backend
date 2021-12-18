@@ -27,10 +27,12 @@ exports.schema = {
       STATUS.EXPIRED,
       STATUS.OUT_OF_STOCK
     ),
+    quantity: Joi.number(),
     image: Joi.string(),
     discountBy: Joi.string().valid(DISCOUNT_TYPE.PERCENT, DISCOUNT_TYPE.AMOUNT),
     minPriceToApply: Joi.number(),
     discountValue: Joi.number(),
+    startedDate: Joi.date(),
     expiryDate: Joi.date(),
     description: Joi.string(),
   }),
