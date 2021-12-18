@@ -3,7 +3,6 @@ const router = express.Router();
 const controller = require("../Controllers/Coupon.Controller");
 const { schema } = require("../Validations/Coupon.Validation");
 const { validateBody } = require("../Validations/Validation");
-const { validateQuery } = require("../Validations/Validation");
 const { ROLE } = require("../Common/Constants");
 const { isRole } = require("../Middlewares/Role.Middleware");
 const { verifyToken } = require("../Middlewares/Token.Middleware");
@@ -30,5 +29,14 @@ router.route(`/${COUPON_PATH.FILTER}`).get(controller.handleFilter);
 router
   .route(`/${COUPON_PATH.USE}`)
   .get([validateBody(schema.use)], controller.handleUse);
+
+router
+  .route(`/${COUPON_PATH.GENERATE_NAME}`)
+  .get(
+    [verifyToken, isRole([ROLE.ADMIN])],
+    controller.handleGenerateUniqueName
+  );
+
+router.route(`/${COUPON_PATH.FINDBYNAME}`).get(controller.handleFindCouponByName);
 
 module.exports = router;
