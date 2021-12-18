@@ -37,4 +37,6 @@ router
     controller.handleGenerateUniqueName
   );
 
+router.route(`/${COUPON_PATH.FINDBYNAME}`).get(controller.handleFindCouponByName);
+
 module.exports = router;

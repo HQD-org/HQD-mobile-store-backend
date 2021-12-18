@@ -30,7 +30,8 @@ const queryString = require('query-string');
       timeReceive,
      // status,
       message,
-      dollar2f
+      dollar2f,
+      price
     });
 
     console.log("info: "+ reqQuery);
@@ -41,8 +42,8 @@ const queryString = require('query-string');
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url: `http:///localhost:8080/payment/success?${reqQuery}`,
-        cancel_url: "http://localhost:8080/payment/cancel",
+        return_url: `https://hqd-mobile-store-api.herokuapp.com/payment/success?${reqQuery}`, //http:///localhost:8080
+        cancel_url: "https://hqd-mobile-store-api.herokuapp.com/payment/cancel",
       },
       transactions: [
         {
@@ -106,12 +107,12 @@ const queryString = require('query-string');
       timeReceive,
      // status,
       message,
-      dollar2f
+      dollar2f,
+      price
     } = req.query;
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
     //const price = req.query.price;
-    const price = req.query.dollar2f;
     console.log(price);
     const execute_payment_json = {
       payer_id: payerId,
@@ -196,7 +197,7 @@ const queryString = require('query-string');
             const newOrder = new Order({
                 products: products,
                 idBranch:idB,
-                totalPrice: totalPrice,
+                totalPrice: price,
                 coupon: coupon,
                 user: idUser,
                 receiveInfo: reInfo,

@@ -177,6 +177,39 @@ const generateUniqueName = async () => {
   }
 };
 
+const findByName = async (query)=>{
+  try{
+    const couponName = await Coupon.findOne({name : query.name});
+    if(!couponName)
+    {
+      return{
+        success: false,
+        message: {
+          ENG: "Coupon not found",
+          VN: "Không tìm thấy mã khuyến mãi",
+        },
+        status: HTTP_STATUS_CODE.NOT_FOUND,
+      }
+
+    }
+    return {
+      data: couponName,
+      success: true,
+      message: {
+        ENG: "Use coupon successfully",
+        VN: "Sử dụng mã khuyến mãi thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    };
+  }catch(err){
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+}
+
 module.exports = {
   create,
   filter,
@@ -184,4 +217,5 @@ module.exports = {
   update,
   use,
   generateUniqueName,
+  findByName
 };
