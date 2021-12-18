@@ -14,8 +14,8 @@ const coupon = {
   discountValue: DEFAULT_MODEL.number,
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.ACTIVE },
   maxDiscount: DEFAULT_MODEL.number,
-  startedDate: DEFAULT_MODEL.stringRequire,
-  expiredDate: DEFAULT_MODEL.stringRequire,
+  startedDate: DEFAULT_MODEL.date,
+  expiredDate: DEFAULT_MODEL.date,
   description: DEFAULT_MODEL.string,
 };
 

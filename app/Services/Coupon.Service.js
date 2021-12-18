@@ -119,7 +119,7 @@ const update = async (body) => {
   }
 };
 
-const use = async (body) => {
+const apply = async (body) => {
   try {
     const coupon = await Coupon.findOneAndUpdate(
       { _id: body.id },
@@ -180,7 +180,11 @@ const generateUniqueName = async () => {
 
 const findByName = async (query) => {
   try {
-    const couponName = await Coupon.findOne({ name: query.name });
+    const couponName = await Coupon.findOne({
+      name: query.name,
+      quantity: { $gt: 0 },
+      expiredDate: { $gte: new Date() },
+    });
     if (!couponName) {
       return {
         success: false,
@@ -214,7 +218,7 @@ module.exports = {
   filter,
   getAll,
   update,
-  use,
+  apply,
   generateUniqueName,
   findByName,
 };

@@ -37,7 +37,7 @@ exports.schema = {
     expiredDate: Joi.date(),
     description: Joi.string(),
   }),
-  use: Joi.object().keys({
+  apply: Joi.object().keys({
     id: Joi.string().regex(REGEX.ID_MONGO).required(),
   }),
 };
