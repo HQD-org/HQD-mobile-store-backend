@@ -31,6 +31,7 @@ exports.schema = {
     image: Joi.string(),
     discountBy: Joi.string().valid(DISCOUNT_TYPE.PERCENT, DISCOUNT_TYPE.AMOUNT),
     minPriceToApply: Joi.number(),
+    maxDiscount: Joi.number(),
     discountValue: Joi.number(),
     startedDate: Joi.date(),
     expiryDate: Joi.date(),
