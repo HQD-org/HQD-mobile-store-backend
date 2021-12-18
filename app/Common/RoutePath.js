@@ -57,6 +57,7 @@ exports.PREFIX_PATH = {
   ADMIN: "admin",
   AUTH: "auth",
   CART: "cart",
+  COUPON: "coupon",
   BRANCH: "branch",
   MOBILE_BRAND: "mobile-brand",
   MOBILE_MODEL: "mobile-model",
@@ -88,4 +89,5 @@ exports.COUPON_PATH = {
   GET_ALL: "get-all",
   UPDATE: "update",
   USE: "use",
+  GENERATE_NAME: "generate-name",
 };
