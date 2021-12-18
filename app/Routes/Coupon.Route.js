@@ -31,4 +31,6 @@ router
   .route(`/${COUPON_PATH.USE}`)
   .get([validateBody(schema.use)], controller.handleUse);
 
+router.route(`/${COUPON_PATH.FINDBYNAME}`).get(controller.handleFindCouponByName);
+
 module.exports = router;
