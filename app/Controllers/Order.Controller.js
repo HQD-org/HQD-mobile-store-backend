@@ -8,6 +8,8 @@ const {
   getByStatusAndUser,
   getAllByUser,
   getByStatusAndBranch,
+  getProfitByYear,
+  getTop10BestSellerProduct,
 } = require("../Services/Order.Service");
 
 const handleCreate = async (req, res) => {
@@ -63,9 +65,23 @@ const handleFilterByBranch = async (req, res) => {
   return sendError(res, result.message, result.status);
 };
 
-// oder controller for guest
 const handleCreateForGuest = async (req, res) => {
+  // oder controller for guest
   const result = await createForGuest(req.body);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
+const handleGetProfitByYear = async (req, res) => {
+  const result = await getProfitByYear(req.query);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
+const handleGetTop10BestSellerProduct = async (req, res) => {
+  const result = await getTop10BestSellerProduct(req.query);
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
@@ -80,4 +96,6 @@ module.exports = {
   handleGetAllByUser,
   handleGetByStatusAndBranch,
   handleFilterByBranch,
+  handleGetProfitByYear,
+  handleGetTop10BestSellerProduct,
 };

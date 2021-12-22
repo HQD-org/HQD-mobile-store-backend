@@ -51,6 +51,8 @@ exports.ORDER_PATH = {
   CHANGE_STATUS: "change-status",
   GET_BY_STATUS_AND_BRANCH: "get-by-status-and-branch",
   FILTER_BY_BRANCH: "filter-by-branch",
+  GET_PROFIT_BY_YEAR: "get-profit-by-year",
+  GET_TOP_10_BEST_SELLER_PRODUCT: "get-top-10-best-seller-product",
 };
 
 exports.PREFIX_PATH = {
