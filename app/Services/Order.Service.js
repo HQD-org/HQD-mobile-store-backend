@@ -390,6 +390,106 @@ const createForGuest = async (body) => {
   }
 };
 
+const getProfitByYear = async (query) => {
+  try {
+    let { year, idBranch } = query;
+    year = ~~year || new Date().getFullYear();
+    const queryObj = {
+      status: STATUS.DELIVERED,
+      updatedAt: {
+        $gte: new Date(`${year}-01-01`),
+        $lte: new Date(`${year}-12-31`),
+      },
+    };
+    if (idBranch) {
+      queryObj.idBranch = ObjectId(idBranch);
+    }
+    const result = await Order.aggregate([
+      {
+        $match: queryObj,
+      },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$updatedAt" },
+          },
+          total: { $sum: "$totalPrice" },
+        },
+      },
+    ]);
+    return {
+      success: true,
+      data: result,
+      message: {
+        ENG: "Get Profit by year successfully",
+        VN: "Lấy doanh thu theo năm thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
+
+const getTop10BestSellerProduct = async (query) => {
+  try {
+    let { year, idBranch } = query;
+    year = ~~year || new Date().getFullYear();
+    const queryObj = {
+      status: STATUS.DELIVERED,
+      updatedAt: {
+        $gte: new Date(`${year}-01-01`),
+        $lte: new Date(`${year}-12-31`),
+      },
+    };
+    if (idBranch) {
+      queryObj.idBranch = ObjectId(idBranch);
+    }
+    const result = await Order.aggregate([
+      {
+        $match: queryObj,
+      },
+      {
+        $unwind: "$products",
+      },
+      {
+        $group: {
+          _id: {
+            idProduct: "$products.idProduct",
+            name: "$products.name",
+            color: "$products.color",
+          },
+          total: { $sum: "$products.quantity" },
+        },
+      },
+      {
+        $sort: { total: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+    return {
+      success: true,
+      data: result,
+      message: {
+        ENG: "Get top 10 best seller product successfully",
+        VN: "Lấy top 10 sản phẩm bán chạy nhất thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
 module.exports = {
   create,
   createForGuest,
@@ -399,4 +499,6 @@ module.exports = {
   getAllByUser,
   getByStatusAndUser,
   getByStatusAndBranch,
+  getProfitByYear,
+  getTop10BestSellerProduct,
 };

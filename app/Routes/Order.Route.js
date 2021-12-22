@@ -53,4 +53,18 @@ router
   .route(`/${ORDER_PATH.CREATE_GUEST}`)
   .post([validateBody(schema.create)], controller.handleCreateForGuest);
 
+router
+  .route(`/${ORDER_PATH.GET_PROFIT_BY_YEAR}`)
+  .get(
+    [verifyToken, isRole([ROLE.ADMIN, ROLE.MANAGER_BRANCH])],
+    controller.handleGetProfitByYear
+  );
+
+router
+  .route(`/${ORDER_PATH.GET_TOP_10_BEST_SELLER_PRODUCT}`)
+  .get(
+    [verifyToken, isRole([ROLE.ADMIN, ROLE.MANAGER_BRANCH])],
+    controller.handleGetTop10BestSellerProduct
+  );
+
 module.exports = router;
