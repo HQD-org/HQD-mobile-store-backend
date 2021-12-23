@@ -3,7 +3,8 @@ const {
   getAll,
   create,
   update,
-  use,
+  apply,
+  generateUniqueName,
   findByName,
 } = require("../Services/Coupon.Service");
 const { sendError, sendSuccess } = require("./Controller");
@@ -36,8 +37,15 @@ const handleUpdate = async (req, res) => {
   return sendError(res, result.message, result.status);
 };
 
-const handleUse = async (req, res) => {
-  const result = await use(req.body);
+const handleApply = async (req, res) => {
+  const result = await apply(req.body);
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
+const handleGenerateUniqueName = async (req, res) => {
+  const result = await generateUniqueName();
   if (result.success)
     return sendSuccess(res, result.data, result.message, result.status);
   return sendError(res, result.message, result.status);
@@ -55,6 +63,7 @@ module.exports = {
   handleGetAll,
   handleCreate,
   handleUpdate,
-  handleUse,
-  handleFindCouponByName
+  handleApply,
+  handleGenerateUniqueName,
+  handleFindCouponByName,
 };

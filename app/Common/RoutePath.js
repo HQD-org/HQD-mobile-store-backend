@@ -51,19 +51,21 @@ exports.ORDER_PATH = {
   CHANGE_STATUS: "change-status",
   GET_BY_STATUS_AND_BRANCH: "get-by-status-and-branch",
   FILTER_BY_BRANCH: "filter-by-branch",
+  GET_PROFIT_BY_YEAR: "get-profit-by-year",
+  GET_TOP_10_BEST_SELLER_PRODUCT: "get-top-10-best-seller-product",
 };
 
 exports.PREFIX_PATH = {
   ADMIN: "admin",
   AUTH: "auth",
   CART: "cart",
+  COUPON: "coupon",
   BRANCH: "branch",
   MOBILE_BRAND: "mobile-brand",
   MOBILE_MODEL: "mobile-model",
   ORDER: "order",
   PRODUCT: "product",
   USER: "user",
-  COUPON:"coupon"
 };
 
 exports.PRODUCT_PATH = {
@@ -89,6 +91,7 @@ exports.COUPON_PATH = {
   GET_ALL: "get-all",
   UPDATE: "update",
   USE: "use",
-  FINDBYNAME:"find-by-name",
- 
+  GENERATE_NAME: "generate-name",
+  FINDBYNAME: "find-by-name",
+  APPLY: "apply",
 };

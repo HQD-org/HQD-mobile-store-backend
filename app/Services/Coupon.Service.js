@@ -1,6 +1,6 @@
 const { Coupon } = require("../Models/Index.Model");
 const { HTTP_STATUS_CODE } = require("../Common/Constants");
-const { mapToRegexExactly } = require("../Common/Helper");
+const { mapToRegexExactly, generateString } = require("../Common/Helper");
 
 const create = async (body) => {
   try {
@@ -49,6 +49,7 @@ const filter = async (query) => {
     queryObj.name = new RegExp(name, "i");
   }
   const coupons = await Coupon.find(queryObj)
+    .sort({ createdAt: -1 })
     .skip(itemPerPage * page - itemPerPage)
     .limit(itemPerPage);
   const totalItem = await Coupon.find(queryObj).countDocuments();
@@ -66,7 +67,7 @@ const filter = async (query) => {
 
 const getAll = async () => {
   try {
-    const brands = await Coupon.find();
+    const brands = await Coupon.find().sort({ createdAt: -1 });
     return {
       data: brands,
       success: true,
@@ -118,7 +119,7 @@ const update = async (body) => {
   }
 };
 
-const use = async (body) => {
+const apply = async (body) => {
   try {
     const coupon = await Coupon.findOneAndUpdate(
       { _id: body.id },
@@ -152,20 +153,47 @@ const use = async (body) => {
   }
 };
 
-const findByName = async (query)=>{
-  try{
-    const couponName = await Coupon.findOne({name : query.name});
-    if(!couponName)
-    {
-      return{
+const generateUniqueName = async () => {
+  try {
+    while (true) {
+      const name = generateString(10, true);
+      const coupon = await Coupon.findOne({ name });
+      if (!coupon)
+        return {
+          success: true,
+          message: {
+            ENG: "Generate coupon successfully",
+            VN: "Tạo mã khuyến mãi thành công",
+          },
+          status: HTTP_STATUS_CODE.CREATE,
+          data: name,
+        };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+      status: error.status,
+    };
+  }
+};
+
+const findByName = async (query) => {
+  try {
+    const couponName = await Coupon.findOne({
+      name: query.name,
+      quantity: { $gt: 0 },
+      expiredDate: { $gte: new Date() },
+    });
+    if (!couponName) {
+      return {
         success: false,
         message: {
           ENG: "Coupon not found",
           VN: "Không tìm thấy mã khuyến mãi",
         },
         status: HTTP_STATUS_CODE.NOT_FOUND,
-      }
-
+      };
     }
     return {
       data: couponName,
@@ -176,20 +204,21 @@ const findByName = async (query)=>{
       },
       status: HTTP_STATUS_CODE.OK,
     };
-  }catch(err){
+  } catch (err) {
     return {
       success: false,
       message: err.message,
       status: err.status,
     };
   }
-}
+};
 
 module.exports = {
   create,
   filter,
   getAll,
   update,
-  use,
-  findByName
+  apply,
+  generateUniqueName,
+  findByName,
 };
