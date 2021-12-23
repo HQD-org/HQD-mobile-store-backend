@@ -30,26 +30,4 @@ const sendMail = (to, subject, htmlContent) => {
   transporter.sendMail(options);
 };
 
-const sendMailContact = (fromEmail, fromPass, subject, htmlContent) => {
-  const transporter = nodeMailer.createTransport({
-    service: "gmail",
-    host: mailHost,
-    port: mailPort,
-    secure: true,
-    auth: {
-      user: fromEmail,
-      pass: fromPass,
-    },
-  });
-
-  const options = {
-    from: fromEmail,
-    to: ADMIN_EMAIL,
-    subject: subject,
-    html: htmlContent,
-  };
-
-  transporter.sendMail(options);
-};
-
-module.exports = {sendMail,sendMailContact};
+module.exports = sendMail;
