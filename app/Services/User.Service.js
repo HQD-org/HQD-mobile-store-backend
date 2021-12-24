@@ -1,11 +1,12 @@
-const { Account, User } = require("../Models/Index.Model");
-const { HTTP_STATUS_CODE } = require("../Common/Constants");
+const { Account, User, Branch } = require("../Models/Index.Model");
+const { HTTP_STATUS_CODE, ROLE } = require("../Common/Constants");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const {
   convertObjToArrayProps,
   mapToRegexContainMongoDbQuery,
 } = require("../Common/Helper");
+const { ObjectId } = require("mongodb");
 
 const createUser = async (body) => {
   try {
@@ -316,10 +317,38 @@ const filterUser = async (query) => {
   }
 };
 
+const getAllManagerBranchNoPosition = async () => {
+  try {
+    const listMangerHasPosition = await Branch.distinct("idManager", {});
+    const listManager = listMangerHasPosition.map((item) => ObjectId(item));
+    const options = { username: 1, _id: 1 };
+    const accounts = await Account.find(
+      { role: ROLE.MANAGER_BRANCH, _id: { $nin: listManager } },
+      options
+    );
+    return {
+      message: {
+        ENG: "Get list User successfully",
+        VN: "Lấy tất cả người dùng thành công",
+      },
+      data: accounts || [],
+      success: true,
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+      status: error.status,
+    };
+  }
+};
+
 module.exports = {
   createUser,
   filterUser,
   getAllUser,
   updateProfileUser,
   updateUser,
+  getAllManagerBranchNoPosition,
 };

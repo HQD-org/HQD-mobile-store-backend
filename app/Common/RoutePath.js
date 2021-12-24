@@ -83,6 +83,7 @@ exports.USER_PATH = {
   FILTER: "filter",
   GET_ALL: "get-all",
   UPDATE: "update",
+  GET_ALL_MANAGER_BRANCH: "get-all-manager-branch",
 };
 
 exports.COUPON_PATH = {

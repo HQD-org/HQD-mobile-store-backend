@@ -16,6 +16,7 @@ const branch = {
   },
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.OPEN },
   idManager: { type: Schema.Types.ObjectId, ref: "Account" },
+  grandOpeningDate: DEFAULT_MODEL.date,
 };
 
 module.exports = Branch = mongoose.model("Branch", createSchema(branch));
