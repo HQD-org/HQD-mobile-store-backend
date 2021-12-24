@@ -73,4 +73,11 @@ router
     controller.handleUpdateUser
   );
 
+router
+  .route(`/${PREFIX_PATH.USER}/${USER_PATH.GET_ALL_MANAGER_BRANCH}`)
+  .get(
+    [verifyToken, isRole([ROLE.ADMIN])],
+    controller.handleGetAllManagerBranch
+  );
+
 module.exports = router;

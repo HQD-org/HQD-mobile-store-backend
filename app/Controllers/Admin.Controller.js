@@ -5,6 +5,7 @@ const {
   filterUser,
   getAllUser,
   updateUser,
+  getAllManagerBranchNoPosition,
 } = require("../Services/User.Service");
 const { sendError, sendSuccess } = require("./Controller");
 
@@ -67,6 +68,13 @@ const handleUpdateUser = async (req, res) => {
   return sendError(res, result.message, result.status);
 };
 
+const handleGetAllManagerBranch = async (req, res) => {
+  const result = await getAllManagerBranchNoPosition();
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
 module.exports = {
   handleCreateBrand,
   handleUpdateBrand,
@@ -76,4 +84,5 @@ module.exports = {
   handleFilterUser,
   handleGetAllUser,
   handleUpdateUser,
+  handleGetAllManagerBranch,
 };

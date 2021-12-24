@@ -13,6 +13,7 @@ exports.schema = {
     }).required(),
     status: Joi.string().valid(STATUS.OPEN, STATUS.CLOSE),
     idManager: Joi.string().regex(REGEX.ID_MONGO).required(),
+    grandOpeningDate: Joi.date().required(),
   }),
   update: Joi.object().keys({
     name: Joi.string().regex(REGEX.UNICODE_STRING),
@@ -25,5 +26,6 @@ exports.schema = {
     }),
     idManager: Joi.string().regex(REGEX.ID_MONGO),
     status: Joi.string().valid(STATUS.OPEN, STATUS.CLOSE),
+    grandOpeningDate: Joi.date(),
   }),
 };
