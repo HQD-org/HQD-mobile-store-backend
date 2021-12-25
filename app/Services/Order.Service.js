@@ -140,6 +140,20 @@ const getByStatusAndUser = async (idUser, query) => {
     const result = await Order.aggregate([
       { $match: { $and: [{ status }, { user: idUser }] } },
       {
+        $lookup: {
+          from: "branches",
+          localField: "idBranch",
+          foreignField: "_id",
+          as: "branch",
+        },
+      },
+      {
+        $unwind: {
+          path: "$branch",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $facet: {
           data: [
             {
@@ -223,6 +237,20 @@ const getByStatusAndBranch = async (query) => {
     const result = await Order.aggregate([
       { $match: { status, idBranch: ObjectId(idBranch) } },
       {
+        $lookup: {
+          from: "branches",
+          localField: "idBranch",
+          foreignField: "_id",
+          as: "branch",
+        },
+      },
+      {
+        $unwind: {
+          path: "$branch",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $facet: {
           data: [
             {
@@ -284,6 +312,20 @@ const filterByBranch = async (query) => {
     }
     const result = await Order.aggregate([
       { $match: { idBranch: ObjectId(idBranch) } },
+      {
+        $lookup: {
+          from: "branches",
+          localField: "idBranch",
+          foreignField: "_id",
+          as: "branch",
+        },
+      },
+      {
+        $unwind: {
+          path: "$branch",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       {
         $facet: {
           data: [
@@ -490,6 +532,7 @@ const getTop10BestSellerProduct = async (query) => {
     };
   }
 };
+
 module.exports = {
   create,
   createForGuest,
