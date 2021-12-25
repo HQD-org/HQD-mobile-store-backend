@@ -7,6 +7,7 @@ const MobileModel = require("./MobileModel.Model");
 const Order = require("./Order.Model");
 const Product = require("./Product.Model");
 const User = require("./User.Model");
+const Question = require("./Question.Model");
 
 module.exports = {
   Account,
@@ -18,4 +19,5 @@ module.exports = {
   Order,
   Product,
   User,
+  Question,
 };
