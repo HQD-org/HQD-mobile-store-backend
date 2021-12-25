@@ -25,7 +25,7 @@ exports.schema = {
       .keys({
         receiver: Joi.string().regex(REGEX.UNICODE_STRING).required(),
         phone: Joi.string().regex(REGEX.PHONE_VN).required(),
-        address: Joi.string().required(),
+        address: Joi.string(),
         receiveAt: Joi.string().valid(RECEIVE_TYPE.HOME, RECEIVE_TYPE.STORE),
         timeReceive: Joi.string().valid(
           RECEIVE_TYPE.ALL_DAY,

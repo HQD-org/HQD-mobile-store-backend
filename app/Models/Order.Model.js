@@ -25,7 +25,7 @@ const order = {
     type: {
       receiver: DEFAULT_MODEL.stringRequire,
       phone: DEFAULT_MODEL.stringPhone,
-      address: DEFAULT_MODEL.stringRequire,
+      address: DEFAULT_MODEL.string,
       receiveAt: { ...DEFAULT_MODEL.stringRequire, default: RECEIVE_TYPE.HOME },
       timeReceive: {
         ...DEFAULT_MODEL.stringRequire,

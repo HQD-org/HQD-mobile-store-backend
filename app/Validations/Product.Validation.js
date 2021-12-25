@@ -71,4 +71,17 @@ exports.schema = {
       )
       .required(),
   }),
+  getBranchHaveProductInCart: Joi.object().keys({
+    products: Joi.array()
+      .items(
+        Joi.object()
+          .keys({
+            idProduct: Joi.string().regex(REGEX.ID_MONGO).required(),
+            quantity: Joi.number().required(),
+            color: Joi.string().required(),
+          })
+          .required()
+      )
+      .required(),
+  }),
 };
