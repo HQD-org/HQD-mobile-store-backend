@@ -56,6 +56,7 @@ const updateProfileUser = async (idUser, body) => {
   try {
     const isExistPhone = await User.findOne({
       phone: body.phone,
+      _id: { $ne: idUser },
     });
     if (isExistPhone) {
       return {
@@ -84,7 +85,7 @@ const updateProfileUser = async (idUser, body) => {
     return {
       message: {
         ENG: "Update user successfully",
-        VN: "Sửa User thành công",
+        VN: "Cập nhật thông tin thành công",
       },
       success: true,
       status: HTTP_STATUS_CODE.OK,
