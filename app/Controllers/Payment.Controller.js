@@ -44,12 +44,12 @@ const OrderPaypal = async (req, res, next) => {
     redirect_urls: {
       return_url:
         req.body.from === "web"
-          ? `http://localhost:8080/payment/success-web?${reqQuery}`
-          : `http://localhost:8080/payment/success?${reqQuery}`, //http:///localhost:8080
+          ? `https://hqd-mobile-store-api.herokuapp.com/payment/success-web?${reqQuery}`
+          : `https://hqd-mobile-store-api.herokuapp.com/payment/success?${reqQuery}`, //http:///localhost:8080
       cancel_url:
         req.body.from === "web"
-          ? "http://localhost:8080/payment/cancel-web"
-          : "http://localhost:8080/payment/cancel",
+          ? "https://hqd-mobile-store-api.herokuapp.com/payment/cancel-web"
+          : "https://hqd-mobile-store-api.herokuapp.com/payment/cancel",
     },
     transactions: [
       {
