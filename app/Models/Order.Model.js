@@ -19,7 +19,7 @@ const order = {
   },
   idBranch: { type: Schema.Types.ObjectId, ref: "Branch" },
   totalPrice: DEFAULT_MODEL.number,
-  coupon: DEFAULT_MODEL.stringRequire,
+  coupon: DEFAULT_MODEL.string,
   user: DEFAULT_MODEL.stringIdMongo,
   receiveInfo: {
     type: {
