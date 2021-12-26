@@ -5,6 +5,7 @@ const {
   updateBranch,
   searchBranch,
   getByListId,
+  getAllBranchOpen,
 } = require("../Services/Branch.Service");
 
 const handleCreateBranch = async (req, res) => {
@@ -41,10 +42,18 @@ const handleGetByListId = async (req, res) => {
   return sendError(res, result.message, result.status);
 };
 
+const handleGetAllBranchOpen = async (req, res) => {
+  const result = await getAllBranchOpen();
+  if (result.success)
+    return sendSuccess(res, result.data, result.message, result.status);
+  return sendError(res, result.message, result.status);
+};
+
 module.exports = {
   handleCreateBranch,
   handleGetAllBranch,
   handleUpdateBranch,
   handleSearchBranch,
   handleGetByListId,
+  handleGetAllBranchOpen,
 };
