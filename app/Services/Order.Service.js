@@ -6,10 +6,11 @@ const ObjectId = mongoose.Types.ObjectId;
 const create = async (idUser, body) => {
   try {
     body.receiveInfo.status = "cod";
+    const idBranch = body.idBranch || "61a23e0527b5b90016616975";
     const newOrder = await Order.create({
       ...body,
       user: idUser,
-      idBranch: body.idBranch || "61a23e0527b5b90016616975",
+      idBranch,
     });
     if (!newOrder) {
       return {
@@ -21,30 +22,25 @@ const create = async (idUser, body) => {
         },
       };
     }
-    // chon chi nhanh tru so luong san pham, kho qua lam random tam :)))
     for (const p of body.products) {
       // trừ sản phẩm trong kho
-      await Product.findOneAndUpdate(
-        {
-          _id: ObjectId(p.idProduct),
-          color: {
-            $elemMatch: {
-              name: p.color,
-              quantityInfo: {
-                $elemMatch: {
-                  quantity: { $gte: p.quantity },
-                  idBranch: body.idBranch
-                    ? ObjectId(body.idBranch)
-                    : ObjectId("61a23e0527b5b90016616975"),
-                },
-              },
-            },
-          },
-        },
-        {
-          $inc: { "color.$.quantityInfo.$[].quantity": -p.quantity },
+      const productInDb = await Product.findOne({ _id: ObjectId(p.idProduct) });
+      if (productInDb) {
+        const idx = productInDb.color.findIndex(
+          (item) => item.name === p.color
+        );
+        if (idx > -1) {
+          const color = productInDb.color[idx];
+          const newQuantityInfo = color.quantityInfo.map((q) => {
+            if (q.idBranch == idBranch) {
+              q.quantity -= p.quantity;
+            }
+            return q;
+          });
+          productInDb.color[idx].quantityInfo = newQuantityInfo;
+          productInDb.save();
         }
-      );
+      }
     }
 
     // xoa cart
@@ -77,6 +73,29 @@ const changeStatus = async (body) => {
         new: true,
       }
     );
+    if (body.status === STATUS.CANCEL) {
+      newOrder.products.forEach(async (p) => {
+        const productInDb = await Product.findOne({
+          _id: ObjectId(p.idProduct),
+        });
+        if (productInDb) {
+          const idx = productInDb.color.findIndex(
+            (item) => item.name === p.color
+          );
+          if (idx > -1) {
+            const color = productInDb.color[idx];
+            const newQuantityInfo = color.quantityInfo.map((q) => {
+              if (q.idBranch == newOrder.idBranch) {
+                q.quantity += p.quantity;
+              }
+              return q;
+            });
+            productInDb.color[idx].quantityInfo = newQuantityInfo;
+            productInDb.save();
+          }
+        }
+      });
+    }
     if (!newOrder) {
       return {
         success: false,
@@ -121,6 +140,23 @@ const cancel = async (idUser, body) => {
   }
   order.status = STATUS.CANCEL;
   await order.save();
+  order.products.forEach(async (p) => {
+    const productInDb = await Product.findOne({ _id: ObjectId(p.idProduct) });
+    if (productInDb) {
+      const idx = productInDb.color.findIndex((item) => item.name === p.color);
+      if (idx > -1) {
+        const color = productInDb.color[idx];
+        const newQuantityInfo = color.quantityInfo.map((q) => {
+          if (q.idBranch == order.idBranch) {
+            q.quantity += p.quantity;
+          }
+          return q;
+        });
+        productInDb.color[idx].quantityInfo = newQuantityInfo;
+        productInDb.save();
+      }
+    }
+  });
   return {
     data: order,
     success: true,
@@ -374,9 +410,10 @@ const filterByBranch = async (query) => {
 const createForGuest = async (body) => {
   try {
     body.receiveInfo.status = "cod";
+    const idBranch = body.idBranch || "61a23e0527b5b90016616975";
     const newOrder = await Order.create({
       ...body,
-      idBranch: body.idBranch || "61a23e0527b5b90016616975",
+      idBranch,
     });
     if (!newOrder) {
       return {
@@ -388,30 +425,25 @@ const createForGuest = async (body) => {
         },
       };
     }
-    // chon chi nhanh tru so luong san pham, kho qua lam random tam :)))
     for (const p of body.products) {
       // trừ sản phẩm trong kho
-      await Product.findOneAndUpdate(
-        {
-          _id: ObjectId(p.idProduct),
-          color: {
-            $elemMatch: {
-              name: p.color,
-              quantityInfo: {
-                $elemMatch: {
-                  quantity: { $gte: p.quantity },
-                  idBranch: body.idBranch
-                    ? ObjectId(body.idBranch)
-                    : ObjectId("61a23e0527b5b90016616975"),
-                },
-              },
-            },
-          },
-        },
-        {
-          $inc: { "color.$.quantityInfo.$[].quantity": -p.quantity },
+      const productInDb = await Product.findOne({ _id: ObjectId(p.idProduct) });
+      if (productInDb) {
+        const idx = productInDb.color.findIndex(
+          (item) => item.name === p.color
+        );
+        if (idx > -1) {
+          const color = productInDb.color[idx];
+          const newQuantityInfo = color.quantityInfo.map((q) => {
+            if (q.idBranch == idBranch) {
+              q.quantity -= p.quantity;
+            }
+            return q;
+          });
+          productInDb.color[idx].quantityInfo = newQuantityInfo;
+          productInDb.save();
         }
-      );
+      }
     }
 
     return {

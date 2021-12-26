@@ -31,4 +31,8 @@ router
   .route(`/${BRANCH_PATH.GET_BY_LIST_ID}`)
   .get(controller.handleGetByListId);
 
+router
+  .route(`/${BRANCH_PATH.GET_ALL_OPEN}`)
+  .get(controller.handleGetAllBranchOpen);
+
 module.exports = router;

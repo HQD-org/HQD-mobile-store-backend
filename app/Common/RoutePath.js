@@ -14,6 +14,7 @@ exports.BRANCH_PATH = {
   GET_ALL: "get-all",
   UPDATE: "update",
   GET_BY_LIST_ID: "get-by-list-id",
+  GET_ALL_OPEN: "get-all-open",
 };
 
 exports.CART_PATH = {

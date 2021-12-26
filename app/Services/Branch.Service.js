@@ -1,5 +1,5 @@
 const { Account, Branch } = require("../Models/Index.Model");
-const { HTTP_STATUS_CODE } = require("../Common/Constants");
+const { HTTP_STATUS_CODE, STATUS } = require("../Common/Constants");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -252,6 +252,7 @@ const getByListId = async (query) => {
     if (Array.isArray(query.id)) {
       branches = await Branch.find({
         _id: { $in: query.id.map((id) => ObjectId(id)) },
+        status: STATUS.OPEN,
       });
     }
     return {
@@ -272,13 +273,32 @@ const getByListId = async (query) => {
   }
 };
 
+const getAllBranchOpen = async () => {
+  try {
+    const dataBranch = await Branch.find({ status: STATUS.OPEN });
+    return {
+      message: {
+        ENG: "Get list Branch success",
+        VN: "Lấy tất cả chi nhánh thành công",
+      },
+      data: dataBranch,
+      success: true,
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      message: err.message,
+      status: err.status,
+    };
+  }
+};
+
 module.exports = {
   createBranch,
   getAllBranch,
   updateBranch,
   searchBranch,
   getByListId,
+  getAllBranchOpen,
 };
-
-
-
