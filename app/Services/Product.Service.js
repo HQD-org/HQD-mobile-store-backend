@@ -1,5 +1,5 @@
 const { MobileModel, Product, MobileBrand } = require("../Models/Index.Model");
-const { HTTP_STATUS_CODE } = require("../Common/Constants");
+const { HTTP_STATUS_CODE, STATUS } = require("../Common/Constants");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -364,7 +364,9 @@ const getProductGroupByBrand = async (query) => {
     let { itemPerPage, page } = query;
     itemPerPage = ~~itemPerPage || 12;
     page = ~~page || 1;
-    const brands = await MobileBrand.find({});
+    const brands = await MobileBrand.find({
+      status: { $ne: STATUS.STOP_SELLING },
+    });
     const data = await Promise.all(
       brands.map(async (brand) => {
         const products = await Product.aggregate([
