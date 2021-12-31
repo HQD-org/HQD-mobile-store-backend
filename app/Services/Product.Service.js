@@ -279,7 +279,6 @@ const filter = async (query) => {
   };
   if (name) queryObj.name = { $regex: name, $options: "i" };
   if (idModel) queryObj.idModel = ObjectId(idModel);
-
   const sortOption = {
     name: 1,
   };

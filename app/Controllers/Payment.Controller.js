@@ -1,8 +1,5 @@
-const e = require("express");
 const paypal = require("paypal-rest-sdk");
 const { Cart, Product, Order } = require("../Models/Index.Model");
-const { HTTP_STATUS_CODE } = require("../Common/Constants");
-const { sendError, sendSuccess } = require("./Controller");
 const queryString = require("query-string");
 
 const OrderPaypal = async (req, res, next) => {
@@ -34,7 +31,7 @@ const OrderPaypal = async (req, res, next) => {
     price,
   });
 
-  console.log("info: " + reqQuery);
+  // console.log("info: " + reqQuery);
 
   const create_payment_json = {
     intent: "sale",
@@ -45,7 +42,7 @@ const OrderPaypal = async (req, res, next) => {
       return_url:
         req.body.from === "web"
           ? `https://hqd-mobile-store-api.herokuapp.com/payment/success-web?${reqQuery}`
-          : `https://hqd-mobile-store-api.herokuapp.com/payment/success?${reqQuery}`, //http:///localhost:8080
+          : `https://hqd-mobile-store-api.herokuapp.com/payment/success?${reqQuery}`, //http://localhost:8080
       cancel_url:
         req.body.from === "web"
           ? "https://hqd-mobile-store-api.herokuapp.com/payment/cancel-web"
@@ -74,7 +71,7 @@ const OrderPaypal = async (req, res, next) => {
   };
   paypal.payment.create(create_payment_json, (error, payment) => {
     if (error) {
-      console.log(error.response.details);
+      // console.log(error.response.details);
       res.status(400).send({
         data: "",
         error: "Cannot create order!",
@@ -121,7 +118,7 @@ const PaymentSuccess = async (req, res, next) => {
   const payerId = req.query.PayerID;
   const paymentId = req.query.paymentId;
   //const price = req.query.price;
-  console.log(price);
+  console.log(paymentId);
   const execute_payment_json = {
     payer_id: payerId,
     transactions: [
@@ -138,7 +135,6 @@ const PaymentSuccess = async (req, res, next) => {
     execute_payment_json,
     async function (error, payment) {
       if (error) {
-        console.log("ủa sao fail");
         res.status(400).send({
           data: "",
           error: "Payment Fail",
@@ -199,8 +195,8 @@ const PaymentSuccess = async (req, res, next) => {
             message: message,
           };
 
-          console.log("reInfo:" + reInfo);
-          console.log("receiver:" + reInfo.receiver);
+          // console.log("reInfo:" + reInfo);
+          // console.log("receiver:" + reInfo.receiver);
           const newOrder = new Order({
             products: products,
             idBranch: idB,
@@ -209,6 +205,7 @@ const PaymentSuccess = async (req, res, next) => {
             user: idUser,
             receiveInfo: reInfo,
             status: "wait",
+            idPayment: paymentId,
           });
 
           await newOrder.save();
@@ -219,7 +216,7 @@ const PaymentSuccess = async (req, res, next) => {
             { user: idUser },
             { $set: { products: [] } }
           );
-          console.log(newOrder);
+          // console.log(newOrder);
           res.status(200).send({
             data: "",
             message: {
@@ -331,10 +328,10 @@ const PaymentSuccessWeb = async (req, res, next) => {
             user: idUser,
             receiveInfo: reInfo,
             status: "wait",
+            saleId: payment.transactions[0].related_resources[0].sale.id,
           });
 
           await newOrder.save();
-
           // xóa cart cũ
           //await Cart.deleteOne({user:idUser});
           await Cart.findOneAndUpdate(
@@ -361,15 +358,16 @@ const CancelPaymentWeb = async (req, res, next) => {
 };
 
 const RefundPayment = async (req, res, next) => {
-  const { idPayment, transaction } = req.body;
+  const { saleId, totalPrice } = req.body;
+  const dollar = totalPrice / 23100;
+  const dollar2f = parseFloat(dollar.toFixed(2));
   const data = {
     amount: {
-      total: `${transaction}`,
+      total: `${dollar2f}`,
       currency: "USD",
     },
   };
-
-  paypal.sale.refund(idPayment, data, function (error, refund) {
+  paypal.sale.refund(saleId, data, function (error, refund) {
     if (error) {
       res.status(200).send({
         message: "Refund fail!",
