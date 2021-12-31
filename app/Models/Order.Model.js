@@ -36,6 +36,7 @@ const order = {
     },
     required: true,
   },
+  saleId: DEFAULT_MODEL.string,
   status: { ...DEFAULT_MODEL.stringRequire, default: STATUS.WAIT },
 };
 
