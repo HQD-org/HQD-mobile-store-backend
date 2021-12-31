@@ -118,7 +118,7 @@ const PaymentSuccess = async (req, res, next) => {
   const payerId = req.query.PayerID;
   const paymentId = req.query.paymentId;
   //const price = req.query.price;
-  console.log(paymentId);
+  // console.log(paymentId);
   const execute_payment_json = {
     payer_id: payerId,
     transactions: [
@@ -206,6 +206,7 @@ const PaymentSuccess = async (req, res, next) => {
             receiveInfo: reInfo,
             status: "wait",
             idPayment: paymentId,
+            saleId: payment.transactions[0].related_resources[0].sale.id,
           });
 
           await newOrder.save();
