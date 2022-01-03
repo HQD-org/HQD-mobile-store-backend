@@ -6,7 +6,7 @@ const {
   convertObjToArrayProps,
   mapToRegexContainMongoDbQuery,
 } = require("../Common/Helper");
-const { ObjectId } = require("mongodb");
+//const { ObjectId } = require("mongodb");
 
 const createUser = async (body) => {
   try {
