@@ -10,5 +10,6 @@ router
   .get([validateQuery(schema.search)], controller.handleFilter);
 
 router.route(`/${MOBILE_BRAND_PATH.GET_ALL}`).get(controller.handleGetAll);
+router.route('/get-all-active').get(controller.handleGetAllActive);
 
 module.exports = router;

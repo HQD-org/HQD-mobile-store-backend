@@ -91,6 +91,27 @@ const getAll = async () => {
   }
 };
 
+const getAllByStatusActive = async () => {
+  try {
+    const brands = await MobileBrand.find({"status":"active"});
+    return {
+      data: brands,
+      success: true,
+      message: {
+        ENG: "Find successfully",
+        VN: "Tìm kiếm thành công",
+      },
+      status: HTTP_STATUS_CODE.OK,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+      status: error.status,
+    };
+  }
+};
+
 const updateBrand = async (body) => {
   try {
     const brand = await MobileBrand.findOneAndUpdate({ _id: body.id }, body, {
@@ -129,4 +150,5 @@ module.exports = {
   filter,
   getAll,
   updateBrand,
+  getAllByStatusActive
 };
