@@ -212,7 +212,7 @@ const register = async (body) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = generateString(4, false);
-    await sendOtp(email, otp);
+    // await sendOtp(email, otp);
     const newUser = new User({
       name,
       phone,
@@ -238,7 +238,7 @@ const register = async (body) => {
     await newCart.save();
 
     return {
-      data: "data",
+      data: otp,
       success: true,
       message: {
         ENG: "Register successfully. Please verify your account. A verify code has been sent to your email",
